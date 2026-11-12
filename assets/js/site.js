@@ -16,7 +16,6 @@
     if (!toggle || !nav) return;
     nav.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'סגירת התפריט' : 'פתיחת התפריט');
   }
   if (toggle && nav) {
     toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
