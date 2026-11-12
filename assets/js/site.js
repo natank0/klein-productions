@@ -9,6 +9,16 @@
 
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
+  var locationScore = document.querySelector('.location-score');
+  if (locationScore && 'IntersectionObserver' in window && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    var locationObserver = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      locationScore.classList.add('is-playing');
+      locationObserver.disconnect();
+    }, { threshold: 0.25 });
+    locationObserver.observe(locationScore);
+  }
+
   /* תפריט מובייל */
   var toggle = document.getElementById('menuToggle');
   var nav = document.getElementById('siteNav');

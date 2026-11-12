@@ -1,5 +1,6 @@
 /* קליין הפקות – גיליון סגנונות משותף
-   שפה עיצובית: נייר חם, פחם כהה וזהב מט. ללא גופנים חיצוניים וללא אפקטים מונפשים. */
+   שפה עיצובית: נייר חם, פחם כהה וזהב מט. ללא גופנים חיצוניים.
+   תנועה: רק בתרשים המחסן, פעם אחת כשהוא נכנס למסך, ולא כשהמשתמש ביקש הפחתת תנועה. */
 :root {
   color-scheme: light;
   /* צבע */
@@ -91,8 +92,6 @@ main [tabindex="-1"]:focus { outline: none; }
 /* מסך פתיחה */
 .hero { padding: 56px 0 64px; border-bottom: 1px solid var(--line); }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.85fr); gap: 44px; align-items: start; }
-.hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; color: var(--gold-ink); font-size: 0.95rem; font-weight: 700; }
-.hero-eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--gold); }
 .h1-part { display: inline-block; }
 .hero h1 { margin: 0; font-size: clamp(2.1rem, 5.2vw, 3.6rem); font-weight: 800; letter-spacing: -0.01em; }
 .hero-area { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 1.15rem; font-weight: 700; }
@@ -145,18 +144,6 @@ main [tabindex="-1"]:focus { outline: none; }
 .scope-base { border-top: 3px solid var(--gold); }
 .scope-col h3 { margin: 0 0 14px; font-size: 1.2rem; font-weight: 800; }
 .scope-note { margin-top: 16px; color: var(--ink-soft); }
-
-/* אזורי שירות */
-.areas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-.area { display: flex; flex-direction: column; align-items: flex-start; padding: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
-.area h3 { margin: 0 0 8px; font-size: 1.4rem; font-weight: 800; }
-.area p { color: var(--ink-soft); }
-.area .btn { margin-top: auto; }
-.area p { margin-bottom: 18px; }
-.areas-more { margin-top: 18px; color: var(--ink-soft); }
-.local-tip { margin-top: 18px; padding: 18px 20px; border-right: 3px solid var(--gold); background: var(--paper-alt); border-radius: 0 10px 10px 0; }
-.local-tip h3 { margin: 0 0 4px; font-size: 1.05rem; }
-.local-tip p { color: var(--ink-soft); }
 
 /* ציוד */
 .gear { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; margin: 0; }
@@ -276,7 +263,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .section { padding: 60px 0; }
   .hero { padding: 32px 0 44px; }
   .hero-actions { display: grid; grid-template-columns: 1fr; }
-  .scope, .areas, .steps, .form-grid { grid-template-columns: 1fr; }
+  .scope, .steps, .form-grid { grid-template-columns: 1fr; }
   .field.full { grid-column: auto; }
   .order-form { padding: 22px 16px; }
   .entry { padding: 20px 16px; }
@@ -327,7 +314,145 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
 }
 
 /* קיצור "סוגי אירועים" בכותרת – רק כשיש מקום (טלפונים רחבים וטאבלטים) */
-@media (min-width: 420px) and (max-width: 860px) {
-  .header-events { display: inline-flex; margin-inline-start: auto; }
+@media (min-width: 520px) and (max-width: 860px) {
+  .header-events { display: inline-flex; margin-inline-start: auto; white-space: nowrap; }
   .no-js .header-events { display: none; }
+}
+
+/* תרשים סכמטי של המחסן והאולמות הסמוכים */
+.location-score {
+  margin: 0;
+  padding: clamp(18px, 4.4vw, 52px);
+  border-radius: var(--radius);
+  color: var(--on-dark);
+  background: radial-gradient(ellipse at 85% 0%, #423627, var(--charcoal) 62%);
+}
+.location-origin {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0 16px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 12px 18px;
+  border: 1px solid var(--gold-light);
+  border-radius: 10px;
+  background: var(--charcoal);
+}
+.location-origin strong { font-size: clamp(1.25rem, 3vw, 1.65rem); }
+.location-origin > span:last-child,
+.location-venues li > span:last-child,
+.location-score figcaption { color: var(--on-dark-soft); }
+.location-meter {
+  display: flex;
+  align-items: center;
+  grid-row: span 2;
+  gap: 3px;
+  height: 34px;
+  direction: ltr;
+}
+.location-meter i {
+  display: block;
+  width: 3px;
+  height: 68%;
+  border-radius: 2px;
+  background: var(--gold-light);
+  transform: scaleY(.65);
+}
+.location-meter i:nth-child(2),
+.location-meter i:nth-child(4) { height: 88%; }
+.location-meter i:nth-child(3) { height: 100%; }
+.location-streets {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  gap: clamp(16px, 3.4vw, 40px);
+  position: relative;
+  margin-top: 30px;
+}
+.location-streets::before {
+  content: "";
+  position: absolute;
+  inset-block: -30px auto;
+  inset-inline-start: 24px;
+  height: 30px;
+  border-inline-start: 1px solid var(--gold-light);
+}
+.location-street { min-width: 0; }
+.location-street h3 {
+  margin: 0;
+  padding: 7px 0 7px 8px;
+  border-bottom: 1px solid var(--gold-light);
+  color: var(--gold-light);
+  font-size: 1rem;
+}
+.location-venues {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.location-venues li {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  min-width: 0;
+  padding: 0 8px 10px 0;
+}
+.location-node {
+  display: block;
+  width: 9px;
+  height: 9px;
+  margin: -5px 0 10px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  box-shadow: 0 0 0 3px var(--charcoal);
+}
+.location-venues li > span:last-child { font-size: .94rem; }
+.location-score figcaption { margin-top: 18px; font-size: .9rem; }
+.location-contact { margin-top: 20px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .location-score.is-playing .location-meter i { animation: location-beat .56s ease-in-out 3 alternate; }
+  .location-score.is-playing .location-meter i:nth-child(even) { animation-delay: .12s; }
+  .location-score.is-playing .location-node { animation: location-signal .72s .35s ease-out both; }
+  .location-score.is-playing li:nth-child(2) .location-node { animation-delay: .62s; }
+  .location-score.is-playing li:nth-child(3) .location-node { animation-delay: .89s; }
+  .location-score.is-playing .location-street + .location-street .location-node { animation-delay: 1.16s; }
+}
+@keyframes location-beat {
+  from { transform: scaleY(.42); }
+  to { transform: scaleY(1.12); }
+}
+@keyframes location-signal {
+  35% { background: #fff4cd; box-shadow: 0 0 0 7px #d6b87838, 0 0 18px #d6b878; }
+}
+@media (max-width: 700px) {
+  .location-streets { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 440px) {
+  .location-venues { grid-auto-flow: row; grid-auto-columns: auto; }
+  .location-venues li { grid-template-columns: 13px minmax(0, 1fr); padding-block: 9px 3px; }
+  .location-node { grid-row: span 2; margin: 7px 0 0; }
+}
+@media (min-width: 701px) {
+  .location-streets::after {
+    content: "";
+    position: absolute;
+    inset-block-start: -12px;
+    inset-inline: 24px calc(25% - 24px);
+    border-block-start: 1px solid #a3803f;
+    pointer-events: none;
+  }
+  .location-street + .location-street { position: relative; }
+  .location-street + .location-street::before {
+    content: "";
+    position: absolute;
+    inset-block-start: -12px;
+    inset-inline-start: 0;
+    height: 12px;
+    border-inline-start: 1px solid #a3803f;
+  }
 }
