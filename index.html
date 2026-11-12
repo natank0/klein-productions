@@ -1,649 +1,433 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" class="no-js">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="קליין הפקות מתמחה בהפקת אירועים תאגידיים, חתונות, מופעים ואקטיבציות מותג ברמת פרמיום, משלב הרעיון ועד הביצוע.">
-  <meta name="theme-color" content="#090909">
+  <title>קליין הפקות | הגברה לשמחות ולאירועים – בני ברק ובית שמש</title>
+  <meta name="description" content="קליין הפקות – הגברה מקצועית לחתונות, בר מצוות, בריתות, טישים, שבע ברכות, כנסים ואירועי מוסדות. פיזור לעזרת נשים, ליווי נגנים, הקלטה, מקרן ותאורה. בני ברק, בית שמש והסביבה. 052-7675138">
+  <meta name="theme-color" content="#120e14">
+  <link rel="canonical" href="./">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="he_IL">
-  <meta property="og:title" content="קליין הפקות | חוויות שלא נשכחות">
-  <meta property="og:description" content="הפקות אירועים פרמיום וניהול מושלם, משלב הרעיון ועד הרגע האחרון.">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=85">
-  <meta property="og:image:alt" content="קהל באירוע חי תחת תאורת במה מרהיבה">
-  <meta name="twitter:card" content="summary_large_image">
-  <title>קליין הפקות | חוויות שלא נשכחות</title>
+  <meta property="og:site_name" content="קליין הפקות">
+  <meta property="og:title" content="קליין הפקות | הגברה לשמחות ולאירועים">
+  <meta property="og:description" content="הגברה מקצועית לשמחות, טישים ואירועים – בני ברק, בית שמש והסביבה. להזמנות: 052-7675138">
+  <meta property="og:image" content="assets/img/og-image.jpg">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/20OJ1Or4EMhA7zS4JkSSgJbRZ9JIXCvzXv3A9uCdmErWA6gRb7kH1E5yXw==" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
-  <style>
-    :root {
-      --black: #090909;
-      --charcoal: #111111;
-      --surface: #171717;
-      --surface-soft: #1d1d1d;
-      --gold: #c9a84c;
-      --gold-light: #e4c978;
-      --amber: #d88a2d;
-      --white: #f7f4ed;
-      --muted: #aaa7a0;
-      --border: rgba(201, 168, 76, 0.22);
-      --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
-      --radius: 20px;
-      --container: 1180px;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 86px; }
-    body {
-      margin: 0;
-      color: var(--white);
-      background:
-        radial-gradient(circle at 15% 18%, rgba(201, 168, 76, 0.07), transparent 28%),
-        radial-gradient(circle at 88% 66%, rgba(216, 138, 45, 0.05), transparent 30%),
-        var(--black);
-      font-family: "Assistant", Arial, sans-serif;
-      line-height: 1.7;
-      overflow-x: hidden;
-      direction: rtl;
-      text-align: right;
-    }
-
-    body.menu-open { overflow: hidden; }
-    img { display: block; width: 100%; }
-    a { color: inherit; text-decoration: none; }
-    button, input, select, textarea { font: inherit; direction: rtl; text-align: right; }
-    button { cursor: pointer; }
-
-    .container { width: min(calc(100% - 40px), var(--container)); margin-inline: auto; }
-    .section { padding: 112px 0; position: relative; }
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      color: var(--gold-light);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-    .eyebrow::before { content: ""; width: 34px; height: 1px; background: var(--gold); }
-    .section-title {
-      max-width: 760px;
-      margin: 0;
-      font-family: "Playfair Display", serif;
-      font-size: clamp(2.2rem, 5vw, 4rem);
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-    }
-    .section-copy { max-width: 650px; margin: 20px 0 0; color: var(--muted); }
-    .section-heading { margin-bottom: 56px; }
-    .gold { color: var(--gold-light); }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 52px;
-      padding: 0 26px;
-      border: 1px solid transparent;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease, color 180ms ease;
-    }
-    .btn:hover { transform: translateY(-3px); }
-    .btn-primary { color: #12100b; background: linear-gradient(135deg, var(--gold-light), var(--amber)); box-shadow: 0 12px 34px rgba(201, 168, 76, 0.2); }
-    .btn-primary:hover { background: linear-gradient(135deg, #efd98f, #e79a3e); }
-    .btn-outline { color: var(--white); border-color: rgba(255,255,255,0.35); background: rgba(9,9,9,0.18); backdrop-filter: blur(12px); }
-    .btn-outline:hover { color: var(--gold-light); border-color: var(--gold); }
-
-    .navbar {
-      position: fixed;
-      inset: 0 0 auto;
-      z-index: 1000;
-      height: 82px;
-      border-bottom: 1px solid transparent;
-      transition: background 220ms ease, height 220ms ease, border-color 220ms ease;
-    }
-    .navbar.scrolled { height: 70px; background: rgba(8, 8, 8, 0.9); border-color: var(--border); backdrop-filter: blur(18px); }
-    .nav-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; }
-    .logo { display: inline-flex; align-items: center; gap: 12px; font-family: "Playfair Display", serif; font-size: 1.35rem; font-weight: 800; letter-spacing: 0.02em; }
-    .logo-mark { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--gold); color: var(--gold-light); transform: rotate(45deg); }
-    .logo-mark span { transform: rotate(-45deg); font-family: "Inter", sans-serif; font-size: 0.74rem; letter-spacing: -0.08em; }
-    .nav-links { display: flex; align-items: center; gap: 30px; list-style: none; margin: 0; padding: 0; }
-    .nav-links a { position: relative; color: #d4d1ca; font-size: 0.86rem; font-weight: 600; }
-    .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -9px; height: 1px; background: var(--gold); transition: right 180ms ease; }
-    .nav-links a:hover, .nav-links a.active { color: var(--gold-light); }
-    .nav-links a:hover::after, .nav-links a.active::after { right: 0; }
-    .menu-toggle { display: none; width: 44px; height: 44px; border: 0; background: transparent; color: var(--white); font-size: 1.25rem; }
-
-    .hero {
-      min-height: 100svh;
-      display: grid;
-      align-items: center;
-      position: relative;
-      isolation: isolate;
-      background-image:
-        linear-gradient(90deg, rgba(7,7,7,0.96) 0%, rgba(7,7,7,0.75) 48%, rgba(7,7,7,0.34) 100%),
-        linear-gradient(0deg, var(--black), transparent 34%),
-        url("https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=2000&q=88");
-      background-size: cover;
-      background-position: center;
-    }
-    .hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 70% 45%, rgba(201,168,76,0.12), transparent 32%); }
-    .hero-content { max-width: 850px; padding: 130px 0 80px; }
-    .hero-kicker { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; color: var(--gold-light); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; }
-    .hero-kicker::before { content: ""; width: 42px; height: 1px; background: var(--gold); }
-    .hero h1 { margin: 0; max-width: 900px; font-family: "Playfair Display", serif; font-size: clamp(3.2rem, 8vw, 7.2rem); line-height: 0.96; letter-spacing: -0.05em; text-wrap: balance; }
-    .hero-subtitle { margin: 26px 0 34px; color: #d1cdc5; font-size: clamp(1.05rem, 2.2vw, 1.35rem); font-weight: 300; letter-spacing: 0.02em; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
-    .hero-scroll { position: absolute; bottom: 28px; right: 5vw; display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; writing-mode: vertical-rl; }
-    .hero-scroll::after { content: ""; width: 1px; height: 54px; background: linear-gradient(var(--gold), transparent); }
-
-    .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    .service-card {
-      min-height: 330px;
-      padding: 34px 28px;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: var(--radius);
-      background: linear-gradient(145deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015));
-      transition: transform 240ms ease, border-color 240ms ease, background 240ms ease;
-    }
-    .service-card::before { content: ""; position: absolute; inset: auto -35% -50% 15%; height: 180px; background: radial-gradient(circle, rgba(201,168,76,0.16), transparent 68%); transition: transform 240ms ease; }
-    .service-card:hover { transform: translateY(-10px); border-color: var(--border); background: linear-gradient(145deg, rgba(201,168,76,0.08), rgba(255,255,255,0.02)); }
-    .service-card:hover::before { transform: translateY(-16px); }
-    .service-number { color: #57534b; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; }
-    .service-icon { width: 62px; height: 62px; margin: 42px 0 28px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--gold-light); font-size: 1.35rem; }
-    .service-card h3 { margin: 0 0 12px; font-family: "Playfair Display", serif; font-size: 1.45rem; }
-    .service-card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
-
-    .about { background: linear-gradient(180deg, transparent, rgba(255,255,255,0.025), transparent); }
-    .about-grid { display: grid; grid-template-columns: 0.88fr 1.12fr; gap: 70px; align-items: center; }
-    .about-visual { min-height: 610px; position: relative; }
-    .about-visual img { height: 570px; object-fit: cover; border-radius: var(--radius); filter: saturate(0.75) contrast(1.06); box-shadow: var(--shadow); }
-    .about-badge { position: absolute; right: -24px; bottom: 2px; width: 170px; height: 170px; display: grid; place-content: center; text-align: center; border: 1px solid var(--gold); border-radius: 50%; background: var(--charcoal); box-shadow: var(--shadow); }
-    .about-badge strong { display: block; color: var(--gold-light); font-family: "Playfair Display", serif; font-size: 2.25rem; line-height: 1; }
-    .about-badge span { display: block; margin-top: 8px; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; }
-    .about-content p { color: var(--muted); }
-    .stats-grid { margin-top: 38px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
-    .stat { padding: 20px 0; border-top: 1px solid var(--border); }
-    .stat strong { display: block; color: var(--gold-light); font-family: "Playfair Display", serif; font-size: clamp(2rem, 4vw, 3rem); line-height: 1; }
-    .stat span { display: block; margin-top: 9px; color: #c8c4bc; font-size: 0.82rem; }
-
-    .gallery-grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: 240px; gap: 16px; }
-    .gallery-item { position: relative; overflow: hidden; border-radius: 14px; background: var(--surface); }
-    .gallery-item:nth-child(1), .gallery-item:nth-child(6) { grid-column: span 7; }
-    .gallery-item:nth-child(2), .gallery-item:nth-child(5) { grid-column: span 5; }
-    .gallery-item:nth-child(3), .gallery-item:nth-child(4) { grid-column: span 6; }
-    .gallery-item:nth-child(1), .gallery-item:nth-child(2) { grid-row: span 2; }
-    .gallery-item img { height: 100%; object-fit: cover; transition: transform 600ms cubic-bezier(.2,.7,.2,1), filter 300ms ease; filter: saturate(0.72); }
-    .gallery-item::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(8,8,8,0.84), transparent 55%); opacity: 0.74; transition: opacity 280ms ease; }
-    .gallery-caption { position: absolute; z-index: 2; left: 22px; bottom: 18px; }
-    .gallery-caption strong { display: block; font-family: "Playfair Display", serif; font-size: 1.15rem; }
-    .gallery-caption span { color: var(--gold-light); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; }
-    .gallery-item:hover img { transform: scale(1.06); filter: saturate(1); }
-    .gallery-item:hover::after { opacity: 1; }
-
-    .testimonials { background: #0c0c0c; }
-    .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-    .quote-card { padding: 34px; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); background: linear-gradient(145deg, var(--surface-soft), #111); }
-    .quote-icon { color: var(--gold); font-size: 1.8rem; opacity: 0.8; }
-    .quote-card blockquote { margin: 24px 0 28px; color: #dedad2; font-family: "Playfair Display", serif; font-size: 1.14rem; line-height: 1.7; }
-    .client { display: flex; align-items: center; gap: 13px; }
-    .client-avatar { width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--gold-light); font-weight: 700; background: #101010; }
-    .client strong, .client span { display: block; }
-    .client strong { font-size: 0.88rem; }
-    .client span { color: var(--muted); font-size: 0.76rem; }
-
-    .contact-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 64px; }
-    .contact-info { margin-top: 40px; display: grid; gap: 22px; }
-    .contact-line { display: flex; align-items: flex-start; gap: 16px; }
-    .contact-line i { width: 42px; height: 42px; flex: 0 0 42px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--gold-light); }
-    .contact-line strong, .contact-line span { display: block; }
-    .contact-line strong { margin-bottom: 3px; font-size: 0.82rem; }
-    .contact-line span, .contact-line a { color: var(--muted); font-size: 0.9rem; }
-    .contact-form { padding: 36px; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(255,255,255,0.025); box-shadow: var(--shadow); }
-    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-    .field { display: grid; gap: 8px; }
-    .field.full { grid-column: 1 / -1; }
-    label { color: #d8d4cd; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; }
-    input, select, textarea { width: 100%; border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; outline: none; color: var(--white); background: #101010; transition: border-color 180ms ease, box-shadow 180ms ease; }
-    input, select { height: 52px; padding: 0 15px; }
-    textarea { min-height: 140px; padding: 14px 15px; resize: vertical; }
-    input:focus, select:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.11); }
-    select option { background: #101010; }
-    .form-submit { margin-top: 22px; width: 100%; border: 0; }
-    .form-status { min-height: 24px; margin: 14px 0 0; color: var(--gold-light); font-size: 0.84rem; text-align: center; }
-
-    footer { padding: 54px 0 28px; border-top: 1px solid var(--border); background: #070707; }
-    .footer-main { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding-bottom: 34px; }
-    .footer-copy { max-width: 420px; margin: 14px 0 0; color: var(--muted); font-size: 0.86rem; }
-    .socials { display: flex; gap: 10px; }
-    .socials a { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; color: #d8d4cd; transition: color 180ms ease, border-color 180ms ease, transform 180ms ease; }
-    .socials a:hover { color: var(--gold-light); border-color: var(--gold); transform: translateY(-3px); }
-    .footer-bottom { display: flex; justify-content: space-between; gap: 20px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07); color: #77746e; font-size: 0.76rem; }
-
-    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 700ms ease, transform 700ms ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-delay-1 { transition-delay: 100ms; }
-    .reveal-delay-2 { transition-delay: 200ms; }
-    .reveal-delay-3 { transition-delay: 300ms; }
-
-    @media (max-width: 1020px) {
-      .services-grid { grid-template-columns: repeat(2, 1fr); }
-      .about-grid, .contact-grid { grid-template-columns: 1fr; }
-      .about-visual { min-height: auto; max-width: 720px; }
-      .about-visual img { height: 520px; }
-      .about-badge { right: 20px; }
-      .testimonial-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 760px) {
-      .section { padding: 84px 0; }
-      .navbar, .navbar.scrolled { height: 68px; background: rgba(8,8,8,0.92); border-color: var(--border); backdrop-filter: blur(18px); }
-      .menu-toggle { display: grid; place-items: center; z-index: 2; }
-      .nav-links { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 28px; visibility: hidden; opacity: 0; transform: translateY(-12px); background: rgba(7,7,7,0.98); transition: opacity 200ms ease, transform 200ms ease, visibility 200ms; }
-      .nav-links.open { visibility: visible; opacity: 1; transform: translateY(0); }
-      .nav-links a { font-family: "Playfair Display", serif; font-size: 1.7rem; }
-      .hero { background-position: 62% center; }
-      .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(0,0,0,0.15); }
-      .hero h1 { font-size: clamp(3rem, 14vw, 5.1rem); }
-      .hero-scroll { display: none; }
-      .services-grid { grid-template-columns: 1fr; }
-      .service-card { min-height: 290px; }
-      .about-visual img { height: 430px; }
-      .about-badge { width: 142px; height: 142px; right: 12px; }
-      .gallery-grid { grid-template-columns: 1fr; grid-auto-rows: 290px; }
-      .gallery-item, .gallery-item:nth-child(n) { grid-column: auto; grid-row: auto; }
-      .form-grid { grid-template-columns: 1fr; }
-      .field.full { grid-column: auto; }
-      .contact-form { padding: 25px 20px; }
-      .footer-main, .footer-bottom { flex-direction: column; align-items: flex-start; }
-    }
-
-    @media (max-width: 460px) {
-      .container { width: min(calc(100% - 28px), var(--container)); }
-      .logo { font-size: 1.08rem; }
-      .logo-mark { width: 34px; height: 34px; }
-      .hero-actions .btn { width: 100%; }
-      .stats-grid { grid-template-columns: 1fr; }
-      .quote-card { padding: 28px 24px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-      .reveal { opacity: 1; transform: none; }
-    }
-
-    /* התאמות כיוון, נגישות ואימות טופס */
-    :focus-visible { outline: 3px solid var(--gold-light); outline-offset: 4px; }
-    .skip-link { position: fixed; top: 10px; right: 10px; z-index: 2000; padding: 10px 16px; color: #111; background: var(--gold-light); border-radius: 8px; transform: translateY(-160%); transition: transform 160ms ease; }
-    .skip-link:focus { transform: translateY(0); }
-    .section-title, .service-card h3, .quote-card blockquote, .stat strong, .about-badge strong { font-family: "Assistant", Arial, sans-serif; }
-    .eyebrow { letter-spacing: 0.04em; text-transform: none; }
-    .nav-links a::after { right: 0; left: 100%; transition: left 180ms ease; }
-    .nav-links a:hover::after, .nav-links a.active::after { right: 0; left: 0; }
-    .hero { background-image: linear-gradient(270deg, rgba(7,7,7,.96) 0%, rgba(7,7,7,.75) 48%, rgba(7,7,7,.34) 100%), linear-gradient(0deg, var(--black), transparent 34%), url("https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=2000&q=88"); }
-    .hero h1 { font-family: "Assistant", Arial, sans-serif; letter-spacing: -0.03em; }
-    .hero-scroll { right: auto; left: 5vw; }
-    .about-badge { right: auto; left: -24px; }
-    .gallery-caption { left: auto; right: 22px; }
-    .field-error { min-height: 1.25em; color: #ffb4a8; font-size: .76rem; }
-    .field [aria-invalid="true"] { border-color: #ff8f80; box-shadow: 0 0 0 3px rgba(255,143,128,.12); }
-    .form-status.success { color: #9fe3ad; }
-    @media (max-width: 1020px) { .about-badge { right: auto; left: 20px; } }
-    @media (max-width: 760px) {
-      .about-badge { right: auto; left: 12px; }
-      .footer-main, .footer-bottom { align-items: flex-start; }
-    }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "קליין הפקות",
+    "description": "הגברה מקצועית לשמחות, טישים, כנסים ואירועי מוסדות",
+    "telephone": "+972-52-767-5138",
+    "image": "assets/img/logo-full.jpg",
+    "areaServed": ["בני ברק", "בית שמש", "ירושלים", "אלעד", "מודיעין עילית", "ביתר עילית", "פתח תקווה", "רמת גן", "אשדוד", "תל אביב"],
+    "address": { "@type": "PostalAddress", "addressLocality": "בני ברק", "addressCountry": "IL" }
+  }
+  </script>
 </head>
-<body>
-  <a class="skip-link" href="#main-content">דלג לתוכן הראשי</a>
+<body data-wa="972527675138">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/><path d="M8.5 10.5c.5 2 2.5 4 4.5 4.5l1.3-1.2 2 .8v1.7c-3.8.5-9.3-5-8.8-8.8h1.7l.8 2z"/></symbol>
+      <symbol id="i-speaker" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="14" r="1"/><path d="M12 6h.01"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+      <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+      <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></symbol>
+      <symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></symbol>
+      <symbol id="i-screen" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+      <symbol id="i-light" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+      <symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></symbol>
+      <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+      <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+      <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.48 12.89 17 22l-5-3-5 3 1.52-9.11"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+      <symbol id="i-dot" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    </defs>
+  </svg>
+
+  <a class="skip-link" href="#main">דלג לתוכן הראשי</a>
+
   <header class="navbar" id="navbar">
+    <span class="bsd" aria-label="בסייעתא דשמיא">בס״ד</span>
     <div class="container nav-inner">
-      <a class="logo" href="#home" aria-label="קליין הפקות, עמוד הבית">
-        <span class="logo-mark" aria-hidden="true"><span>קה</span></span>
-        <span>קליין <span class="gold">הפקות</span></span>
+      <a class="brand" href="#top" aria-label="קליין הפקות – לעמוד הבית">
+        <img src="assets/img/logo-mark.jpg" alt="" width="50" height="46">
+        <span class="brand-name">קליין הפקות<small>הגברה לשמחות ולאירועים</small></span>
       </a>
-      <button class="menu-toggle" id="menuToggle" aria-label="פתיחת תפריט הניווט" aria-expanded="false" aria-controls="navLinks">
-        <i class="fa-solid fa-bars" aria-hidden="true"></i>
-      </button>
       <nav aria-label="ניווט ראשי">
         <ul class="nav-links" id="navLinks">
-          <li><a href="#home" class="active">ראשי</a></li>
+          <li><a href="#why">למה קליין</a></li>
           <li><a href="#services">שירותים</a></li>
-          <li><a href="#about">אודות</a></li>
-          <li><a href="#gallery">גלריה</a></li>
-          <li><a href="#contact">צור קשר</a></li>
+          <li><a href="#equipment">ציוד</a></li>
+          <li><a href="#events">אירועים</a></li>
+          <li><a href="#areas">אזורים</a></li>
+          <li><a href="#faq">שאלות</a></li>
+          <li><a href="#order">הזמנה</a></li>
         </ul>
       </nav>
+      <a class="btn btn-gold btn-sm nav-cta" href="tel:0527675138"><svg class="icon"><use href="#i-phone"/></svg><span class="ltr">052-7675138</span></a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="navLinks"><svg class="icon"><use href="#i-menu"/></svg></button>
     </div>
   </header>
 
-  <main id="main-content">
-    <section class="hero" id="home">
-      <div class="container">
+  <main id="main">
+    <section class="hero" id="top">
+      <svg class="hero-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="waveGrad" x1="0" x2="1"><stop offset="0" stop-color="#a8772a" stop-opacity="0"/><stop offset=".5" stop-color="#f1d48a"/><stop offset="1" stop-color="#a8772a" stop-opacity="0"/></linearGradient></defs><path d="M0 60 L120 60 L150 40 L180 85 L210 20 L240 100 L270 35 L300 75 L330 55 L360 60 L560 60 L590 30 L620 95 L650 10 L680 110 L710 25 L740 90 L770 45 L800 60 L1000 60 L1030 42 L1060 82 L1090 28 L1120 92 L1150 48 L1180 60 L1440 60"/></svg>
+      <div class="container hero-grid">
         <div class="hero-content">
-          <p class="hero-kicker">הפקה מדויקת. חוויה יוצאת דופן.</p>
-          <h1>חוויות <span class="gold">שלא נשכחות</span></h1>
-          <p class="hero-subtitle">הפקות אירועים פרמיום וניהול מושלם</p>
-          <div class="hero-actions">
-            <a href="#contact" class="btn btn-primary">תכנן את האירוע שלך <i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
-            <a href="#gallery" class="btn btn-outline">צפה בעבודות שלנו</a>
+          <div class="hero-kicker">
+            <span class="chip">הגברה</span><span class="chip">הקלטה</span><span class="chip">מקרן ותאורה</span>
           </div>
+          <h1>הגברה מקצועית<br><span class="gold">לשמחות ולאירועים</span></h1>
+          <p class="hero-lead">15 שנות ניסיון, ציוד מהמתקדמים בתחום ומחסן בלב בני ברק – דקות מאולמות השמחות. מגיעים מוכנים, מכוונים סאונד לפני האורחים, ונשארים זמינים עד הרגע האחרון.</p>
+          <div class="hero-actions">
+            <a class="btn btn-whatsapp" href="https://wa.me/972527675138?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%94%D7%A6%D7%A2%D7%94%20%D7%9C%D7%94%D7%92%D7%91%D7%A8%D7%94" target="_blank" rel="noopener"><svg class="icon"><use href="#i-chat"/></svg>הצעה מהירה בוואטסאפ</a>
+            <a class="btn btn-outline" href="tel:0527675138"><svg class="icon"><use href="#i-phone"/></svg>חייגו <span class="ltr">052-7675138</span></a>
+          </div>
+          <ul class="hero-trust">
+            <li><svg class="icon"><use href="#i-award"/></svg>15 שנות ניסיון</li>
+            <li><svg class="icon"><use href="#i-sliders"/></svg>RCF · Midas · Shure</li>
+            <li><svg class="icon"><use href="#i-bolt"/></svg>דקות מהאולמות</li>
+          </ul>
+        </div>
+        <div class="hero-visual">
+          <img src="assets/img/logo-hero.jpg" alt="הלוגו של קליין הפקות – מיקרופון זהוב והאותיות HK" width="880" height="815" fetchpriority="high">
         </div>
       </div>
-      <div class="hero-scroll" aria-hidden="true">גלו עוד</div>
+    </section>
+
+
+    <div class="stats-bar">
+      <div class="container">
+        <div class="stats-inner reveal">
+          <div class="stat-cell"><span class="num gold">15</span><span class="lbl">שנות ניסיון בהגברת אירועים</span></div>
+          <div class="stat-cell"><span class="num gold">עשרות</span><span class="lbl">מערכות הגברה ומיקסרים במלאי</span></div>
+          <div class="stat-cell"><span class="num gold">דקות</span><span class="lbl">מהמחסן לאולמות במרכז העיר</span></div>
+          <div class="stat-cell"><span class="num gold">2</span><span class="lbl">סניפים – בני ברק ובית שמש</span></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section" id="why">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">למה קליין</p>
+          <h2 class="section-title">שם טוב שנבנה <span class="gold">אירוע אחרי אירוע</span></h2>
+          <p class="section-copy">כל אחד יכול לקנות זוג רמקולים. ההבדל ביום השמחה הוא בניסיון, באיכות הציוד ובזמינות – בדיוק כשצריך.</p>
+        </div>
+        <div class="pillars">
+          <article class="pillar reveal"><div class="card-icon"><svg class="icon"><use href="#i-award"/></svg></div><h3>15 שנות ניסיון</h3><p>אירועים כמעט מדי יום – באולמות, בבתי מדרש, בבתים ובאירועי חוץ. יודעים מה כל אירוע צריך עוד לפני שמבקשים.</p></article>
+          <article class="pillar reveal"><div class="card-icon"><svg class="icon"><use href="#i-sliders"/></svg></div><h3>ציוד מהמתקדמים בתחום</h3><p>רמקולים אקטיביים של RCF, קונסולה דיגיטלית Midas ומיקרופוני Shure – הציוד שעובד על הבמות המקצועיות.</p></article>
+          <article class="pillar reveal"><div class="card-icon"><svg class="icon"><use href="#i-pin"/></svg></div><h3>בלב העיר, ליד האולמות</h3><p>המחסן במרכז בני ברק, דקות מאולמות השמחות. אם צריך – ציוד חלופי וטכנאי בדרך מיד.</p></article>
+          <article class="pillar reveal"><div class="card-icon"><svg class="icon"><use href="#i-shield"/></svg></div><h3>שירות מקצה לקצה</h3><p>תיאום מראש עם הנגן, בדיקת סאונד לפני האורחים, ציוד גיבוי בכל אירוע ופירוק מסודר בסיום.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="availability">
+      <div class="container avail-grid">
+        <div>
+          <div class="reveal">
+            <p class="eyebrow">זמינות מיידית</p>
+            <h2 class="section-title">קרובים לאולם. <span class="gold">קרובים אליכם.</span></h2>
+            <p class="section-copy">המחסן שלנו ממוקם במרכז בני ברק, במרחק דקות ספורות מאולמות השמחות ומבתי הכנסת המרכזיים בעיר. בשבילכם זה אומר דבר אחד: שקט נפשי ביום השמחה.</p>
+          </div>
+          <ul class="avail-points">
+            <li class="reveal"><span class="icon-wrap"><svg class="icon"><use href="#i-bolt"/></svg></span><div><strong>טיפול מיידי בתקלה</strong><span>רמקול, מיקרופון או כבל – מוחלפים תוך דקות, בלי לעצור את השמחה.</span></div></li>
+            <li class="reveal"><span class="icon-wrap"><svg class="icon"><use href="#i-box"/></svg></span><div><strong>מלאי רחב, קרוב אליכם</strong><span>צריך עוד רמקול פיזור או מיקרופון באמצע האירוע? מביאים מהמחסן.</span></div></li>
+            <li class="reveal"><span class="icon-wrap"><svg class="icon"><use href="#i-clock"/></svg></span><div><strong>גם הזמנות של הרגע האחרון</strong><span>אירוע שנסגר היום? בזכות הקרבה, ברוב המקרים מגיעים ומרכיבים בזמן.</span></div></li>
+            <li class="reveal"><span class="icon-wrap"><svg class="icon"><use href="#i-moon"/></svg></span><div><strong>פירוק מסודר בסיום</strong><span>גם כשהשמחה נגמרת מאוחר בלילה – מפרקים ומשאירים את המקום מסודר.</span></div></li>
+          </ul>
+        </div>
+        <figure class="radar reveal" aria-label="תרשים: המחסן במרכז העיר ואולמות השמחות סביבו">
+          <svg viewBox="0 0 400 400" role="img" aria-hidden="true">
+            <defs><linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6dc94"/><stop offset=".5" stop-color="#d4a64f"/><stop offset="1" stop-color="#a8772a"/></linearGradient></defs>
+            <circle class="ring dash" cx="200" cy="200" r="190"/>
+            <circle class="ring" cx="200" cy="200" r="130"/>
+            <circle class="ring" cx="200" cy="200" r="70"/>
+            <circle class="pulse" cx="200" cy="200" r="190"/>
+            <circle class="pulse p2" cx="200" cy="200" r="190"/>
+            <g class="routes">
+              <line class="route" x1="200" y1="200" x2="120" y2="140"/><line class="route" x1="200" y1="200" x2="290" y2="130"/>
+              <line class="route" x1="200" y1="200" x2="300" y2="250"/><line class="route" x1="200" y1="200" x2="150" y2="290"/>
+              <line class="route" x1="200" y1="200" x2="240" y2="315"/><line class="route" x1="200" y1="200" x2="95" y2="225"/>
+              <line class="route" x1="200" y1="200" x2="225" y2="95"/>
+            </g>
+            <g>
+              <circle class="hall-halo" cx="120" cy="140" r="11"/><circle class="hall" cx="120" cy="140" r="5"/>
+              <circle class="hall-halo" cx="290" cy="130" r="11"/><circle class="hall" cx="290" cy="130" r="5"/>
+              <circle class="hall-halo" cx="300" cy="250" r="11"/><circle class="hall" cx="300" cy="250" r="5"/>
+              <circle class="hall-halo" cx="150" cy="290" r="11"/><circle class="hall" cx="150" cy="290" r="5"/>
+              <circle class="hall-halo" cx="240" cy="315" r="11"/><circle class="hall" cx="240" cy="315" r="5"/>
+              <circle class="hall-halo" cx="95" cy="225" r="11"/><circle class="hall" cx="95" cy="225" r="5"/>
+              <circle class="hall-halo" cx="225" cy="95" r="11"/><circle class="hall" cx="225" cy="95" r="5"/>
+            </g>
+            <circle cx="200" cy="200" r="40" fill="url(#gGold)"/>
+            <text class="center-label" x="200" y="196" text-anchor="middle">מחסן</text>
+            <text class="center-label" x="200" y="213" text-anchor="middle">קליין</text>
+            <text x="200" y="58" text-anchor="middle">דקות ספורות</text>
+            <text x="200" y="385" text-anchor="middle" opacity=".7">מרכז בני ברק</text>
+          </svg>
+          <figcaption class="radar-legend"><span><i class="wh"></i>המחסן שלנו</span><span><i></i>אולמות שמחות ובתי כנסת</span></figcaption>
+        </figure>
+      </div>
     </section>
 
     <section class="section" id="services">
       <div class="container">
         <div class="section-heading reveal">
-          <span class="eyebrow">מה אנחנו עושים</span>
-          <h2 class="section-title">הפקה מלאה לכל <span class="gold">רגע משמעותי.</span></h2>
-          <p class="section-copy">מהרעיון הראשון ועד האור האחרון, הצוות שלנו משלב אסטרטגיה, עיצוב, דיוק טכני וביצוע מושלם בשטח.</p>
+          <p class="eyebrow">מה אנחנו עושים</p>
+          <h2 class="section-title">כל מה שצריך כדי <span class="gold">שישמעו טוב</span></h2>
+          <p class="section-copy">מאירוע קטן בבית הכנסת ועד אולם מלא – מתאימים את הציוד לאולם, לקהל ולנגנים.</p>
         </div>
-        <div class="services-grid">
-          <article class="service-card reveal">
-            <span class="service-number">01</span>
-            <div class="service-icon"><i class="fa-solid fa-building" aria-hidden="true"></i></div>
-            <h3>אירועים תאגידיים</h3>
-            <p>כנסים, מפגשי הנהלה, השקות מוצר ואירועי חברה שנבנים סביב היעדים העסקיים שלכם.</p>
-          </article>
-          <article class="service-card reveal reveal-delay-1">
-            <span class="service-number">02</span>
-            <div class="service-icon"><i class="fa-solid fa-gem" aria-hidden="true"></i></div>
-            <h3>חתונות וגאלות</h3>
-            <p>אירועים אלגנטיים ואישיים, עם עיצוב מוקפד, אירוח מצוין ותיאום מדויק של כל פרט.</p>
-          </article>
-          <article class="service-card reveal reveal-delay-2">
-            <span class="service-number">03</span>
-            <div class="service-icon"><i class="fa-solid fa-music" aria-hidden="true"></i></div>
-            <h3>קונצרטים ומופעים</h3>
-            <p>הפקות חיות בעוצמה גבוהה עם במה, הגברה, תאורה, וידאו וניהול מופע מקצועי.</p>
-          </article>
-          <article class="service-card reveal reveal-delay-3">
-            <span class="service-number">04</span>
-            <div class="service-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></div>
-            <h3>אקטיבציות מותג</h3>
-            <p>חוויות סוחפות שהופכות את סיפור המותג לרגעים זכירים, משתפים ומחוברים לקהל.</p>
-          </article>
+        <div class="cards">
+          <article class="card reveal"><div class="card-icon"><svg class="icon"><use href="#i-speaker"/></svg></div><h3>הגברה לשמחות</h3><p>רמקולים, מיקסר ומיקרופונים לחתונות, בר מצוות, בריתות ושבע ברכות – כולל הרכבה ופירוק.</p></article>
+          <article class="card reveal"><div class="card-icon"><svg class="icon"><use href="#i-users"/></svg></div><h3>פיזור לעזרת נשים</h3><p>רמקולי פיזור לצד הנשים ולחופה, כך שכל הקהל שומע ברור – גם מאחורי המחיצה.</p></article>
+          <article class="card reveal"><div class="card-icon"><svg class="icon"><use href="#i-music"/></svg></div><h3>ליווי נגנים וזמרים</h3><p>מוניטורים לקלידן ולזמר, מיקרופונים למקהלה, חיבורים לאורגן ולגיטרה, והשכרת אורגנים.</p></article>
+          <article class="card reveal"><div class="card-icon"><svg class="icon"><use href="#i-mic"/></svg></div><h3>טישים ודרשות</h3><p>מיקרופון שולחני לאדמו״ר ולנואם, הגברה לשירה ולדרשה – בבית המדרש, בבית או באולם.</p></article>
+          <article class="card reveal"><div class="card-icon"><svg class="icon"><use href="#i-rec"/></svg></div><h3>הקלטת אירועים</h3><p>הקלטה ישירה מהמיקסר של השירה, הנגינה והדרשות – באיכות מלאה, מוכנה לעריכה ולשמירה.</p></article>
+          <article class="card reveal"><div class="card-icon"><svg class="icon"><use href="#i-screen"/></svg></div><h3>מקרן ומסכים</h3><p>מקרן, מסך ומעגל סגור לכנסים, אירועי מוסדות והצגות.</p></article>
+          <article class="card reveal"><div class="card-icon"><svg class="icon"><use href="#i-light"/></svg></div><h3>תאורה וגב במה</h3><p>פנסי לד, תאורת שטיפה לבמה ובד גב במה – לאירוע שנראה מסודר ומכובד.</p></article>
+          <article class="card reveal"><div class="card-icon"><svg class="icon"><use href="#i-box"/></svg></div><h3>השכרת ציוד</h3><p>מעדיפים להרכיב לבד? ניתן לקבל ציוד מוכן לאירוע, עם הסבר קצר ובדיקה לפני היציאה.</p></article>
         </div>
       </div>
     </section>
 
-    <section class="section about" id="about">
-      <div class="container about-grid">
-        <div class="about-visual reveal">
-          <img src="https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=1200&q=85" alt="אולם אירועים אלגנטי המוכן לערב פרמיום" loading="lazy" decoding="async">
-          <div class="about-badge" aria-label="15 שנות מצוינות בהפקת אירועים">
-            <strong>15+</strong>
-            <span>שנות<br>מצוינות</span>
-          </div>
-        </div>
-        <div class="about-content reveal reveal-delay-1">
-          <span class="eyebrow">אודות קליין</span>
-          <h2 class="section-title">דיוק מאחורי הקלעים. <span class="gold">קסם ברגע האמת.</span></h2>
-          <p>אנחנו מאמינים שהאירועים הטובים ביותר מרגישים טבעיים וללא מאמץ. מאחורי התחושה הזו עומד צוות מנוסה שמחבר בקפידה כל פרט יצירתי, טכני ולוגיסטי.</p>
-          <p>קליין הפקות מלווה את לקוחותיה משלב האסטרטגיה ועד העלייה לבמה, מפשטת פרויקטים מורכבים ויוצרת חוויות שמחברות בין אנשים, מותגים ורעיונות.</p>
-          <div class="stats-grid">
-            <div class="stat"><strong data-count="500" data-suffix="+">0</strong><span>אירועים שהופקו</span></div>
-            <div class="stat"><strong data-count="15" data-suffix="+">0</strong><span>שנות ניסיון</span></div>
-            <div class="stat"><strong data-count="50" data-suffix="+">0</strong><span>חברי צוות</span></div>
-            <div class="stat"><strong data-count="98" data-suffix="%">0</strong><span>שביעות רצון לקוחות</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="gallery">
+    <section class="section section-alt" id="equipment">
       <div class="container">
         <div class="section-heading reveal">
-          <span class="eyebrow">עבודות נבחרות</span>
-          <h2 class="section-title">חוויות שנועדו <span class="gold">להישאר בזיכרון.</span></h2>
+          <p class="eyebrow">הציוד שלנו</p>
+          <h2 class="section-title">ציוד ברמה של <span class="gold">במות מקצועיות</span></h2>
+          <p class="section-copy">מערכות שנבחרו לאורך שנים בזכות האמינות ואיכות הסאונד, ומתוחזקות באופן שוטף – כדי שבאירוע שלכם הכול פשוט יעבוד.</p>
         </div>
-        <div class="gallery-grid">
-          <figure class="gallery-item reveal">
-            <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1400&q=85" alt="קהל גדול בהופעה תחת תאורת במה דרמטית" loading="lazy" decoding="async">
-            <figcaption class="gallery-caption"><span>הפקה חיה</span><strong>לילות חשמליים</strong></figcaption>
-          </figure>
-          <figure class="gallery-item reveal reveal-delay-1">
-            <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1200&q=85" alt="אולם גאלה יוקרתי עם שולחנות אלגנטיים ותאורה חמה" loading="lazy" decoding="async">
-            <figcaption class="gallery-caption"><span>גאלה</span><strong>ערב של מצוינות</strong></figcaption>
-          </figure>
-          <figure class="gallery-item reveal">
-            <img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=85" alt="במת הופעה עם תאורה צבעונית וקהל נלהב" loading="lazy" decoding="async">
-            <figcaption class="gallery-caption"><span>קונצרט</span><strong>צליל בתנועה</strong></figcaption>
-          </figure>
-          <figure class="gallery-item reveal reveal-delay-1">
-            <img src="https://images.unsplash.com/photo-1496024840928-4c417adf211d?auto=format&fit=crop&w=1200&q=85" alt="במת פסטיבל פתוחה המוקפת בקהל גדול" loading="lazy" decoding="async">
-            <figcaption class="gallery-caption"><span>פסטיבל</span><strong>אנרגיה באוויר הפתוח</strong></figcaption>
-          </figure>
-          <figure class="gallery-item reveal">
-            <img src="https://images.unsplash.com/photo-1496337589254-7e19d01cec44?auto=format&fit=crop&w=1200&q=85" alt="קהל צופה במופע חי וססגוני" loading="lazy" decoding="async">
-            <figcaption class="gallery-caption"><span>חוויית מותג</span><strong>נוצר כדי לחבר</strong></figcaption>
-          </figure>
-          <figure class="gallery-item reveal reveal-delay-1">
-            <img src="https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=1400&q=85" alt="קהל נהנה מאירוע מוזיקלי בשעות הלילה" loading="lazy" decoding="async">
-            <figcaption class="gallery-caption"><span>הפקת מופע</span><strong>מעבר לבמה</strong></figcaption>
-          </figure>
+        <div class="rig">
+          <article class="rig-item reveal"><header><h3>רמקולים ומערכות</h3><span class="brand-tag">RCF · QSC</span></header><ul><li><svg class="icon"><use href="#i-check"/></svg>רמקולים אקטיביים מסדרת RCF ART</li><li><svg class="icon"><use href="#i-check"/></svg>סאבים לחתונות ולאולמות גדולים</li><li><svg class="icon"><use href="#i-check"/></svg>מערך לינארי לאולמות ולאירועי חוץ</li></ul></article>
+          <article class="rig-item reveal"><header><h3>קונסולות ומיקסרים</h3><span class="brand-tag">MIDAS · YAMAHA</span></header><ul><li><svg class="icon"><use href="#i-check"/></svg>קונסולה דיגיטלית Midas M32</li><li><svg class="icon"><use href="#i-check"/></svg>מיקסרים Mackie, Yamaha ו-Behringer</li><li><svg class="icon"><use href="#i-check"/></svg>שליטה נפרדת לכל מוניטור ולהקלטה</li></ul></article>
+          <article class="rig-item reveal"><header><h3>מיקרופונים</h3><span class="brand-tag">SHURE</span></header><ul><li><svg class="icon"><use href="#i-check"/></svg>Shure SM58 לשירה ולמקהלה</li><li><svg class="icon"><use href="#i-check"/></svg>מיקרופונים אלחוטיים ומדונה</li><li><svg class="icon"><use href="#i-check"/></svg>סטנדים שולחניים לאדמו״ר ולנואם</li></ul></article>
+          <article class="rig-item reveal"><header><h3>מוניטורים ונגנים</h3><span class="brand-tag">IN-EAR</span></header><ul><li><svg class="icon"><use href="#i-check"/></svg>מוניטורים לקלידן, לזמר ולמקהלה</li><li><svg class="icon"><use href="#i-check"/></svg>אוזניות In-Ear וטוקבק למנצח</li><li><svg class="icon"><use href="#i-check"/></svg>חיבורי DI, ‏PL ו-XLR לכל כלי</li></ul></article>
+          <article class="rig-item reveal"><header><h3>הקלטה ומולטימדיה</h3><span class="brand-tag">REC · HD</span></header><ul><li><svg class="icon"><use href="#i-check"/></svg>הקלטה ישירה מהקונסולה</li><li><svg class="icon"><use href="#i-check"/></svg>מקרנים, מסכים ומעגל סגור</li><li><svg class="icon"><use href="#i-check"/></svg>חיבור למחשב, לטאבלט ולנגן מוזיקה</li></ul></article>
+          <article class="rig-item reveal"><header><h3>תאורה ובמה</h3><span class="brand-tag">LED · RGBW</span></header><ul><li><svg class="icon"><use href="#i-check"/></svg>פנסי LED ותאורת שטיפה לבמה</li><li><svg class="icon"><use href="#i-check"/></svg>גב במה ובד שחור</li><li><svg class="icon"><use href="#i-check"/></svg>גלגלות חשמל ו-XLR לכל מרחק</li></ul></article>
+        </div>
+        <p class="rig-note reveal">מתאימים את המערכת לגודל האולם, למספר המשתתפים ולהרכב הנגנים.</p>
+      </div>
+    </section>
+
+    <section class="section" id="events">
+      <div class="container">
+        <div class="section-heading center reveal">
+          <p class="eyebrow">לאילו אירועים</p>
+          <h2 class="section-title">בכל שמחה, <span class="gold">בכל קהילה</span></h2>
+          <p class="section-copy">עובדים עם חצרות, ישיבות, מוסדות ומשפחות – ומכירים את האולמות ואת בתי הכנסת בעיר.</p>
+        </div>
+        <div class="events-grid">
+          <div class="event-group reveal"><h3><svg class="icon"><use href="#i-star"/></svg>שמחות</h3><ul class="tag-list"><li>חתונה וחופה</li><li>שבע ברכות</li><li>בר מצווה</li><li>ברית</li><li>אירוסין ותנאים</li><li>קידוש</li></ul></div>
+          <div class="event-group reveal"><h3><svg class="icon"><use href="#i-music"/></svg>חסידות ותורה</h3><ul class="tag-list"><li>טיש</li><li>יארצייט</li><li>הכנסת ספר תורה</li><li>סיום מסכת</li><li>שיעור ודרשה</li><li>מסיבת חומש</li></ul></div>
+          <div class="event-group reveal"><h3><svg class="icon"><use href="#i-calendar"/></svg>מועדים</h3><ul class="tag-list"><li>פורים</li><li>ל״ג בעומר</li><li>שמחת בית השואבה</li><li>הקפות שניות</li><li>חנוכה</li><li>מוצאי שבת</li></ul></div>
+          <div class="event-group reveal"><h3><svg class="icon"><use href="#i-building"/></svg>מוסדות וציבור</h3><ul class="tag-list"><li>כנסים</li><li>אירועי נשים</li><li>ישיבות וסמינרים</li><li>חיידרים</li><li>בתי אבות</li><li>אירועי עירייה</li></ul></div>
         </div>
       </div>
     </section>
 
-    <section class="section testimonials" aria-labelledby="testimonials-title">
+
+
+    <section class="section" id="institutions" style="padding-top:0">
+      <div class="container">
+        <div class="band reveal">
+          <div>
+            <h2>למוסדות, עיריות וארגונים</h2>
+            <p>כנס, אירוע הוקרה, מסיבת סיום או מופע – מקבלים הצעה מסודרת ושירות מלא מקצה לקצה.</p>
+            <ul>
+              <li><svg class="icon"><use href="#i-file"/></svg>הצעת מחיר כתובה</li>
+              <li><svg class="icon"><use href="#i-check"/></svg>חשבונית מס</li>
+              <li><svg class="icon"><use href="#i-speaker"/></svg>מפרט טכני מותאם</li>
+              <li><svg class="icon"><use href="#i-headphones"/></svg>איש סאונד צמוד</li>
+            </ul>
+          </div>
+          <a class="btn btn-gold" href="#order"><svg class="icon"><use href="#i-file"/></svg>בקשת הצעת מחיר</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="areas">
       <div class="container">
         <div class="section-heading reveal">
-          <span class="eyebrow">מה הלקוחות מספרים</span>
-          <h2 class="section-title" id="testimonials-title">האמון שלכם ברגעים <span class="gold">החשובים ביותר.</span></h2>
+          <p class="eyebrow">אזורי שירות</p>
+          <h2 class="section-title">בני ברק, בית שמש <span class="gold">והסביבה</span></h2>
         </div>
-        <div class="testimonial-grid">
-          <article class="quote-card reveal">
-            <i class="fa-solid fa-quote-left quote-icon" aria-hidden="true"></i>
-            <blockquote>״קליין הפקות הפכה כנס חברה מורכב לחוויה זורמת, בטוחה ומדויקת לחלוטין למותג שלנו.״</blockquote>
-            <div class="client"><div class="client-avatar" aria-hidden="true">נכ</div><div><strong>נועה כהן</strong><span>סמנכ״לית שיווק, נורת׳סטאר לאבס</span></div></div>
+        <div class="branches">
+          <article class="branch reveal">
+            <span class="badge">סניף ראשי</span>
+            <h3>בני ברק</h3>
+            <p>המחסן בלב בני ברק, דקות מאולמות השמחות – זמינות מיידית לאולמות, לבתי הכנסת ולבתים בעיר ובערי הגוש.</p>
+            <div class="branch-actions">
+              <a class="btn btn-gold btn-sm" href="#order">הזמנה לבני ברק</a>
+              <a class="btn btn-outline btn-sm" href="tel:0527675138"><svg class="icon"><use href="#i-phone"/></svg><span class="ltr">052-7675138</span></a>
+            </div>
           </article>
-          <article class="quote-card reveal reveal-delay-1">
-            <i class="fa-solid fa-quote-left quote-icon" aria-hidden="true"></i>
-            <blockquote>״כל פרט טופל בדיוק מרשים. יכולנו להיות נוכחים באמת, כי הצוות שלהם שלט בכל מרכיבי ההפקה.״</blockquote>
-            <div class="client"><div class="client-avatar" aria-hidden="true">דל</div><div><strong>דניאל לוי</strong><span>לקוח אירוע גאלה פרטי</span></div></div>
+          <article class="branch reveal">
+            <span class="badge">סניף</span>
+            <h3>בית שמש</h3>
+            <p>שירות מקומי לבית שמש, לרמת בית שמש ולסביבה – אותו ציוד, אותה הקפדה.</p>
+            <div class="branch-actions">
+              <a class="btn btn-gold btn-sm" href="beit-shemesh/">לעמוד בית שמש</a>
+              <a class="btn btn-outline btn-sm" href="tel:0527675138"><svg class="icon"><use href="#i-phone"/></svg><span class="ltr">052-7675138</span></a>
+            </div>
           </article>
-          <article class="quote-card reveal reveal-delay-2">
-            <i class="fa-solid fa-quote-left quote-icon" aria-hidden="true"></i>
-            <blockquote>״מהבמה והסאונד ועד תנועת האורחים, הביצוע היה יוצא דופן. החוויה הסופית עלתה על יעדי ההשקה שלנו.״</blockquote>
-            <div class="client"><div class="client-avatar" aria-hidden="true">ימ</div><div><strong>יעל מזרחי</strong><span>מנהלת מותג, קבוצת אורליה</span></div></div>
-          </article>
+        </div>
+        <div class="cities reveal">
+          <strong>מגיעים גם ל:</strong>
+          <ul class="tag-list"><li>ירושלים</li><li>אלעד</li><li>מודיעין עילית</li><li>ביתר עילית</li><li>פתח תקווה</li><li>רמת גן וגבעת שמואל</li><li>תל אביב</li><li>אשדוד</li><li>נתניה</li><li>ועוד – שאלו אותנו</li></ul>
         </div>
       </div>
     </section>
 
-    <section class="section" id="contact">
-      <div class="container contact-grid">
+    <section class="section" id="how">
+      <div class="container">
+        <div class="section-heading center reveal">
+          <p class="eyebrow">איך זה עובד</p>
+          <h2 class="section-title">שלושה צעדים <span class="gold">ואתם מסודרים</span></h2>
+        </div>
+        <div class="steps">
+          <div class="step reveal"><h3>שולחים פרטים</h3><p>תאריך, שעה, אולם וסוג האירוע – בטופס למטה, בוואטסאפ או בטלפון.</p></div>
+          <div class="step reveal"><h3>מקבלים הצעה</h3><p>מתאימים לכם את הציוד הנכון ושולחים הצעה ברורה, בלי הפתעות.</p></div>
+          <div class="step reveal"><h3>שמחים בשקט</h3><p>מגיעים, מרכיבים, מכוונים סאונד – ומפרקים בסיום.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="order">
+      <div class="container order-grid">
         <div class="reveal">
-          <span class="eyebrow">מתחילים בשיחה</span>
-          <h2 class="section-title">בואו ניצור משהו <span class="gold">יוצא דופן.</span></h2>
-          <p class="section-copy">ספרו לנו מה אתם מתכננים. צוות ההפקה שלנו יעבור על הפרטים ויגבש את הדרך המדויקת לאירוע שלכם.</p>
-          <div class="contact-info">
-            <div class="contact-line"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><div><strong>סטודיו</strong><span>תל אביב, ישראל</span></div></div>
-            <div class="contact-line"><i class="fa-solid fa-phone" aria-hidden="true"></i><div><strong>טלפון</strong><a href="tel:+97235550188" dir="ltr">+972 3 555 0188</a></div></div>
-            <div class="contact-line"><i class="fa-solid fa-envelope" aria-hidden="true"></i><div><strong>דוא״ל</strong><a href="mailto:hello@kleinproductions.com" dir="ltr">hello@kleinproductions.com</a></div></div>
-          </div>
+          <p class="eyebrow">הזמנה</p>
+          <h2 class="section-title">ספרו לנו <span class="gold">על השמחה</span></h2>
+          <p class="section-copy">ממלאים את הפרטים, והטופס פותח הודעת וואטסאפ מוכנה – רק ללחוץ ״שלח״.</p>
+          <ul class="contact-list">
+            <li><a href="tel:0527675138"><svg class="icon"><use href="#i-phone"/></svg><div><strong class="ltr">052-7675138</strong><span>חיוג ישיר – גם מטלפון כשר</span></div></a></li>
+            <li><a href="https://wa.me/972527675138" target="_blank" rel="noopener"><svg class="icon"><use href="#i-chat"/></svg><div><strong>וואטסאפ</strong><span>מענה מהיר להצעת מחיר</span></div></a></li>
+            <li><div><svg class="icon"><use href="#i-pin"/></svg><div><strong>בני ברק · בית שמש</strong><span>והסביבה</span></div></div></li>
+          </ul>
         </div>
-        <form class="contact-form reveal reveal-delay-1" id="contactForm" novalidate>
+
+        <form class="order-form reveal" id="orderForm" novalidate>
           <div class="form-grid">
-            <div class="field"><label for="name">שם מלא</label><input id="name" name="name" type="text" autocomplete="name" minlength="2" required aria-describedby="nameError"><small class="field-error" id="nameError"></small></div>
-            <div class="field"><label for="email">דוא״ל</label><input id="email" name="email" type="email" autocomplete="email" required aria-describedby="emailError"><small class="field-error" id="emailError"></small></div>
-            <div class="field"><label for="phone">טלפון</label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" pattern="[0-9+() -]{7,20}" required aria-describedby="phoneError"><small class="field-error" id="phoneError"></small></div>
+            <div class="field"><label for="name">שם <span class="req">*</span></label><input id="name" name="name" type="text" autocomplete="name" required aria-describedby="nameError"><small class="field-error" id="nameError"></small></div>
+            <div class="field"><label for="phone">טלפון <span class="req">*</span></label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="phoneError"><small class="field-error" id="phoneError"></small></div>
             <div class="field">
-              <label for="eventType">סוג האירוע</label>
+              <label for="eventType">סוג האירוע <span class="req">*</span></label>
               <select id="eventType" name="eventType" required aria-describedby="eventTypeError">
-                <option value="" selected disabled>בחרו סוג אירוע</option>
-                <option>אירוע תאגידי</option><option>חתונה או גאלה</option><option>קונצרט או מופע</option><option>אקטיבציית מותג</option><option>אחר</option>
+                <option value="" selected disabled>בחרו…</option>
+                <option>חתונה / חופה</option><option>שבע ברכות</option><option>בר מצווה</option><option>ברית</option><option>אירוסין / תנאים</option><option>טיש / יארצייט</option><option>הכנסת ספר תורה</option><option>סיום / שיעור / דרשה</option><option>פורים / ל״ג בעומר / חג</option><option>כנס / אירוע מוסד</option><option>אחר</option>
               </select>
               <small class="field-error" id="eventTypeError"></small>
             </div>
-            <div class="field full"><label for="message">ספרו לנו על האירוע</label><textarea id="message" name="message" placeholder="תאריך, מיקום, מספר אורחים והחזון שלכם..." minlength="10" required aria-describedby="messageError"></textarea><small class="field-error" id="messageError"></small></div>
+            <div class="field">
+              <label for="city">עיר</label>
+              <select id="city" name="city">
+                <option selected>בני ברק</option><option>בית שמש</option><option>ירושלים</option><option>אלעד</option><option>מודיעין עילית</option><option>ביתר עילית</option><option>פתח תקווה</option><option>רמת גן / גבעת שמואל</option><option>אחר</option>
+              </select>
+            </div>
+            <div class="field"><label for="date">תאריך <span class="req">*</span></label><input id="date" name="date" type="date" required aria-describedby="dateError"><small class="field-error" id="dateError"></small></div>
+            <div class="field"><label for="time">שעת התחלה</label><input id="time" name="time" type="time"></div>
+            <div class="field"><label for="venue">אולם / כתובת</label><input id="venue" name="venue" type="text" placeholder="לדוגמה: אולמי… / רחוב…"></div>
+            <div class="field">
+              <label for="access">גישה למקום</label>
+              <select id="access" name="access"><option value="">לא ידוע</option><option>קומת קרקע</option><option>יש מעלית</option><option>מדרגות, בלי מעלית</option></select>
+            </div>
+            <fieldset class="field full">
+              <legend>מה צריך? (אפשר לסמן כמה)</legend>
+              <div class="checks">
+                <label class="check"><input type="checkbox" name="needs" value="פיזור לעזרת נשים"><span>פיזור לעזרת נשים</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="רמקול לחופה"><span>רמקול לחופה</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="חיבור לנגן / קלידן"><span>נגן / קלידן</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="מוניטור לזמר"><span>מוניטור לזמר</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="מיקרופון אלחוטי"><span>מיקרופון אלחוטי</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="מיקרופון לדרשה"><span>מיקרופון לדרשה</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="הקלטה"><span>הקלטה</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="מקרן ומסך"><span>מקרן ומסך</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="תאורה"><span>תאורה</span></label>
+                <label class="check"><input type="checkbox" name="needs" value="השכרה בלבד (בלי הרכבה)"><span>השכרה בלבד</span></label>
+              </div>
+            </fieldset>
+            <div class="field full"><label for="notes">הערות</label><textarea id="notes" name="notes" placeholder="מספר משתתפים, שם הנגן, שעת סיום משוערת…"></textarea></div>
           </div>
-          <button class="btn btn-primary form-submit" type="submit">שליחת פרטי האירוע <i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          <button class="btn btn-whatsapp form-submit" type="submit"><svg class="icon"><use href="#i-chat"/></svg>שליחה בוואטסאפ</button>
+          <p class="form-note" id="formStatus" role="status" aria-live="polite">הפרטים נשלחים רק אלינו, דרך הוואטסאפ שלכם.</p>
         </form>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-heading center reveal">
+          <p class="eyebrow">שאלות נפוצות</p>
+          <h2 class="section-title">לפני <span class="gold">שמזמינים</span></h2>
+        </div>
+        <div class="faq reveal">
+          <details><summary>מה קורה אם יש תקלה באמצע האירוע?</summary><p>בכל אירוע יש ציוד גיבוי, והמחסן נמצא דקות מהאולמות המרכזיים בבני ברק. אם משהו לא עובד – מגיעים מיד ומחליפים, בלי לעצור את השמחה.</p></details>
+          <details><summary>איזה ציוד אתם מביאים?</summary><p>רמקולים אקטיביים של RCF, מיקסרים וקונסולות של Midas, Mackie ו-Yamaha, ומיקרופוני Shure. את המערכת המדויקת מתאימים לגודל האולם, לקהל ולנגנים.</p></details>
+          <details><summary>אתם מרכיבים ומפרקים?</summary><p>כן. מגיעים לפני האירוע, מרכיבים, בודקים סאונד ומפרקים בסיום. אפשר גם להשאיר את הציוד מוכן ולאסוף אחרי האירוע.</p></details>
+          <details><summary>אפשר רק לשכור ציוד בלי הרכבה?</summary><p>כן, לאירועים קטנים אפשר לקבל ציוד מוכן לשימוש. נסביר בדיוק איך לחבר.</p></details>
+          <details><summary>מה עם עזרת נשים?</summary><p>מוסיפים רמקול פיזור לצד הנשים ולחופה, כך שכולם שומעים ברור את השירה והדרשות.</p></details>
+          <details><summary>יש לי נגן או קלידן – מה צריך לתאם?</summary><p>רק לתת לנו את שמו ומספר הטלפון. נתאם איתו מראש מוניטורים, חיבורים ומיקרופונים לזמר ולמקהלה.</p></details>
+          <details><summary>אפשר להקליט את האירוע?</summary><p>כן, מקליטים ישירות מהמיקסר. ציינו זאת בהזמנה.</p></details>
+          <details><summary>מגיעים גם מחוץ לבני ברק?</summary><p>בהחלט – יש לנו סניף בבית שמש, ומגיעים גם לירושלים, אלעד, מודיעין עילית, ביתר ועוד.</p></details>
+          <details><summary>כמה זה עולה?</summary><p>המחיר תלוי בסוג האירוע, בציוד, בשעה ובגישה למקום. שלחו פרטים בוואטסאפ ותקבלו הצעה מהירה וברורה.</p></details>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      <div class="footer-main">
+      <div class="footer-grid">
         <div>
-          <a class="logo" href="#home" aria-label="קליין הפקות, עמוד הבית"><span class="logo-mark" aria-hidden="true"><span>קה</span></span><span>קליין <span class="gold">הפקות</span></span></a>
-          <p class="footer-copy">הפקת אירועי פרמיום, ניהול טכני ועיצוב חוויות לרגעים החשובים באמת.</p>
+          <a class="brand" href="#top"><img src="assets/img/logo-mark.jpg" alt="" width="50" height="46" loading="lazy"><span class="brand-name">קליין הפקות<small>הגברה לשמחות ולאירועים</small></span></a>
+          <p>הגברה, הקלטה, מקרן ותאורה לשמחות, טישים, כנסים ומוסדות.</p>
         </div>
-        <div class="socials" aria-label="קישורים לרשתות חברתיות">
-          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="עמוד האינסטגרם של קליין הפקות"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-          <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="עמוד הפייסבוק של קליין הפקות"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
-          <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="עמוד הלינקדאין של קליין הפקות"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
-          <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="ערוץ היוטיוב של קליין הפקות"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+        <div>
+          <h4>יצירת קשר</h4>
+          <ul>
+            <li><a href="tel:0527675138" class="ltr">052-7675138</a></li>
+            <li><a href="https://wa.me/972527675138" target="_blank" rel="noopener">וואטסאפ</a></li>
+            <li><a href="#order">טופס הזמנה</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>אזורי שירות</h4>
+          <ul>
+            <li><a href="#areas">בני ברק</a></li>
+            <li><a href="beit-shemesh/">בית שמש</a></li>
+            <li>ירושלים, אלעד, מודיעין עילית והסביבה</li>
+          </ul>
         </div>
       </div>
-      <div class="footer-bottom"><span>&copy; <span id="year"></span> קליין הפקות. כל הזכויות שמורות.</span><span>עוצב עבור חוויות שלא נשכחות.</span></div>
+      <div class="footer-bottom">© <span data-year></span> קליין הפקות. כל הזכויות שמורות.</div>
     </div>
   </footer>
 
-  <script>
-    const navbar = document.getElementById('navbar');
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-    const navAnchors = [...document.querySelectorAll('.nav-links a')];
-    const sections = [...document.querySelectorAll('main section[id]')];
+  <div class="float-bar">
+    <a class="float-btn wa" href="https://wa.me/972527675138" target="_blank" rel="noopener" aria-label="שליחת הודעה בוואטסאפ"><svg class="icon"><use href="#i-chat"/></svg><span class="float-label">וואטסאפ</span></a>
+    <a class="float-btn call" href="tel:0527675138" aria-label="חיוג 052-7675138"><svg class="icon"><use href="#i-phone"/></svg><span class="float-label">חיוג</span></a>
+  </div>
 
-    const closeMenu = () => {
-      navLinks.classList.remove('open');
-      document.body.classList.remove('menu-open');
-      menuToggle.setAttribute('aria-expanded', 'false');
-      menuToggle.setAttribute('aria-label', 'פתיחת תפריט הניווט');
-      menuToggle.innerHTML = '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
-    };
-
-    menuToggle.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('open');
-      document.body.classList.toggle('menu-open', isOpen);
-      menuToggle.setAttribute('aria-expanded', String(isOpen));
-      menuToggle.setAttribute('aria-label', isOpen ? 'סגירת תפריט הניווט' : 'פתיחת תפריט הניווט');
-      menuToggle.innerHTML = `<i class="fa-solid ${isOpen ? 'fa-xmark' : 'fa-bars'}" aria-hidden="true"></i>`;
-    });
-
-    navAnchors.forEach(link => link.addEventListener('click', closeMenu));
-
-    const updateNavigation = () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 30);
-      const position = window.scrollY + 150;
-      let current = 'home';
-      sections.forEach(section => { if (position >= section.offsetTop) current = section.id; });
-      navAnchors.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${current}`));
-    };
-
-    window.addEventListener('scroll', updateNavigation, { passive: true });
-    updateNavigation();
-
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.14 });
-    document.querySelectorAll('.reveal').forEach(element => revealObserver.observe(element));
-
-    const countUp = element => {
-      const target = Number(element.dataset.count);
-      const suffix = element.dataset.suffix || '';
-      const duration = 1300;
-      const start = performance.now();
-      const tick = now => {
-        const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        element.textContent = `${Math.floor(target * eased)}${suffix}`;
-        if (progress < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    };
-
-    const statsObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.querySelectorAll('[data-count]').forEach(countUp);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.4 });
-    const statsGrid = document.querySelector('.stats-grid');
-    if (statsGrid) statsObserver.observe(statsGrid);
-
-    const contactForm = document.getElementById('contactForm');
-    const formStatus = document.getElementById('formStatus');
-    const validationMessages = {
-      name: 'יש להזין שם מלא בן שני תווים לפחות.',
-      email: 'יש להזין כתובת דוא״ל תקינה.',
-      phone: 'יש להזין מספר טלפון תקין.',
-      eventType: 'יש לבחור סוג אירוע.',
-      message: 'יש להזין לפחות 10 תווים על האירוע.'
-    };
-    const validateField = field => {
-      const error = document.getElementById(`${field.id}Error`);
-      const valid = field.checkValidity();
-      field.setAttribute('aria-invalid', String(!valid));
-      if (error) error.textContent = valid ? '' : validationMessages[field.id];
-      return valid;
-    };
-    [...contactForm.elements].filter(field => field.id).forEach(field => {
-      field.addEventListener('blur', () => validateField(field));
-      field.addEventListener('input', () => { if (field.getAttribute('aria-invalid') === 'true') validateField(field); });
-      field.addEventListener('change', () => validateField(field));
-    });
-    contactForm.addEventListener('submit', event => {
-      event.preventDefault();
-      const fields = [...contactForm.elements].filter(field => field.id);
-      const valid = fields.map(validateField).every(Boolean);
-      if (!valid) {
-        const firstInvalid = contactForm.querySelector('[aria-invalid="true"]');
-        if (firstInvalid) firstInvalid.focus();
-        formStatus.classList.remove('success');
-        formStatus.textContent = 'אנא תקנו את השדות המסומנים.';
-        return;
-      }
-      const button = contactForm.querySelector('button[type="submit"]');
-      button.disabled = true;
-      button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i> מכינים את הפנייה';
-      setTimeout(() => {
-        formStatus.classList.add('success');
-        formStatus.textContent = 'תודה! פרטי האירוע התקבלו בהצלחה וניצור איתכם קשר בהקדם.';
-        contactForm.reset();
-        fields.forEach(field => field.removeAttribute('aria-invalid'));
-        button.disabled = false;
-        button.innerHTML = 'שליחת פרטי האירוע <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>';
-      }, 700);
-    });
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && navLinks.classList.contains('open')) {
-        closeMenu();
-        menuToggle.focus();
-      }
-    });
-
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script src="assets/js/site.js" defer></script>
 </body>
 </html>
