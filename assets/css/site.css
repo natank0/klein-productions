@@ -283,3 +283,32 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
 }
+
+/* הקשר הפנייה ופרטים לבחירה */
+.form-options {
+  margin-block: 14px 0;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.form-options summary {
+  display: list-item;
+  padding-block: 12px;
+  min-height: 44px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.form-options[open] { padding-bottom: 12px; }
+.form-options textarea { margin-top: 10px; }
+.form-options .btn { border: 1px solid #857862; }
+#eventContext { color: var(--gold-ink); font-weight: 700; }
+input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
+.picker span { font-size: 0.95rem; }
+.no-js .order-form > :not(noscript) { display: none; }
+
+@media (max-width: 860px) {
+  .menu-toggle { display: inline-flex; width: auto; gap: 6px; padding-inline: 10px; }
+  .no-js .menu-toggle { display: none; }
+  .site-nav { max-height: calc(100dvh - var(--header-h) - var(--bar-h)); overflow-y: auto; }
+  .no-js .site-nav { max-height: none; overflow: visible; }
+}
