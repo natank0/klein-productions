@@ -1,163 +1,129 @@
-/* קליין הפקות – סקריפט משותף */
+/* קליין הפקות – סקריפט משותף ומצומצם: תפריט מובייל, טופס הצעת מחיר ← וואטסאפ */
 (function () {
   'use strict';
-  document.documentElement.classList.remove('no-js');
+  var root = document.documentElement;
+  root.classList.remove('no-js');
+  root.classList.add('js');
 
-  var WA_NUMBER = document.body.getAttribute('data-wa') || '972527675138';
+  var WA_NUMBER = '972527675138';
 
-  // שנה בכותרת התחתונה
-  document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = new Date().getFullYear(); });
+  document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
-  // ניווט: רקע בגלילה
-  var navbar = document.getElementById('navbar');
-  function onScroll() { if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 30); }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-
-  // פס התקדמות גלילה
-  var prog = document.querySelector('.scroll-progress');
-  function onProgress() {
-    if (!prog) return;
-    var h = document.documentElement.scrollHeight - window.innerHeight;
-    prog.style.setProperty('--progress', h > 0 ? Math.min(1, window.scrollY / h) : 0);
-  }
-  window.addEventListener('scroll', onProgress, { passive: true });
-  onProgress();
-
-  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // זרקור עוקב עכבר בכרטיסים
-  if (!reduceMotion && window.matchMedia('(hover: hover)').matches) {
-    document.querySelectorAll('.card, .pillar, .rig-item, .event-group, .step').forEach(function (el) {
-      el.classList.add('spot');
-      el.addEventListener('pointermove', function (e) {
-        var r = el.getBoundingClientRect();
-        el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-        el.style.setProperty('--my', (e.clientY - r.top) + 'px');
-      });
-    });
-  }
-
-  // מונה מספרים עולה
-  var counters = document.querySelectorAll('[data-count]');
-  function runCounter(el) {
-    var target = parseInt(el.getAttribute('data-count'), 10);
-    if (reduceMotion || !target) { el.textContent = target; return; }
-    var start = null, dur = 1400;
-    function step(ts) {
-      if (!start) start = ts;
-      var t = Math.min(1, (ts - start) / dur);
-      el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3)));
-      if (t < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-  if ('IntersectionObserver' in window) {
-    var co = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { runCounter(en.target); co.unobserve(en.target); } });
-    }, { threshold: 0.6 });
-    counters.forEach(function (c) { co.observe(c); });
-  }
-
-  // תפריט מובייל
+  /* תפריט מובייל */
   var toggle = document.getElementById('menuToggle');
-  var links = document.getElementById('navLinks');
-  function closeMenu() {
-    if (!links) return;
-    links.classList.remove('open');
-    document.body.classList.remove('menu-open');
-    if (toggle) { toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'פתיחת תפריט'); }
+  var nav = document.getElementById('siteNav');
+  function setMenu(open) {
+    if (!toggle || !nav) return;
+    nav.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'סגירת התפריט' : 'פתיחת התפריט');
   }
-  if (toggle && links) {
-    toggle.addEventListener('click', function () {
-      var open = links.classList.toggle('open');
-      document.body.classList.toggle('menu-open', open);
-      toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'סגירת תפריט' : 'פתיחת תפריט');
+  if (toggle && nav) {
+    toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
+    nav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) { setMenu(false); toggle.focus(); }
     });
-    links.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
   }
 
-  // חשיפה בגלילה
-  var reveals = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) { entry.target.classList.add('visible'); io.unobserve(entry.target); }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    reveals.forEach(function (el) { io.observe(el); });
-  } else {
-    reveals.forEach(function (el) { el.classList.add('visible'); });
-  }
-
-  // טופס הזמנה ← הודעת וואטסאפ מוכנה
+  /* הסתרת פס הפעולות בזמן הקלדה בטופס (מובייל) */
   var form = document.getElementById('orderForm');
+  if (form) {
+    form.addEventListener('focusin', function (e) {
+      if (e.target.matches('input:not([type="checkbox"]), select, textarea')) document.body.classList.add('is-typing');
+    });
+    form.addEventListener('focusout', function () { document.body.classList.remove('is-typing'); });
+  }
+
   if (!form) return;
 
   var status = document.getElementById('formStatus');
-  var required = {
-    name: 'נא למלא שם.',
-    phone: 'נא למלא מספר טלפון תקין.',
+  var messages = {
+    name: 'נא לכתוב שם.',
+    phone: 'נא לכתוב מספר טלפון תקין, למשל 050-1234567.',
     eventType: 'נא לבחור סוג אירוע.',
-    date: 'נא לבחור תאריך.'
+    date: 'נא לבחור תאריך.',
+    datePast: 'התאריך שנבחר כבר עבר.'
   };
 
-  function setError(field, msg) {
-    var input = form.elements[field];
-    var err = document.getElementById(field + 'Error');
-    if (input) input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+  function field(name) { return form.elements[name]; }
+  function val(name) { var el = field(name); return el ? String(el.value || '').trim() : ''; }
+  function setError(name, msg) {
+    var el = field(name);
+    var err = document.getElementById(name + 'Error');
+    if (el) {
+      if (msg) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid');
+    }
     if (err) err.textContent = msg || '';
   }
+  ['name', 'phone', 'eventType', 'date'].forEach(function (n) {
+    var el = field(n);
+    if (!el) return;
+    el.addEventListener('input', function () { setError(n, ''); });
+    el.addEventListener('change', function () { setError(n, ''); });
+  });
 
-  function formatDate(value) {
-    if (!value) return '';
-    var p = value.split('-');
-    if (p.length !== 3) return value;
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  var dateEl = field('date');
+  if (dateEl) dateEl.min = todayISO();
+
+  function formatDate(iso) {
+    var p = iso.split('-');
+    if (p.length !== 3) return iso;
     var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-    var days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'מוצאי שבת'];
-    return (d.getDay() === 6 ? '' : 'יום ') + days[d.getDay()] + ', ' + p[2] + '/' + p[1] + '/' + p[0];
+    var days = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'מוצאי שבת'];
+    return days[d.getDay()] + ', ' + p[2] + '/' + p[1] + '/' + p[0];
   }
 
-  Object.keys(required).forEach(function (f) {
-    var el = form.elements[f];
-    if (el) el.addEventListener('input', function () { setError(f, ''); });
-    if (el) el.addEventListener('change', function () { setError(f, ''); });
-  });
+  function validate() {
+    var errors = {};
+    if (!val('name')) errors.name = messages.name;
+    var digits = val('phone').replace(/\D/g, '');
+    if (!val('phone') || digits.length < 9 || digits.length > 12) errors.phone = messages.phone;
+    if (!val('eventType')) errors.eventType = messages.eventType;
+    if (!val('date')) errors.date = messages.date;
+    else if (val('date') < todayISO()) errors.date = messages.datePast;
+    return errors;
+  }
+
+  function buildMessage() {
+    var needs = Array.prototype.map.call(form.querySelectorAll('input[name="needs"]:checked'), function (c) { return c.value; });
+    var lines = ['שלום, אשמח להצעת מחיר להגברה.', ''];
+    lines.push('שם: ' + val('name'));
+    lines.push('טלפון: ' + val('phone'));
+    lines.push('סוג האירוע: ' + val('eventType'));
+    lines.push('תאריך: ' + formatDate(val('date')));
+    if (val('time')) lines.push('שעת התחלה: ' + val('time'));
+    if (val('city')) lines.push('עיר: ' + val('city'));
+    if (val('venue')) lines.push('אולם / כתובת: ' + val('venue'));
+    if (val('access')) lines.push('גישה למקום: ' + val('access'));
+    if (needs.length) lines.push('צריך: ' + needs.join(', '));
+    if (val('notes')) lines.push('הערות: ' + val('notes'));
+    return lines.join('\n');
+  }
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var v = function (n) { var el = form.elements[n]; return el ? String(el.value || '').trim() : ''; };
-    var firstBad = null;
-
-    Object.keys(required).forEach(function (f) {
-      var bad = !v(f);
-      if (f === 'phone' && v(f) && !/^[0-9+\-\s()]{9,15}$/.test(v(f))) bad = true;
-      setError(f, bad ? required[f] : '');
-      if (bad && !firstBad) firstBad = form.elements[f];
+    var errors = validate();
+    var order = ['name', 'phone', 'eventType', 'date'];
+    var first = null;
+    order.forEach(function (n) {
+      setError(n, errors[n] || '');
+      if (errors[n] && !first) first = field(n);
     });
-    if (firstBad) { firstBad.focus(); if (status) status.textContent = 'יש להשלים את השדות המסומנים.'; return; }
-
-    var needs = Array.prototype.slice.call(form.querySelectorAll('input[name="needs"]:checked')).map(function (c) { return c.value; });
-
-    var lines = ['שלום, אשמח להצעה להגברה 🙏', ''];
-    lines.push('*שם:* ' + v('name'));
-    lines.push('*טלפון:* ' + v('phone'));
-    lines.push('*סוג אירוע:* ' + v('eventType'));
-    lines.push('*תאריך:* ' + formatDate(v('date')));
-    if (v('time')) lines.push('*שעת התחלה:* ' + v('time'));
-    if (v('city')) lines.push('*עיר:* ' + v('city'));
-    if (v('venue')) lines.push('*אולם / כתובת:* ' + v('venue'));
-    if (v('access')) lines.push('*גישה:* ' + v('access'));
-    if (needs.length) lines.push('*צריך:* ' + needs.join(', '));
-    if (v('notes')) { lines.push(''); lines.push('*הערות:* ' + v('notes')); }
-    lines.push(''); lines.push('(נשלח מהאתר)');
-
-    var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(lines.join('\n'));
+    if (first) {
+      status.textContent = 'יש לתקן את השדות המסומנים.';
+      status.classList.add('is-error');
+      first.focus();
+      return;
+    }
+    status.classList.remove('is-error');
+    var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(buildMessage());
     var win = window.open(url, '_blank');
     if (win) { try { win.opener = null; } catch (err) { /* ignore */ } } else { window.location.href = url; }
-    if (status) status.textContent = 'נפתח וואטסאפ עם כל הפרטים – רק ללחוץ "שלח". לא נפתח? חייגו 052-7675138.';
+    status.textContent = 'נפתחה הודעה בוואטסאפ עם הפרטים. כדי לשלוח, לחצו "שליחה" בוואטסאפ.';
   });
 })();
