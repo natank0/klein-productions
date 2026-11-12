@@ -331,3 +331,141 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
   .header-events { display: inline-flex; margin-inline-start: auto; }
   .no-js .header-events { display: none; }
 }
+
+/* תרשים סכמטי של המחסן והאולמות הסמוכים */
+.location-score {
+  margin: 0;
+  padding: clamp(18px, 4.4vw, 52px);
+  border-radius: var(--radius);
+  color: var(--on-dark);
+  background: radial-gradient(ellipse at 85% 0%, #423627, var(--charcoal) 62%);
+}
+.location-origin {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0 16px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 12px 18px;
+  border: 1px solid var(--gold-light);
+  border-radius: 10px;
+  background: var(--charcoal);
+}
+.location-origin strong { font-size: clamp(1.25rem, 3vw, 1.65rem); }
+.location-origin > span:last-child,
+.location-venues li > span:last-child,
+.location-score figcaption { color: var(--on-dark-soft); }
+.location-meter {
+  display: flex;
+  align-items: center;
+  grid-row: span 2;
+  gap: 3px;
+  height: 34px;
+  direction: ltr;
+}
+.location-meter i {
+  display: block;
+  width: 3px;
+  height: 68%;
+  border-radius: 2px;
+  background: var(--gold-light);
+  transform: scaleY(.65);
+}
+.location-meter i:nth-child(2),
+.location-meter i:nth-child(4) { height: 88%; }
+.location-meter i:nth-child(3) { height: 100%; }
+.location-streets {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  gap: clamp(16px, 3.4vw, 40px);
+  position: relative;
+  margin-top: 30px;
+}
+.location-streets::before {
+  content: "";
+  position: absolute;
+  inset-block: -30px auto;
+  inset-inline-start: 24px;
+  height: 30px;
+  border-inline-start: 1px solid var(--gold-light);
+}
+.location-street { min-width: 0; }
+.location-street h3 {
+  margin: 0;
+  padding: 7px 0 7px 8px;
+  border-bottom: 1px solid var(--gold-light);
+  color: var(--gold-light);
+  font-size: 1rem;
+}
+.location-venues {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.location-venues li {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  min-width: 0;
+  padding: 0 8px 10px 0;
+}
+.location-node {
+  display: block;
+  width: 9px;
+  height: 9px;
+  margin: -5px 0 10px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  box-shadow: 0 0 0 3px var(--charcoal);
+}
+.location-venues li > span:last-child { font-size: .94rem; }
+.location-score figcaption { margin-top: 18px; font-size: .9rem; }
+.location-contact { margin-top: 20px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .location-score.is-playing .location-meter i { animation: location-beat .56s ease-in-out 3 alternate; }
+  .location-score.is-playing .location-meter i:nth-child(even) { animation-delay: .12s; }
+  .location-score.is-playing .location-node { animation: location-signal .72s .35s ease-out both; }
+  .location-score.is-playing li:nth-child(2) .location-node { animation-delay: .62s; }
+  .location-score.is-playing li:nth-child(3) .location-node { animation-delay: .89s; }
+  .location-score.is-playing .location-street + .location-street .location-node { animation-delay: 1.16s; }
+}
+@keyframes location-beat {
+  from { transform: scaleY(.42); }
+  to { transform: scaleY(1.12); }
+}
+@keyframes location-signal {
+  35% { background: #fff4cd; box-shadow: 0 0 0 7px #d6b87838, 0 0 18px #d6b878; }
+}
+@media (max-width: 700px) {
+  .location-streets { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 440px) {
+  .location-venues { grid-auto-flow: row; grid-auto-columns: auto; }
+  .location-venues li { grid-template-columns: 13px minmax(0, 1fr); padding-block: 9px 3px; }
+  .location-node { grid-row: span 2; margin: 7px 0 0; }
+}
+@media (min-width: 701px) {
+  .location-streets::after {
+    content: "";
+    position: absolute;
+    inset-block-start: -12px;
+    inset-inline: 24px calc(25% - 24px);
+    border-block-start: 1px solid #a3803f;
+    pointer-events: none;
+  }
+  .location-street + .location-street { position: relative; }
+  .location-street + .location-street::before {
+    content: "";
+    position: absolute;
+    inset-block-start: -12px;
+    inset-inline-start: 0;
+    height: 12px;
+    border-inline-start: 1px solid #a3803f;
+  }
+}
