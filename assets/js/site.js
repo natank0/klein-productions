@@ -16,11 +16,19 @@
     if (!toggle || !nav) return;
     nav.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'סגירת התפריט' : 'פתיחת התפריט');
   }
   if (toggle && nav) {
     toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
-    nav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+    nav.addEventListener('click', function (e) {
+      var link = e.target.closest('a');
+      if (!link || !nav.classList.contains('is-open')) return;
+      setMenu(false);
+      var target = link.hash && document.getElementById(link.hash.slice(1));
+      if (target && link.pathname === window.location.pathname) {
+        target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
+      }
+    });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && nav.classList.contains('is-open')) { setMenu(false); toggle.focus(); }
     });
@@ -38,6 +46,23 @@
   if (!form) return;
 
   var status = document.getElementById('formStatus');
+  var eventType = form.elements.eventType;
+  var eventContext = document.getElementById('eventContext');
+  var eventGroups = Array.from(eventType.querySelectorAll('optgroup'));
+  var dateUnknown = form.elements.dateUnknown;
+  document.querySelectorAll('.entry-cta[data-event-group]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var selected = eventType.value;
+      var group = eventGroups.find(function (item) {
+        return item.dataset.eventGroup === link.dataset.eventGroup;
+      });
+      if (!group) return;
+      eventType.insertBefore(group, eventType.children[1]);
+      eventType.value = selected;
+      eventContext.textContent = 'קטגוריה: ' + group.label + '. אפשר לבחור מכל סוגי האירועים.';
+      eventContext.hidden = false;
+    });
+  });
   var messages = {
     name: 'נא לכתוב שם.',
     phone: 'נא לכתוב מספר טלפון תקין, למשל 050-1234567.',
@@ -68,24 +93,34 @@
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
   var dateEl = field('date');
-  if (dateEl) dateEl.min = todayISO();
+  dateEl.min = todayISO();
+  function syncDate() {
+    dateEl.disabled = dateUnknown.checked;
+    dateEl.required = !dateUnknown.checked;
+    setError('date', '');
+  }
+  dateUnknown.addEventListener('change', syncDate);
+  syncDate();
 
   function formatDate(iso) {
     var p = iso.split('-');
     if (p.length !== 3) return iso;
     var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-    var days = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'מוצאי שבת'];
+    var days = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'יום שבת'];
     return days[d.getDay()] + ', ' + p[2] + '/' + p[1] + '/' + p[0];
   }
 
   function validate() {
     var errors = {};
     if (!val('name')) errors.name = messages.name;
-    var digits = val('phone').replace(/\D/g, '');
-    if (!val('phone') || digits.length < 9 || digits.length > 12) errors.phone = messages.phone;
+    var phone = val('phone');
+    var normalized = phone.replace(/[\s()-]/g, '');
+    if (!/^(?:0[1-9]\d{7,8}|\+972[1-9]\d{7,8})$/.test(normalized)) errors.phone = messages.phone;
     if (!val('eventType')) errors.eventType = messages.eventType;
-    if (!val('date')) errors.date = messages.date;
-    else if (val('date') < todayISO()) errors.date = messages.datePast;
+    if (!dateUnknown.checked) {
+      if (!val('date')) errors.date = messages.date;
+      else if (val('date') < todayISO()) errors.date = messages.datePast;
+    }
     return errors;
   }
 
@@ -95,18 +130,17 @@
     lines.push('שם: ' + val('name'));
     lines.push('טלפון: ' + val('phone'));
     lines.push('סוג האירוע: ' + val('eventType'));
-    lines.push('תאריך: ' + formatDate(val('date')));
+    lines.push('תאריך: ' + (dateUnknown.checked ? 'טרם נקבע' : formatDate(val('date'))));
     if (val('time')) lines.push('שעת התחלה: ' + val('time'));
     if (val('city')) lines.push('עיר: ' + val('city'));
     if (val('venue')) lines.push('אולם / כתובת: ' + val('venue'));
     if (val('access')) lines.push('גישה למקום: ' + val('access'));
     if (needs.length) lines.push('צריך: ' + needs.join(', '));
-    if (val('notes')) lines.push('הערות: ' + val('notes'));
+    if (val('notes')) lines.push('הערות: ' + val('notes').slice(0, 400));
     return lines.join('\n');
   }
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
+  function checkForm() {
     var errors = validate();
     var order = ['name', 'phone', 'eventType', 'date'];
     var first = null;
@@ -118,12 +152,34 @@
       status.textContent = 'יש לתקן את השדות המסומנים.';
       status.classList.add('is-error');
       first.focus();
-      return;
+      return false;
     }
     status.classList.remove('is-error');
+    return true;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!checkForm()) return;
     var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(buildMessage());
     var win = window.open(url, '_blank');
     if (win) { try { win.opener = null; } catch (err) { /* ignore */ } } else { window.location.href = url; }
-    status.textContent = 'נפתחה הודעה בוואטסאפ עם הפרטים. כדי לשלוח, לחצו "שליחה" בוואטסאפ.';
+    status.textContent = 'אם וואטסאפ נפתח, לחצו שם על שליחה. אפשר גם להעתיק את פרטי הפנייה.';
+  });
+  var preview = document.getElementById('inquiryPreview');
+  document.getElementById('copyInquiry').addEventListener('click', async function () {
+    if (!checkForm()) return;
+    var message = buildMessage();
+    try {
+      await navigator.clipboard.writeText(message);
+      preview.hidden = true;
+      status.textContent = 'פרטי הפנייה הועתקו.';
+    } catch (error) {
+      preview.value = message;
+      preview.hidden = false;
+      preview.focus();
+      preview.select();
+      status.textContent = 'אפשר להעתיק את הטקסט המסומן.';
+    }
   });
 })();
