@@ -1,16 +1,27 @@
 # קליין הפקות – אתר
 
-אתר תדמית סטטי (HTML/CSS/JS, בלי שרת) לעסק ההגברה "קליין הפקות" – בני ברק ובית שמש.
+אתר סטטי (HTML, CSS ו-JavaScript מצומצם, בלי שרת ובלי שירותי צד שלישי) לעסק ההגברה "קליין הפקות".
+
+- אתר חי: https://natank0.github.io/klein-productions/
+- פרסום: GitHub Pages מהענף `main` (תיקיית השורש).
 
 ## מבנה
-- `index.html` – עמוד הבית (סניף ראשי בני ברק)
-- `beit-shemesh/index.html` – עמוד סניף בית שמש
-- `assets/css/site.css` – עיצוב משותף
-- `assets/js/site.js` – תפריט, אנימציות, וטופס הזמנה שפותח הודעת וואטסאפ מוכנה
-- `assets/img/` – לוגו ונגזרותיו
+- `index.html` – דף הבית (בני ברק, בית שמש והסביבה)
+- `beit-shemesh/index.html` – עמוד שירות בבית שמש
+- `assets/css/site.css` – עיצוב משותף (נייר חם, פחם, זהב מט; גופני מערכת)
+- `assets/js/site.js` – תפריט מובייל וטופס הצעת מחיר שפותח הודעת וואטסאפ מוכנה
+- `assets/img/` – לוגו מכווץ (`logo-88/132` ב-WebP ו-JPG), אייקונים ותמונת שיתוף. `logo-full.jpg` הוא קובץ המקור.
 
-## מספר הוואטסאפ
-מוגדר ב-`data-wa` על תגית `<body>` בכל עמוד, ובקישורי `tel:` / `wa.me`.
+## פרטי קשר
+טלפון `052-7675138` (`tel:0527675138`), וואטסאפ `972527675138`. הם מופיעים בכל עמוד, וב-`WA_NUMBER` שבתוך `site.js`.
 
-## העלאה לאוויר (GitHub Pages)
-Settings → Pages → Source: Deploy from a branch → `main` / root.
+## הוספת תמונות בהמשך
+העמודים שלמים גם בלי תמונות. כדי להוסיף תמונה לכניסה של סוג אירוע, מוסיפים בתוך `<article class="entry">`:
+
+```html
+<figure class="entry-media">
+  <img src="assets/img/events/wedding-1200.webp" alt="תיאור התמונה" width="1200" height="525" loading="lazy" decoding="async">
+</figure>
+```
+
+כדאי להעלות תמונות דחוסות (WebP, עד כ-150KB), בלי תמונות של נשים ובלי קהל מעורב.
