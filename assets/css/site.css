@@ -225,7 +225,7 @@ footer { padding: 56px 0 100px; border-top: 1px solid var(--line); background: v
   .nav-links a { display: block; padding: 14px 6px; border-bottom: 1px solid var(--line-soft); font-size: 1.25rem; }
   .hero { min-height: auto; padding: 108px 0 64px; }
   .hero-grid { grid-template-columns: 1fr; gap: 36px; }
-  .hero-visual { width: min(78%, 340px); order: -1; }
+  .hero-visual { width: min(70%, 300px); }
   .hero-trust { grid-template-columns: 1fr; }
   .band { grid-template-columns: 1fr; padding: 28px 22px; }
   .branches, .steps { grid-template-columns: 1fr; }
@@ -330,3 +330,83 @@ footer { padding: 56px 0 100px; border-top: 1px solid var(--line); background: v
   .radar text { font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) { .radar .pulse { animation: none; opacity: 0; } }
+
+/* ===== שדרוג עיצובי: השראה מאתרי סאונד ומוזיקה מובילים ===== */
+/* מרקם גרעיני עדין – תואם את רקע הלוגו */
+body::before { content: ""; position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* פס התקדמות גלילה בזהב */
+.scroll-progress { position: fixed; top: 0; right: 0; left: 0; z-index: 1100; height: 2px; transform-origin: right center; transform: scaleX(var(--progress, 0)); background: var(--gold-grad); pointer-events: none; }
+
+/* כותרות עריכה: מספור סעיפים */
+.eyebrow .idx { color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* אקולייזר חי בגיבור */
+.eq { display: flex; align-items: flex-end; gap: 5px; height: 46px; margin: 34px 0 0; }
+.eq span { width: 6px; height: 100%; border-radius: 3px; background: var(--gold-grad); transform-origin: bottom; animation: eq 1.2s ease-in-out infinite; opacity: 0.9; }
+.eq span:nth-child(2n) { animation-duration: 0.9s; }
+.eq span:nth-child(3n) { animation-duration: 1.45s; }
+.eq span:nth-child(4n) { animation-duration: 1.05s; animation-delay: -0.4s; }
+.eq span:nth-child(5n) { animation-duration: 1.3s; animation-delay: -0.8s; }
+.eq span:nth-child(7n) { animation-delay: -0.2s; }
+@keyframes eq { 0%, 100% { transform: scaleY(0.18); } 50% { transform: scaleY(1); } }
+.eq-wrap { display: flex; align-items: center; gap: 16px; }
+.eq-caption { color: var(--muted); font-size: 0.9rem; }
+
+/* הברקה זהובה על הלוגו */
+.hero-visual { overflow: hidden; border-radius: 28px; }
+.hero-visual::after { content: ""; position: absolute; inset: 0; border-radius: 28px; background: linear-gradient(115deg, transparent 35%, rgba(255,236,180,0.28) 50%, transparent 65%); transform: translateX(120%); animation: sheen 6s ease-in-out 1.2s infinite; pointer-events: none; }
+@keyframes sheen { 0%, 70% { transform: translateX(120%); } 100% { transform: translateX(-120%); } }
+.hero-visual::before { z-index: 0; }
+.hero-visual img { position: relative; z-index: 1; }
+
+/* טקסט מתאר (outline) לאקסנט */
+.outline { color: transparent; -webkit-text-stroke: 1.5px rgba(241, 212, 138, 0.85); }
+
+/* רצועת מרקי – סוגי אירועים */
+.marquee { position: relative; overflow: hidden; padding: 22px 0; border-block: 1px solid var(--line); background: rgba(212,166,79,0.04); direction: ltr; }
+.marquee::before, .marquee::after { content: ""; position: absolute; top: 0; bottom: 0; z-index: 1; width: 120px; pointer-events: none; }
+.marquee::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
+.marquee::after { right: 0; background: linear-gradient(270deg, var(--bg), transparent); }
+.marquee-track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-group { display: flex; align-items: center; gap: 34px; padding-inline: 17px; direction: rtl; }
+.marquee-group span { font-size: clamp(1.3rem, 2.6vw, 2rem); font-weight: 800; white-space: nowrap; }
+.marquee-group span:nth-of-type(even) { color: transparent; -webkit-text-stroke: 1.2px rgba(241, 212, 138, 0.8); }
+.marquee-group i { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex: 0 0 auto; }
+@keyframes marquee { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+/* זרקור שעוקב אחרי העכבר בכרטיסים */
+.card, .pillar, .rig-item, .event-group, .step { --mx: 50%; --my: 50%; }
+.spot { position: relative; isolation: isolate; }
+.spot::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; opacity: 0; background: radial-gradient(320px circle at var(--mx) var(--my), rgba(241, 212, 138, 0.12), transparent 60%); transition: opacity 220ms ease; pointer-events: none; }
+.spot:hover::after { opacity: 1; }
+.rig-item { transition: transform 200ms ease, border-color 200ms ease; }
+.rig-item:hover, .event-group:hover, .step:hover { border-color: var(--line); }
+
+/* באנר קריאה לפעולה לפני הפוטר */
+.final-cta { position: relative; overflow: hidden; padding: 84px 0; text-align: center; border-top: 1px solid var(--line); background: radial-gradient(ellipse at 50% 120%, rgba(212,166,79,0.22), transparent 60%), var(--bg-deep); }
+.final-cta h2 { margin: 0 auto; max-width: 900px; font-size: clamp(2.2rem, 6vw, 4.2rem); font-weight: 900; line-height: 1.08; }
+.final-cta p { margin: 18px auto 30px; max-width: 560px; color: #d9cfdc; font-size: 1.1rem; }
+.final-cta .hero-actions { justify-content: center; }
+.final-cta .big-phone { display: block; margin-top: 26px; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; letter-spacing: 0.02em; direction: ltr; }
+.final-cta .big-phone:hover { color: var(--gold-light); }
+
+/* מונה מספרים */
+.num[data-count] { font-variant-numeric: tabular-nums; }
+
+/* חשיפה מדורגת */
+.reveal.d1 { transition-delay: 80ms; } .reveal.d2 { transition-delay: 160ms; } .reveal.d3 { transition-delay: 240ms; }
+
+@media (max-width: 600px) {
+  .eq { height: 34px; gap: 4px; margin-top: 26px; }
+  .eq span { width: 5px; }
+  .marquee { padding: 16px 0; }
+  .marquee::before, .marquee::after { width: 50px; }
+  .final-cta { padding: 64px 0 110px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eq span, .marquee-track, .hero-visual::after { animation: none !important; }
+  .eq span { transform: scaleY(0.6); }
+}

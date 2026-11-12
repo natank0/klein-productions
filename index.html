@@ -64,6 +64,7 @@
   </svg>
 
   <a class="skip-link" href="#main">דלג לתוכן הראשי</a>
+  <div class="scroll-progress" aria-hidden="true"></div>
 
   <header class="navbar" id="navbar">
     <span class="bsd" aria-label="בסייעתא דשמיא">בס״ד</span>
@@ -107,6 +108,7 @@
             <li><svg class="icon"><use href="#i-sliders"/></svg>RCF · Midas · Shure</li>
             <li><svg class="icon"><use href="#i-bolt"/></svg>דקות מהאולמות</li>
           </ul>
+          <div class="eq-wrap" aria-hidden="true"><div class="eq"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
         </div>
         <div class="hero-visual">
           <img src="assets/img/logo-hero.jpg" alt="הלוגו של קליין הפקות – מיקרופון זהוב והאותיות HK" width="880" height="815" fetchpriority="high">
@@ -118,18 +120,21 @@
     <div class="stats-bar">
       <div class="container">
         <div class="stats-inner reveal">
-          <div class="stat-cell"><span class="num gold">15</span><span class="lbl">שנות ניסיון בהגברת אירועים</span></div>
+          <div class="stat-cell"><span class="num gold" data-count="15">15</span><span class="lbl">שנות ניסיון בהגברת אירועים</span></div>
           <div class="stat-cell"><span class="num gold">עשרות</span><span class="lbl">מערכות הגברה ומיקסרים במלאי</span></div>
           <div class="stat-cell"><span class="num gold">דקות</span><span class="lbl">מהמחסן לאולמות במרכז העיר</span></div>
-          <div class="stat-cell"><span class="num gold">2</span><span class="lbl">סניפים – בני ברק ובית שמש</span></div>
+          <div class="stat-cell"><span class="num gold" data-count="2">2</span><span class="lbl">סניפים – בני ברק ובית שמש</span></div>
         </div>
       </div>
     </div>
 
+
+    <div class="marquee" aria-hidden="true"><div class="marquee-track"><div class="marquee-group"><span>חתונות</span><i></i><span>שבע ברכות</span><i></i><span>בר מצוות</span><i></i><span>בריתות</span><i></i><span>טישים</span><i></i><span>יארצייט</span><i></i><span>הכנסת ספר תורה</span><i></i><span>סיומים</span><i></i><span>כנסים</span><i></i><span>פורים</span><i></i><span>ל״ג בעומר</span><i></i><span>מסיבות חומש</span><i></i><span>אירועי מוסדות</span><i></i></div><div class="marquee-group"><span>חתונות</span><i></i><span>שבע ברכות</span><i></i><span>בר מצוות</span><i></i><span>בריתות</span><i></i><span>טישים</span><i></i><span>יארצייט</span><i></i><span>הכנסת ספר תורה</span><i></i><span>סיומים</span><i></i><span>כנסים</span><i></i><span>פורים</span><i></i><span>ל״ג בעומר</span><i></i><span>מסיבות חומש</span><i></i><span>אירועי מוסדות</span><i></i></div></div></div>
+
     <section class="section" id="why">
       <div class="container">
         <div class="section-heading reveal">
-          <p class="eyebrow">למה קליין</p>
+          <p class="eyebrow"><span class="idx">01</span>למה קליין</p>
           <h2 class="section-title">שם טוב שנבנה <span class="gold">אירוע אחרי אירוע</span></h2>
           <p class="section-copy">כל אחד יכול לקנות זוג רמקולים. ההבדל ביום השמחה הוא בניסיון, באיכות הציוד ובזמינות – בדיוק כשצריך.</p>
         </div>
@@ -146,7 +151,7 @@
       <div class="container avail-grid">
         <div>
           <div class="reveal">
-            <p class="eyebrow">זמינות מיידית</p>
+            <p class="eyebrow"><span class="idx">02</span>זמינות מיידית</p>
             <h2 class="section-title">קרובים לאולם. <span class="gold">קרובים אליכם.</span></h2>
             <p class="section-copy">המחסן שלנו ממוקם במרכז בני ברק, במרחק דקות ספורות מאולמות השמחות ומבתי הכנסת המרכזיים בעיר. בשבילכם זה אומר דבר אחד: שקט נפשי ביום השמחה.</p>
           </div>
@@ -194,7 +199,7 @@
     <section class="section" id="services">
       <div class="container">
         <div class="section-heading reveal">
-          <p class="eyebrow">מה אנחנו עושים</p>
+          <p class="eyebrow"><span class="idx">03</span>מה אנחנו עושים</p>
           <h2 class="section-title">כל מה שצריך כדי <span class="gold">שישמעו טוב</span></h2>
           <p class="section-copy">מאירוע קטן בבית הכנסת ועד אולם מלא – מתאימים את הציוד לאולם, לקהל ולנגנים.</p>
         </div>
@@ -214,7 +219,7 @@
     <section class="section section-alt" id="equipment">
       <div class="container">
         <div class="section-heading reveal">
-          <p class="eyebrow">הציוד שלנו</p>
+          <p class="eyebrow"><span class="idx">04</span>הציוד שלנו</p>
           <h2 class="section-title">ציוד ברמה של <span class="gold">במות מקצועיות</span></h2>
           <p class="section-copy">מערכות שנבחרו לאורך שנים בזכות האמינות ואיכות הסאונד, ומתוחזקות באופן שוטף – כדי שבאירוע שלכם הכול פשוט יעבוד.</p>
         </div>
@@ -233,7 +238,7 @@
     <section class="section" id="events">
       <div class="container">
         <div class="section-heading center reveal">
-          <p class="eyebrow">לאילו אירועים</p>
+          <p class="eyebrow"><span class="idx">05</span>לאילו אירועים</p>
           <h2 class="section-title">בכל שמחה, <span class="gold">בכל קהילה</span></h2>
           <p class="section-copy">עובדים עם חצרות, ישיבות, מוסדות ומשפחות – ומכירים את האולמות ואת בתי הכנסת בעיר.</p>
         </div>
@@ -269,7 +274,7 @@
     <section class="section section-alt" id="areas">
       <div class="container">
         <div class="section-heading reveal">
-          <p class="eyebrow">אזורי שירות</p>
+          <p class="eyebrow"><span class="idx">06</span>אזורי שירות</p>
           <h2 class="section-title">בני ברק, בית שמש <span class="gold">והסביבה</span></h2>
         </div>
         <div class="branches">
@@ -302,7 +307,7 @@
     <section class="section" id="how">
       <div class="container">
         <div class="section-heading center reveal">
-          <p class="eyebrow">איך זה עובד</p>
+          <p class="eyebrow"><span class="idx">07</span>איך זה עובד</p>
           <h2 class="section-title">שלושה צעדים <span class="gold">ואתם מסודרים</span></h2>
         </div>
         <div class="steps">
@@ -316,7 +321,7 @@
     <section class="section section-alt" id="order">
       <div class="container order-grid">
         <div class="reveal">
-          <p class="eyebrow">הזמנה</p>
+          <p class="eyebrow"><span class="idx">08</span>הזמנה</p>
           <h2 class="section-title">ספרו לנו <span class="gold">על השמחה</span></h2>
           <p class="section-copy">ממלאים את הפרטים, והטופס פותח הודעת וואטסאפ מוכנה – רק ללחוץ ״שלח״.</p>
           <ul class="contact-list">
@@ -377,7 +382,7 @@
     <section class="section" id="faq">
       <div class="container">
         <div class="section-heading center reveal">
-          <p class="eyebrow">שאלות נפוצות</p>
+          <p class="eyebrow"><span class="idx">09</span>שאלות נפוצות</p>
           <h2 class="section-title">לפני <span class="gold">שמזמינים</span></h2>
         </div>
         <div class="faq reveal">
@@ -394,6 +399,19 @@
       </div>
     </section>
   </main>
+
+  <section class="final-cta">
+    <div class="container reveal">
+      <p class="eyebrow" style="justify-content:center">השמחה הבאה שלכם</p>
+      <h2>שיישמע <span class="gold">בדיוק כמו שצריך.</span></h2>
+      <p>ספרו לנו תאריך, אולם וסוג האירוע – ונחזור אליכם עם הצעה מותאמת, מהר.</p>
+      <div class="hero-actions">
+        <a class="btn btn-whatsapp" href="https://wa.me/972527675138" target="_blank" rel="noopener"><svg class="icon"><use href="#i-chat"/></svg>שליחת הודעה בוואטסאפ</a>
+        <a class="btn btn-gold" href="#order"><svg class="icon"><use href="#i-file"/></svg>לטופס ההזמנה</a>
+      </div>
+      <a class="big-phone" href="tel:0527675138">052-7675138</a>
+    </div>
+  </section>
 
   <footer>
     <div class="container">

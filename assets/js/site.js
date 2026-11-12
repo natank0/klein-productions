@@ -14,6 +14,52 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+
+  // פס התקדמות גלילה
+  var prog = document.querySelector('.scroll-progress');
+  function onProgress() {
+    if (!prog) return;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.setProperty('--progress', h > 0 ? Math.min(1, window.scrollY / h) : 0);
+  }
+  window.addEventListener('scroll', onProgress, { passive: true });
+  onProgress();
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // זרקור עוקב עכבר בכרטיסים
+  if (!reduceMotion && window.matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll('.card, .pillar, .rig-item, .event-group, .step').forEach(function (el) {
+      el.classList.add('spot');
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect();
+        el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+  }
+
+  // מונה מספרים עולה
+  var counters = document.querySelectorAll('[data-count]');
+  function runCounter(el) {
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    if (reduceMotion || !target) { el.textContent = target; return; }
+    var start = null, dur = 1400;
+    function step(ts) {
+      if (!start) start = ts;
+      var t = Math.min(1, (ts - start) / dur);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  if ('IntersectionObserver' in window) {
+    var co = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { runCounter(en.target); co.unobserve(en.target); } });
+    }, { threshold: 0.6 });
+    counters.forEach(function (c) { co.observe(c); });
+  }
+
   // תפריט מובייל
   var toggle = document.getElementById('menuToggle');
   var links = document.getElementById('navLinks');
