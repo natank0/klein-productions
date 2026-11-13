@@ -83,14 +83,24 @@
     });
   }
 
-  /* הסתרת פס הפעולות בזמן הקלדה בטופס (מובייל) */
+  /* פס החיוג במובייל: מוסתר כשכפתורי הפתיחה על המסך, וכשהמקלדת פתוחה */
   var form = document.getElementById('orderForm');
-  if (form) {
-    form.addEventListener('focusin', function (e) {
-      if (e.target.matches('input:not([type="checkbox"]), select, textarea')) document.body.classList.add('is-typing');
-    });
-    form.addEventListener('focusout', function () { document.body.classList.remove('is-typing'); });
+  var heroActions = document.querySelector('.hero-actions');
+  if (heroActions && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      document.body.classList.toggle('bar-off', entries[0].isIntersecting);
+    }).observe(heroActions);
   }
+  var vv = window.visualViewport;
+  function syncKeyboard() {
+    var el = document.activeElement;
+    var typing = !!el && el.matches && el.matches('input:not([type="checkbox"]), select, textarea');
+    var shrunk = vv ? vv.height < window.innerHeight * 0.8 : typing;
+    document.body.classList.toggle('kb-open', typing && shrunk);
+  }
+  if (vv) vv.addEventListener('resize', syncKeyboard);
+  document.addEventListener('focusin', syncKeyboard);
+  document.addEventListener('focusout', function () { setTimeout(syncKeyboard, 50); });
 
   if (!form) return;
 
