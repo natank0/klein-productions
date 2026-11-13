@@ -49,7 +49,8 @@ button { cursor: pointer; }
 h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
 p { margin: 0; }
 .icon { width: 1.2em; height: 1.2em; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+.ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; white-space: nowrap; }
+.sprite { position: absolute; }
 .container { width: min(100% - 2 * max(20px, env(safe-area-inset-left, 0px)), var(--container)); margin-inline: auto; }
 
 /* נגישות */
@@ -361,12 +362,22 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
 .radar-ring, .radar-axis, .radar-wave, .radar-center, .radar-north, .radar-home { position: absolute; pointer-events: none; }
 .radar-ring { top: 50%; left: 50%; width: var(--size); height: var(--size); border: 1px solid rgba(214, 184, 120, 0.3); border-radius: 50%; transform: translate(-50%, -50%); }
 .radar-ring:last-of-type { border-color: rgba(214, 184, 120, 0.18); }
+/* גאומטריית הרדאר: r = 44% × √(מרחק/2000 מ׳), צפון למעלה; --d = השהיית הפעימה. טבעות: 250, 500, 1000, 2000 מ׳ */
+.radar-ring:nth-of-type(1) { --size: 31.1%; }
+.radar-ring:nth-of-type(2) { --size: 44%; }
+.radar-ring:nth-of-type(3) { --size: 62.2%; }
+.radar-ring:nth-of-type(4) { --size: 88%; }
+.radar-node[data-hall="vagshal"] { left: 36.3%; top: 57.8%; --d: 0.57s; }
+.radar-cluster { left: 42.8%; top: 70.7%; --d: 0.78s; }
+.radar-node[data-hall="donolo"] { left: 29.7%; top: 33.7%; --d: 0.96s; }
+.radar-node[data-hall="marom"] { left: 26.8%; top: 66.2%; --d: 1.04s; }
+.radar-node[data-hall="dudaim"] { left: 29%; top: 13.2%; --d: 1.54s; }
 .radar-axis { background: rgba(214, 184, 120, 0.12); }
 .radar-axis-h { top: 50%; left: 6%; right: 6%; height: 1px; }
 .radar-axis-v { left: 50%; top: 6%; bottom: 6%; width: 1px; }
 .radar-north { top: 0; left: 50%; transform: translateX(-50%); padding: 0 6px; color: var(--gold-light); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; background: transparent; }
 .radar-center { top: 50%; left: 50%; width: 16px; height: 16px; border-radius: 50%; background: var(--gold-light); box-shadow: 0 0 0 5px rgba(214, 184, 120, 0.25), 0 0 0 12px rgba(214, 184, 120, 0.08); transform: translate(-50%, -50%); }
-.radar-home { top: 50%; left: 50%; transform: translate(14px, calc(-100% - 10px)); display: grid; text-align: start; line-height: 1.25; white-space: nowrap; }
+.radar-home { top: 50%; left: 50%; transform: translate(10px, calc(-100% - 8px)); display: grid; padding: 2px 8px; border-radius: 8px; background: rgba(34, 32, 29, 0.9); text-align: start; line-height: 1.25; white-space: nowrap; }
 .radar-home strong { color: var(--on-dark); font-size: clamp(0.85rem, 2.3vw, 1rem); }
 .radar-home span { color: var(--gold-light); font-size: clamp(0.78rem, 2vw, 0.9rem); font-weight: 700; }
 .radar-wave { top: 50%; left: 50%; width: 88%; height: 88%; border: 2px solid rgba(241, 212, 138, 0.55); border-radius: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; }
@@ -419,3 +430,8 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
   .areas-layout { grid-template-columns: 1fr; gap: 32px; }
   .radar { max-width: 600px; width: 100%; margin-inline: auto; }
 }
+
+/* עמוד 404 */
+.notfound { padding: 72px 0 96px; }
+.notfound h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; }
+.notfound p { max-width: 52ch; margin-top: 14px; color: var(--ink-soft); font-size: 1.1rem; }
