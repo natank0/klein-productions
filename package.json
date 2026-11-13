@@ -1,0 +1,13 @@
+{
+  "name": "klein-productions",
+  "private": true,
+  "description": "אתר סטטי. התלויות כאן משמשות לבדיקות בלבד ואינן נטענות באתר.",
+  "scripts": {
+    "test": "node tests/run.js"
+  },
+  "devDependencies": {
+    "axe-core": "4.10.2",
+    "html-validate": "8.24.1",
+    "playwright": "1.63.0"
+  }
+}

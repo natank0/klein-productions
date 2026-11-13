@@ -33,8 +33,19 @@
     var lastTrigger = null;
 
     function hot(id, on) { var n = nodeFor(id); if (n) n.classList.toggle('is-hot', on); }
+    /* מדיה רק מקבצי האתר עצמו: כתובת חיצונית, data: או javascript: נדחות */
+    function local(u) {
+      if (typeof u !== 'string' || !u.trim()) return '';
+      try { var url = new URL(u, document.baseURI); return url.origin === window.location.origin ? url.href : ''; } catch (err) { return ''; }
+    }
+    function localSrcset(set) {
+      if (typeof set !== 'string') return '';
+      var parts = set.split(',').map(function (c) { var bits = c.trim().split(/\s+/); var u = local(bits[0]); return u ? [u].concat(bits.slice(1)).join(' ') : ''; });
+      return parts.every(Boolean) ? parts.join(', ') : '';
+    }
+    function usable(m) { return m && (m.type === 'image' || m.type === 'video') && local(m.src); }
     function openHall(id, name, trigger) {
-      var items = media[id] || [];
+      var items = (media[id] || []).filter(usable);
       if (!items.length || !dialog || typeof dialog.showModal !== 'function') return;
       dialogTitle.textContent = name;
       dialogList.textContent = '';
@@ -43,17 +54,17 @@
         if (m.type === 'video') {
           var v = document.createElement('video');
           v.controls = true; v.preload = 'none'; v.playsInline = true;
-          if (m.poster) v.poster = m.poster;
+          if (local(m.poster)) v.poster = local(m.poster);
           if (m.width) v.width = m.width;
           if (m.height) v.height = m.height;
-          var src = document.createElement('source'); src.src = m.src; if (m.mime) src.type = m.mime;
+          var src = document.createElement('source'); src.src = local(m.src); if (m.mime) src.type = m.mime;
           v.appendChild(src);
-          if (m.captions) { var t = document.createElement('track'); t.kind = 'captions'; t.srclang = 'he'; t.label = 'עברית'; t.src = m.captions; t.default = true; v.appendChild(t); }
+          if (local(m.captions)) { var t = document.createElement('track'); t.kind = 'captions'; t.srclang = 'he'; t.label = 'עברית'; t.src = local(m.captions); t.default = true; v.appendChild(t); }
           fig.appendChild(v);
         } else {
           var img = document.createElement('img');
-          img.src = m.src; img.alt = m.alt || ''; img.loading = 'lazy'; img.decoding = 'async';
-          if (m.srcset) img.srcset = m.srcset;
+          img.src = local(m.src); img.alt = m.alt || ''; img.loading = 'lazy'; img.decoding = 'async';
+          if (localSrcset(m.srcset)) img.srcset = localSrcset(m.srcset);
           if (m.sizes) img.sizes = m.sizes;
           if (m.width) img.width = m.width;
           if (m.height) img.height = m.height;
@@ -79,7 +90,7 @@
       var nameEl = li.querySelector('.legend-name');
       var name = nameEl.textContent;
       var target = nameEl;
-      if ((media[id] || []).length) {
+      if ((media[id] || []).some(usable)) {
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.innerHTML = '<span></span><span class="media-mark" aria-hidden="true">▶</span>';
