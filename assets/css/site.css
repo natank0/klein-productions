@@ -237,6 +237,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .action-bar { display: none; }
 
 @media (max-width: 1060px) {
+  .faq { max-width: none; }
   .order-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
