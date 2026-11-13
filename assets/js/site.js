@@ -9,53 +9,93 @@
 
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
-  /* רדאר אולמות: הסריקה רצה רק כשהרדאר על המסך, ושם האולם מתחלף כשהסריקה עוברת על הנקודה */
+  /* רדאר אולמות: פעימה אחת מהמחסן כשהרדאר נכנס למסך; מצב סופי יציב */
   var radar = document.querySelector('.radar');
   var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
   if (radar && motionOK && 'IntersectionObserver' in window) {
-    var sweep = radar.querySelector('.radar-sweep');
-    var slots = Array.prototype.slice.call(radar.querySelectorAll('.radar-slot'));
-    var halls = (radar.getAttribute('data-halls') || '').split('|').filter(Boolean);
-    var shown = slots.map(function (s) { return s.querySelector('.radar-name').textContent; });
-    var queue = halls.filter(function (h) { return shown.indexOf(h) === -1; });
-    var lastAngle = null;
-    var timer = null;
-    function sweepAngle() {
-      var anim = sweep.getAnimations ? sweep.getAnimations()[0] : null;
-      if (!anim || anim.currentTime == null) return null;
-      var period = anim.effect.getTiming().duration;
-      return (anim.currentTime % period) / period * 360;
+    var radarObserver = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      radar.classList.add('is-playing');
+      radarObserver.disconnect();
+    }, { threshold: 0.35 });
+    radarObserver.observe(radar);
+  }
+
+  /* מקרא ↔ נקודה ברדאר, ומדיה לכל אולם (נתונים ב-#hallMedia) */
+  if (radar) {
+    var nodes = Array.prototype.slice.call(radar.querySelectorAll('.radar-node'));
+    var nodeFor = function (id) { return nodes.filter(function (n) { return (' ' + n.getAttribute('data-hall') + ' ').indexOf(' ' + id + ' ') !== -1; })[0]; };
+    var media = {};
+    try { media = JSON.parse((document.getElementById('hallMedia') || {}).textContent || '{}'); } catch (err) { media = {}; }
+    var dialog = document.getElementById('hallDialog');
+    var dialogTitle = document.getElementById('hallDialogTitle');
+    var dialogList = document.getElementById('hallMediaList');
+    var lastTrigger = null;
+
+    function hot(id, on) { var n = nodeFor(id); if (n) n.classList.toggle('is-hot', on); }
+    function openHall(id, name, trigger) {
+      var items = media[id] || [];
+      if (!items.length || !dialog || typeof dialog.showModal !== 'function') return;
+      dialogTitle.textContent = name;
+      dialogList.textContent = '';
+      items.forEach(function (m) {
+        var fig = document.createElement('figure');
+        if (m.type === 'video') {
+          var v = document.createElement('video');
+          v.controls = true; v.preload = 'none'; v.playsInline = true;
+          if (m.poster) v.poster = m.poster;
+          if (m.width) v.width = m.width;
+          if (m.height) v.height = m.height;
+          var src = document.createElement('source'); src.src = m.src; if (m.mime) src.type = m.mime;
+          v.appendChild(src);
+          if (m.captions) { var t = document.createElement('track'); t.kind = 'captions'; t.srclang = 'he'; t.label = 'עברית'; t.src = m.captions; t.default = true; v.appendChild(t); }
+          fig.appendChild(v);
+        } else {
+          var img = document.createElement('img');
+          img.src = m.src; img.alt = m.alt || ''; img.loading = 'lazy'; img.decoding = 'async';
+          if (m.srcset) img.srcset = m.srcset;
+          if (m.sizes) img.sizes = m.sizes;
+          if (m.width) img.width = m.width;
+          if (m.height) img.height = m.height;
+          fig.appendChild(img);
+        }
+        if (m.caption) { var cap = document.createElement('figcaption'); cap.textContent = m.caption; fig.appendChild(cap); }
+        dialogList.appendChild(fig);
+      });
+      lastTrigger = trigger || null;
+      dialog.showModal();
     }
-    function swap(slot) {
-      slot.classList.add('is-lit');
-      setTimeout(function () { slot.classList.remove('is-lit'); }, 700);
-      if (!queue.length) return;
-      var nameEl = slot.querySelector('.radar-name');
-      slot.classList.add('is-swapping');
-      setTimeout(function () {
-        queue.push(nameEl.textContent);
-        nameEl.textContent = queue.shift();
-        slot.classList.remove('is-swapping');
-      }, 300);
+    if (dialog) {
+      dialog.querySelector('.hall-dialog-close').addEventListener('click', function () { dialog.close(); });
+      dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
+      dialog.addEventListener('close', function () {
+        dialogList.querySelectorAll('video').forEach(function (v) { v.pause(); });
+        if (lastTrigger) lastTrigger.focus();
+      });
     }
-    function tick() {
-      var angle = sweepAngle();
-      if (angle === null) return;
-      if (lastAngle !== null) {
-        slots.forEach(function (slot) {
-          var a = Number(slot.getAttribute('data-angle'));
-          var crossed = lastAngle <= angle ? (a > lastAngle && a <= angle) : (a > lastAngle || a <= angle);
-          if (crossed) swap(slot);
+
+    document.querySelectorAll('.radar-legend li[data-hall]').forEach(function (li) {
+      var id = li.getAttribute('data-hall');
+      var nameEl = li.querySelector('.legend-name');
+      var name = nameEl.textContent;
+      var target = nameEl;
+      if ((media[id] || []).length) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.innerHTML = '<span></span><span class="media-mark" aria-hidden="true">▶</span>';
+        btn.firstChild.textContent = name;
+        btn.setAttribute('aria-label', name + ' – צפייה בתמונות ובסרטונים מהאולם');
+        btn.addEventListener('click', function () { openHall(id, name, btn); });
+        li.replaceChild(btn, nameEl);
+        target = btn;
+        radar.querySelectorAll('.radar-label [data-hall="' + id + '"]').forEach(function (el) {
+          el.classList.add('has-media');
+          el.addEventListener('click', function () { openHall(id, name, btn); });
         });
       }
-      lastAngle = angle;
-    }
-    new IntersectionObserver(function (entries) {
-      var on = entries[0].isIntersecting;
-      radar.classList.toggle('is-active', on);
-      if (on && !timer) { lastAngle = sweepAngle(); timer = setInterval(tick, 80); }
-      if (!on && timer) { clearInterval(timer); timer = null; }
-    }, { threshold: 0.2 }).observe(radar);
+      ['mouseenter', 'focus'].forEach(function (ev) { target.addEventListener(ev, function () { hot(id, true); }); });
+      ['mouseleave', 'blur'].forEach(function (ev) { target.addEventListener(ev, function () { hot(id, false); }); });
+    });
   }
 
   /* תפריט מובייל */
@@ -109,17 +149,33 @@
   var eventContext = document.getElementById('eventContext');
   var eventGroups = Array.from(eventType.querySelectorAll('optgroup'));
   var dateUnknown = form.elements.dateUnknown;
+  function groupOf(value) {
+    var opt = Array.prototype.filter.call(eventType.options, function (o) { return o.value === value; })[0];
+    return opt && opt.parentNode && opt.parentNode.tagName === 'OPTGROUP' ? opt.parentNode : null;
+  }
+  function showContext(text) { eventContext.textContent = text; eventContext.hidden = false; }
+  function promote(group) { if (group) eventType.insertBefore(group, eventType.children[1]); }
   document.querySelectorAll('.entry-cta[data-event-group]').forEach(function (link) {
     link.addEventListener('click', function () {
       var selected = eventType.value;
-      var group = eventGroups.find(function (item) {
-        return item.dataset.eventGroup === link.dataset.eventGroup;
-      });
+      var group = eventGroups.find(function (item) { return item.dataset.eventGroup === link.dataset.eventGroup; });
       if (!group) return;
-      eventType.insertBefore(group, eventType.children[1]);
+      promote(group);
       eventType.value = selected;
-      eventContext.textContent = 'קטגוריה: ' + group.label + '. אפשר לבחור מכל סוגי האירועים.';
-      eventContext.hidden = false;
+      var prev = selected ? groupOf(selected) : null;
+      if (selected && prev && prev !== group) showContext('הבחירה הקודמת נשמרה: ' + selected + ' (' + prev.label + '). אפשר לבחור מ' + group.label + ' או מכל סוגי האירועים.');
+      else if (selected) showContext('נבחר: ' + selected + ' (' + group.label + ').');
+      else showContext('קטגוריה: ' + group.label + '. אפשר לבחור מכל סוגי האירועים.');
+    });
+  });
+  document.querySelectorAll('.tag[data-event]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var value = link.getAttribute('data-event');
+      var group = groupOf(value);
+      promote(group);
+      eventType.value = value;
+      setError('eventType', '');
+      showContext('נבחר: ' + value + (group ? ' (' + group.label + ')' : '') + '. אפשר לשנות בכל רגע.');
     });
   });
   var messages = {
@@ -153,9 +209,16 @@
   }
   var dateEl = field('date');
   dateEl.min = todayISO();
+  var dateReq = document.getElementById('dateReq');
+  var dateHint = document.getElementById('dateHint');
+  var formHint = document.getElementById('formHint');
   function syncDate() {
-    dateEl.disabled = dateUnknown.checked;
-    dateEl.required = !dateUnknown.checked;
+    var unknown = dateUnknown.checked;
+    dateEl.disabled = unknown;
+    dateEl.required = !unknown;
+    if (dateReq) dateReq.hidden = unknown;
+    if (dateHint) dateHint.hidden = !unknown;
+    if (formHint) formHint.textContent = unknown ? 'שדות חובה: שם, טלפון וסוג אירוע.' : 'שדות חובה: שם, טלפון, סוג אירוע ותאריך.';
     setError('date', '');
   }
   dateUnknown.addEventListener('change', syncDate);
@@ -223,7 +286,7 @@
     var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(buildMessage());
     var win = window.open(url, '_blank');
     if (win) { try { win.opener = null; } catch (err) { /* ignore */ } } else { window.location.href = url; }
-    status.textContent = 'אם וואטסאפ נפתח, לחצו שם על שליחה. אפשר גם להעתיק את פרטי הפנייה.';
+    status.textContent = 'ההודעה מוכנה בוואטסאפ: בדקו אותה ולחצו שם על שליחה. אם וואטסאפ לא נפתח, אפשר להעתיק את פרטי הפנייה.';
   });
   var preview = document.getElementById('inquiryPreview');
   document.getElementById('copyInquiry').addEventListener('click', async function () {
