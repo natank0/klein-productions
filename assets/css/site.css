@@ -375,7 +375,9 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
 .radar-dot { position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--gold-light); box-shadow: 0 0 0 3px var(--charcoal); transition: box-shadow 200ms ease, background-color 200ms ease; }
 .radar-cluster .radar-dot { left: -8px; top: -8px; width: 16px; height: 16px; }
 .radar-label { position: absolute; top: 0; display: grid; gap: 1px; width: max-content; padding: 3px 9px; border: 1px solid rgba(214, 184, 120, 0.35); border-radius: 8px; background: rgba(34, 32, 29, 0.92); color: var(--on-dark); font-size: clamp(0.84rem, 2.2vw, 0.95rem); font-weight: 700; line-height: 1.35; transform: translateY(-50%); transition: border-color 200ms ease, background-color 200ms ease; }
-.radar-cluster .radar-label { font-weight: 600; }
+.radar-cluster .radar-label { font-weight: 600; transform: translateY(-36%); }
+.lbl-up .radar-label { transform: translateY(-72%); }
+.lbl-down .radar-label { transform: translateY(-28%); }
 .lbl-right .radar-label { left: 12px; }
 .lbl-left .radar-label { right: 12px; }
 .radar-node.is-hot .radar-dot { background: #fff4cd; box-shadow: 0 0 0 3px var(--charcoal), 0 0 0 7px rgba(241, 212, 138, 0.35); }
