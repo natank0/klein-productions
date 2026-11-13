@@ -319,140 +319,85 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
   .no-js .header-events { display: none; }
 }
 
-/* תרשים סכמטי של המחסן והאולמות הסמוכים */
-.location-score {
+/* רדאר: המחסן במרכז, אולמות השמחה על המעגל */
+.location-contact { margin-top: 20px; }
+.radar {
+  overflow: hidden;
   margin: 0;
-  padding: clamp(18px, 4.4vw, 52px);
+  padding: clamp(10px, 4vw, 44px);
   border-radius: var(--radius);
-  color: var(--on-dark);
-  background: radial-gradient(ellipse at 85% 0%, #423627, var(--charcoal) 62%);
+  background: radial-gradient(ellipse at 50% 40%, #3a3024, var(--charcoal) 70%);
 }
-.location-origin {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 0 16px;
-  width: fit-content;
-  max-width: 100%;
-  padding: 12px 18px;
-  border: 1px solid var(--gold-light);
-  border-radius: 10px;
-  background: var(--charcoal);
-}
-.location-origin strong { font-size: clamp(1.25rem, 3vw, 1.65rem); }
-.location-origin > span:last-child,
-.location-venues li > span:last-child,
-.location-score figcaption { color: var(--on-dark-soft); }
-.location-meter {
-  display: flex;
-  align-items: center;
-  grid-row: span 2;
-  gap: 3px;
-  height: 34px;
-  direction: ltr;
-}
-.location-meter i {
-  display: block;
-  width: 3px;
-  height: 68%;
-  border-radius: 2px;
-  background: var(--gold-light);
-  transform: scaleY(.65);
-}
-.location-meter i:nth-child(2),
-.location-meter i:nth-child(4) { height: 88%; }
-.location-meter i:nth-child(3) { height: 100%; }
-.location-streets {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
-  gap: clamp(16px, 3.4vw, 40px);
+.radar-scope {
   position: relative;
-  margin-top: 30px;
+  width: min(100%, 560px);
+  aspect-ratio: 1;
+  margin-inline: auto;
 }
-.location-streets::before {
-  content: "";
-  position: absolute;
-  inset-block: -30px auto;
-  inset-inline-start: 24px;
-  height: 30px;
-  border-inline-start: 1px solid var(--gold-light);
+.radar-ring, .radar-axis, .radar-sweep, .radar-center { position: absolute; pointer-events: none; }
+.radar-ring { top: 50%; left: 50%; border: 1px solid rgba(214, 184, 120, 0.32); border-radius: 50%; transform: translate(-50%, -50%); }
+.radar-ring-1 { width: 96%; height: 96%; border-color: rgba(214, 184, 120, 0.22); }
+.radar-ring-2 { width: 72%; height: 72%; border-color: rgba(214, 184, 120, 0.55); }
+.radar-ring-3 { width: 40%; height: 40%; }
+.radar-axis { background: rgba(214, 184, 120, 0.14); }
+.radar-axis-h { top: 50%; left: 2%; right: 2%; height: 1px; }
+.radar-axis-v { left: 50%; top: 2%; bottom: 2%; width: 1px; }
+.radar-sweep {
+  inset: 2%;
+  border-radius: 50%;
+  will-change: transform;
+  background: conic-gradient(from 300deg, transparent 0deg, rgba(214, 184, 120, 0.05) 30deg, rgba(214, 184, 120, 0.3) 59.5deg, transparent 60deg);
+  opacity: 0;
 }
-.location-street { min-width: 0; }
-.location-street h3 {
-  margin: 0;
-  padding: 7px 0 7px 8px;
-  border-bottom: 1px solid var(--gold-light);
-  color: var(--gold-light);
-  font-size: 1rem;
-}
-.location-venues {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
-  gap: 8px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-.location-venues li {
-  display: grid;
-  align-content: start;
-  gap: 3px;
-  min-width: 0;
-  padding: 0 8px 10px 0;
-}
-.location-node {
-  display: block;
-  width: 9px;
-  height: 9px;
-  margin: -5px 0 10px;
+.radar-center {
+  top: 50%; left: 50%;
+  width: 18px; height: 18px;
   border-radius: 50%;
   background: var(--gold-light);
-  box-shadow: 0 0 0 3px var(--charcoal);
+  box-shadow: 0 0 0 6px rgba(214, 184, 120, 0.22), 0 0 0 14px rgba(214, 184, 120, 0.08);
+  transform: translate(-50%, -50%);
 }
-.location-venues li > span:last-child { font-size: .94rem; }
-.location-score figcaption { margin-top: 18px; font-size: .9rem; }
-.location-contact { margin-top: 20px; }
+.radar-slots { margin: 0; padding: 0; list-style: none; }
+.radar-slot {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: 31%;
+  transform: translate(-50%, -6px);
+  text-align: center;
+}
+.radar-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  box-shadow: 0 0 0 4px var(--charcoal);
+}
+.radar-name {
+  padding: 3px 10px;
+  border: 1px solid rgba(214, 184, 120, 0.35);
+  border-radius: 999px;
+  color: var(--on-dark);
+  background: var(--charcoal);
+  font-size: clamp(0.85rem, 2.4vw, 1rem);
+  font-weight: 700;
+  line-height: 1.35;
+  transition: opacity 280ms ease;
+}
+.radar-slot[data-angle="0"], .radar-slot[data-angle="180"] { max-width: 58%; }
+.radar-slot[data-angle="0"] .radar-name, .radar-slot[data-angle="180"] .radar-name { white-space: nowrap; }
+.radar-slot.is-swapping .radar-name { opacity: 0; }
+.radar-slot.is-lit .radar-dot { background: #fff4cd; box-shadow: 0 0 0 4px var(--charcoal), 0 0 14px 2px rgba(241, 212, 138, 0.8); }
 
+/* סריקה מסתובבת רק כשמותר להציג תנועה, ורק כשהרדאר על המסך */
 @media (prefers-reduced-motion: no-preference) {
-  .location-score.is-playing .location-meter i { animation: location-beat .56s ease-in-out 3 alternate; }
-  .location-score.is-playing .location-meter i:nth-child(even) { animation-delay: .12s; }
-  .location-score.is-playing .location-node { animation: location-signal .72s .35s ease-out both; }
-  .location-score.is-playing li:nth-child(2) .location-node { animation-delay: .62s; }
-  .location-score.is-playing li:nth-child(3) .location-node { animation-delay: .89s; }
-  .location-score.is-playing .location-street + .location-street .location-node { animation-delay: 1.16s; }
+  .js .radar-sweep { opacity: 1; animation: radar-sweep 8s linear infinite; animation-play-state: paused; }
+  .js .radar.is-active .radar-sweep { animation-play-state: running; }
 }
-@keyframes location-beat {
-  from { transform: scaleY(.42); }
-  to { transform: scaleY(1.12); }
-}
-@keyframes location-signal {
-  35% { background: #fff4cd; box-shadow: 0 0 0 7px #d6b87838, 0 0 18px #d6b878; }
-}
-@media (max-width: 700px) {
-  .location-streets { grid-template-columns: minmax(0, 1fr); }
-}
-@media (max-width: 440px) {
-  .location-venues { grid-auto-flow: row; grid-auto-columns: auto; }
-  .location-venues li { grid-template-columns: 13px minmax(0, 1fr); padding-block: 9px 3px; }
-  .location-node { grid-row: span 2; margin: 7px 0 0; }
-}
-@media (min-width: 701px) {
-  .location-streets::after {
-    content: "";
-    position: absolute;
-    inset-block-start: -12px;
-    inset-inline: 24px calc(25% - 24px);
-    border-block-start: 1px solid #a3803f;
-    pointer-events: none;
-  }
-  .location-street + .location-street { position: relative; }
-  .location-street + .location-street::before {
-    content: "";
-    position: absolute;
-    inset-block-start: -12px;
-    inset-inline-start: 0;
-    height: 12px;
-    border-inline-start: 1px solid #a3803f;
-  }
+@keyframes radar-sweep { to { transform: rotate(360deg); } }
+
+@media (max-width: 420px) {
+  .radar-slot:not([data-angle="0"]):not([data-angle="180"]) { max-width: 36%; }
+  .radar-name { padding: 2px 8px; }
 }

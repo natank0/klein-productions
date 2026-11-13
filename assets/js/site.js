@@ -9,14 +9,53 @@
 
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
-  var locationScore = document.querySelector('.location-score');
-  if (locationScore && 'IntersectionObserver' in window && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-    var locationObserver = new IntersectionObserver(function (entries) {
-      if (!entries[0].isIntersecting) return;
-      locationScore.classList.add('is-playing');
-      locationObserver.disconnect();
-    }, { threshold: 0.25 });
-    locationObserver.observe(locationScore);
+  /* רדאר אולמות: הסריקה רצה רק כשהרדאר על המסך, ושם האולם מתחלף כשהסריקה עוברת על הנקודה */
+  var radar = document.querySelector('.radar');
+  var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  if (radar && motionOK && 'IntersectionObserver' in window) {
+    var sweep = radar.querySelector('.radar-sweep');
+    var slots = Array.prototype.slice.call(radar.querySelectorAll('.radar-slot'));
+    var halls = (radar.getAttribute('data-halls') || '').split('|').filter(Boolean);
+    var shown = slots.map(function (s) { return s.querySelector('.radar-name').textContent; });
+    var queue = halls.filter(function (h) { return shown.indexOf(h) === -1; });
+    var lastAngle = null;
+    var timer = null;
+    function sweepAngle() {
+      var anim = sweep.getAnimations ? sweep.getAnimations()[0] : null;
+      if (!anim || anim.currentTime == null) return null;
+      var period = anim.effect.getTiming().duration;
+      return (anim.currentTime % period) / period * 360;
+    }
+    function swap(slot) {
+      slot.classList.add('is-lit');
+      setTimeout(function () { slot.classList.remove('is-lit'); }, 700);
+      if (!queue.length) return;
+      var nameEl = slot.querySelector('.radar-name');
+      slot.classList.add('is-swapping');
+      setTimeout(function () {
+        queue.push(nameEl.textContent);
+        nameEl.textContent = queue.shift();
+        slot.classList.remove('is-swapping');
+      }, 300);
+    }
+    function tick() {
+      var angle = sweepAngle();
+      if (angle === null) return;
+      if (lastAngle !== null) {
+        slots.forEach(function (slot) {
+          var a = Number(slot.getAttribute('data-angle'));
+          var crossed = lastAngle <= angle ? (a > lastAngle && a <= angle) : (a > lastAngle || a <= angle);
+          if (crossed) swap(slot);
+        });
+      }
+      lastAngle = angle;
+    }
+    new IntersectionObserver(function (entries) {
+      var on = entries[0].isIntersecting;
+      radar.classList.toggle('is-active', on);
+      if (on && !timer) { lastAngle = sweepAngle(); timer = setInterval(tick, 80); }
+      if (!on && timer) { clearInterval(timer); timer = null; }
+    }, { threshold: 0.2 }).observe(radar);
   }
 
   /* תפריט מובייל */
