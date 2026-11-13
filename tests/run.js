@@ -1,5 +1,6 @@
 /* בדיקות האתר: מריצים `npm test`. כל כלל של הפרויקט הוא בדיקה שנכשלת אם נשבר.
  * שרת סטטי מקומי מגיש את המאגר בנתיב /klein-productions/ (כמו GitHub Pages).
+ * QA_BASE=https://natank0.github.io/klein-productions/ npm test מריץ את בדיקות הדפדפן מול האתר החי.
  * פתיחת וואטסאפ מיורטת תמיד: שום הודעה אמיתית לא נשלחת. */
 'use strict';
 const http = require('http');
@@ -95,8 +96,9 @@ function nextSaturday(minDays) {
   check('sitemap: כתובת אחת, הדף הראשי', (sitemap.match(/<loc>/g) || []).length === 1 && sitemap.includes('<loc>https://natank0.github.io/klein-productions/</loc>'));
   check('עמוד בית שמש לא קיים', !fs.existsSync(path.join(ROOT, 'beit-shemesh')));
 
-  const srv = await serve();
-  const BASE = `http://127.0.0.1:${srv.address().port}${PREFIX}`;
+  const srv = process.env.QA_BASE ? null : await serve();
+  const BASE = process.env.QA_BASE || `http://127.0.0.1:${srv.address().port}${PREFIX}`;
+  if (srv === null) console.log('\nבדיקות דפדפן מול ' + BASE);
   const ORIGIN = new URL(BASE).origin;
   const browser = await chromium.launch();
   const ctx = (o = {}) => browser.newContext({ reducedMotion: 'reduce', ...o });
@@ -260,11 +262,18 @@ function nextSaturday(minDays) {
     const c = await ctx({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
     const p = await c.newPage(); const ext = [];
     p.on('request', r => { if (!r.url().startsWith(ORIGIN) && !r.url().startsWith('data:')) ext.push(r.url()); });
-    await p.route(BASE, async route => {
-      const res = await route.fetch(); let body = await res.text();
-      body = body.replace('"chen": []', '"chen": [{"type":"image","src":"assets/img/og-image.jpg","alt":"בדיקה","width":1200,"height":630,"caption":"תמונת בדיקה"},{"type":"video","src":"assets/media/test.mp4","mime":"video/mp4","poster":"https://example.com/p.jpg"},{"type":"image","src":"https://example.com/x.jpg","alt":"זר"},{"type":"image","src":"javascript:alert(1)","alt":"js"},{"type":"image","src":"data:image/png;base64,AAAA","alt":"data"}]')
-        .replace('"marom": []', '"marom": [{"type":"image","src":"https://example.com/only.jpg","alt":"זר בלבד"}]');
-      route.fulfill({ response: res, body });
+    /* מזריקים נתוני בדיקה ל-#hallMedia לפני שהסקריפט קורא אותם (עובד גם מול האתר החי) */
+    await p.addInitScript(() => {
+      const fix = () => {
+        const el = document.getElementById('hallMedia');
+        if (!el || !el.textContent.includes('"chen": []')) return false;
+        el.textContent = el.textContent
+          .replace('"chen": []', '"chen": [{"type":"image","src":"assets/img/og-image.jpg","alt":"בדיקה","width":1200,"height":630,"caption":"תמונת בדיקה"},{"type":"video","src":"assets/media/test.mp4","mime":"video/mp4","poster":"https://example.com/p.jpg"},{"type":"image","src":"https://example.com/x.jpg","alt":"זר"},{"type":"image","src":"javascript:alert(1)","alt":"js"},{"type":"image","src":"data:image/png;base64,AAAA","alt":"data"}]')
+          .replace('"marom": []', '"marom": [{"type":"image","src":"https://example.com/only.jpg","alt":"זר בלבד"}]');
+        return true;
+      };
+      const mo = new MutationObserver(() => { if (fix()) mo.disconnect(); });
+      mo.observe(document, { childList: true, subtree: true, characterData: true });
     });
     await p.goto(BASE, { waitUntil: 'networkidle' });
     const buttons = await p.$$eval('.radar-legend button', b => b.map(x => x.getAttribute('aria-label')));
@@ -316,7 +325,7 @@ function nextSaturday(minDays) {
     await c2.close();
   }
 
-  await browser.close(); srv.close();
+  await browser.close(); if (srv) srv.close();
   console.log(`\n${passes} עברו, ${failures} נכשלו`);
   process.exit(failures ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(1); });
