@@ -79,7 +79,6 @@ p { margin: 0; }
 .nav-links { display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .nav-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; font-size: 0.98rem; font-weight: 600; text-decoration: none; }
 .nav-links a:hover { background: var(--paper-alt); }
-.nav-links a[aria-current="page"] { color: var(--gold-ink); }
 .nav-links .nav-quote { color: var(--on-dark); background: var(--charcoal); }
 .nav-links .nav-quote:hover { background: #000; }
 .header-call { display: inline-flex; }
@@ -122,8 +121,8 @@ main [tabindex="-1"]:focus { outline: none; }
 .section-lead { max-width: 62ch; margin-top: 12px; color: var(--ink-soft); font-size: 1.08rem; }
 
 /* כניסות לפי סוג אירוע */
-.entries { display: grid; gap: 22px; }
-.entry { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; padding: 32px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.entries { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.entry { display: flex; flex-direction: column; gap: 20px; padding: 30px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
 .entry-head h3 { margin: 0; font-size: 1.6rem; font-weight: 800; }
 .entry-head p { margin-top: 10px; color: var(--ink-soft); }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
@@ -132,8 +131,10 @@ main [tabindex="-1"]:focus { outline: none; }
 .checklist { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .checklist li { display: flex; gap: 10px; align-items: flex-start; }
 .checklist .icon { margin-top: 5px; color: var(--gold-ink); }
-.entry-note { margin-top: 16px; padding: 14px 16px; border-right: 3px solid var(--gold); background: var(--paper); color: var(--ink-soft); font-size: 0.97rem; }
-.entry-cta { margin-top: 22px; }
+.entry-note { margin-top: 0; padding: 14px 16px; border-right: 3px solid var(--gold); background: var(--paper); color: var(--ink-soft); font-size: 0.97rem; }
+.entry-body { display: flex; flex: 1; flex-direction: column; }
+.entry-cta { align-self: flex-start; margin-top: auto; }
+.entry-body .checklist, .entry-note { margin-bottom: 22px; }
 /* מקום שמור לתמונה עתידית: <figure class="entry-media"><img loading="lazy" decoding="async" ...></figure> */
 .entry-media { grid-column: 1 / -1; margin: 0; aspect-ratio: 16 / 7; overflow: hidden; border-radius: 10px; background: var(--paper-alt); }
 .entry-media img { width: 100%; height: 100%; object-fit: cover; }
@@ -150,8 +151,8 @@ main [tabindex="-1"]:focus { outline: none; }
 .gear div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
 .gear dt { font-weight: 800; }
 .gear dd { margin: 0; color: var(--ink-soft); }
-.gear-note { margin-top: 20px; color: var(--ink-soft); }
-.gear-wrap { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); padding: 0 22px; }
+.gear-note { margin: 4px 0 10px; color: var(--ink-soft); font-size: 0.97rem; }
+.gear-wrap { margin-top: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); padding: 0 22px; }
 .gear-wrap summary { display: flex; align-items: center; justify-content: space-between; min-height: 56px; font-weight: 800; cursor: pointer; list-style: none; }
 .gear-wrap summary::-webkit-details-marker { display: none; }
 .gear-wrap summary::after { content: "+"; color: var(--gold-ink); font-size: 1.5rem; line-height: 1; }
@@ -211,15 +212,16 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .noscript-note { margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: var(--paper-alt); }
 
 /* פס תחתון */
-.footer { padding: 48px 0 32px; color: var(--on-dark); background: var(--charcoal); }
+.footer { padding: 52px 0 32px; color: var(--on-dark); background: var(--charcoal); }
+.footer-name { margin: 0 0 6px; color: var(--on-dark); font-size: 1.3rem; font-weight: 800; }
+.footer address { margin-bottom: 4px; color: var(--on-dark); font-style: normal; font-weight: 700; }
 .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; }
 .footer h2 { margin: 0 0 10px; color: var(--gold-light); font-size: 1rem; }
 .footer p, .footer li { color: var(--on-dark-soft); }
-.footer ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
-.footer a { display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; }
+.footer ul { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.footer a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
 .footer a:hover { color: var(--gold-light); text-decoration: underline; }
 .footer a:focus-visible { outline-color: var(--gold-light); }
-.footer .brand-name small { color: var(--on-dark-soft); }
 .footer-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.12); color: var(--on-dark-soft); font-size: 0.88rem; }
 
 /* פס חיוג ווואטסאפ – מובייל בלבד */
@@ -231,11 +233,12 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 32px; }
-  .entry { grid-template-columns: 1fr; gap: 20px; padding: 24px; }
+  .entry { padding: 24px; }
   .gear { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 860px) {
+  .entries { grid-template-columns: 1fr; }
   .header-call { display: none; }
   .menu-toggle { display: grid; }
   .site-nav { position: absolute; top: 100%; right: 0; left: 0; padding: 10px max(20px, env(safe-area-inset-right, 0px)) 18px; background: var(--paper); border-bottom: 1px solid var(--line); box-shadow: 0 16px 30px rgba(30, 28, 26, 0.12); }
@@ -252,10 +255,10 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 
   .action-bar { position: fixed; z-index: 900; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px max(14px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px)); background: var(--paper); border-top: 1px solid var(--line); box-shadow: 0 -6px 18px rgba(30, 28, 26, 0.08); }
   .action-bar .btn { min-height: 48px; }
-  body { padding-bottom: calc(var(--bar-h) + env(safe-area-inset-bottom, 0px)); }
+  .footer { padding-bottom: calc(32px + var(--bar-h) + env(safe-area-inset-bottom, 0px)); }
+  .action-bar { transition: transform 220ms ease, visibility 220ms; }
+  .js body.bar-off .action-bar, body.kb-open .action-bar { transform: translateY(110%); visibility: hidden; }
   html { scroll-padding-bottom: calc(var(--bar-h) + 24px); }
-  /* בזמן הקלדה בטופס הפס מוסתר כדי לא להסתיר שדות */
-  body.is-typing .action-bar { display: none; }
 }
 
 @media (max-width: 600px) {
@@ -268,7 +271,8 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .order-form { padding: 22px 16px; }
   .entry { padding: 20px 16px; }
   .gear div { grid-template-columns: 1fr; gap: 2px; }
-  .footer-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
+  .footer-brand { grid-column: 1 / -1; }
   .brand-name { font-size: 1.08rem; }
   .brand-name small { font-size: 0.72rem; }
 }
@@ -292,15 +296,26 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   border-radius: 10px;
 }
 .form-options summary {
-  display: list-item;
-  padding-block: 12px;
-  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
   font-weight: 700;
   cursor: pointer;
+  list-style: none;
 }
+.form-options summary::-webkit-details-marker, .form-help summary::-webkit-details-marker { display: none; }
+.form-options summary::after { content: "+"; color: var(--gold-ink); font-size: 1.4rem; line-height: 1; }
+.form-options[open] summary::after { content: "−"; }
+.form-options[open] summary { margin-bottom: 6px; }
+.form-help { margin-top: 6px; text-align: center; }
+.form-help summary { display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; color: var(--ink-soft); font-size: 0.95rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; list-style: none; }
+.form-help[open] { padding: 4px 12px 14px; border: 1px solid var(--line); border-radius: 10px; }
+.form-help .btn { margin: 6px 4px 0; border: 1.5px solid #857862; }
+.form-help textarea { margin-top: 12px; text-align: right; }
 .form-options[open] { padding-bottom: 12px; }
 .form-options textarea { margin-top: 10px; }
-.form-options .btn { border: 1px solid #857862; }
 #eventContext { color: var(--gold-ink); font-weight: 700; }
 input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
 .picker span { font-size: 0.95rem; }
@@ -320,7 +335,15 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
 }
 
 /* רדאר: המחסן במרכז, אולמות השמחה על המעגל */
-.location-contact { margin-top: 20px; }
+.areas-layout { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 56px; align-items: center; }
+.areas-text .section-lead { margin-bottom: 24px; }
+.address-card { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); font-style: normal; }
+.address-card > .icon { width: 28px; height: 28px; color: var(--gold-ink); }
+.address-card strong { display: block; font-size: 1.3rem; font-weight: 800; line-height: 1.3; }
+.address-card span span { display: block; color: var(--ink-soft); font-size: 0.95rem; }
+.address-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.address-links .btn { border-width: 1.5px; }
+.areas-cta { margin-top: 28px; }
 .radar {
   overflow: hidden;
   margin: 0;
@@ -364,6 +387,7 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  width: max-content;
   max-width: 31%;
   transform: translate(-50%, -6px);
   text-align: center;
@@ -400,4 +424,10 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
 @media (max-width: 420px) {
   .radar-slot:not([data-angle="0"]):not([data-angle="180"]) { max-width: 36%; }
   .radar-name { padding: 2px 8px; }
+}
+
+/* פריסת "בלב בני ברק" במסכים צרים – אחרי כללי הבסיס כדי לגבור עליהם */
+@media (max-width: 900px) {
+  .areas-layout { grid-template-columns: 1fr; gap: 32px; }
+  .radar { max-width: 560px; width: 100%; margin-inline: auto; }
 }
