@@ -6,6 +6,8 @@
   root.classList.add('js');
 
   var WA_NUMBER = '972527675138';
+  /* כתובת המייל של העסק. כשמוגדרת, מתחת לטופס מופיע גם "שליחה במייל" (לגולשים ממחשב מסונן בלי וואטסאפ) */
+  var EMAIL = '';
 
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
@@ -230,7 +232,9 @@
   }
 
   function buildMessage() {
-    var needs = Array.prototype.map.call(form.querySelectorAll('input[name="needs"]:checked'), function (c) { return c.value; });
+    var checked = function (name) { return Array.prototype.map.call(form.querySelectorAll('input[name="' + name + '"]:checked'), function (c) { return c.value; }); };
+    var needs = checked('needs');
+    var access = checked('access');
     var lines = ['שלום, אשמח להצעת מחיר להגברה.', ''];
     lines.push('שם: ' + val('name'));
     lines.push('טלפון: ' + val('phone'));
@@ -239,7 +243,7 @@
     if (val('time')) lines.push('שעת התחלה: ' + val('time'));
     if (val('city')) lines.push('עיר: ' + (val('city') === 'אחר' ? val('cityOther') : val('city')));
     if (val('venue')) lines.push('אולם / כתובת: ' + val('venue'));
-    if (val('access')) lines.push('גישה למקום: ' + val('access'));
+    if (access.length) lines.push('גישה למקום: ' + access.join(', '));
     if (needs.length) lines.push('צריך: ' + needs.join(', '));
     if (val('notes')) lines.push('הערות: ' + val('notes').slice(0, 400));
     // Use the platform-neutral message convention expected by WhatsApp and
@@ -276,13 +280,33 @@
     status.textContent = 'ההודעה מוכנה בוואטסאפ. בדקו ולחצו שם על שליחה. אם וואטסאפ לא נפתח, אפשר להעתיק את פרטי הפנייה.';
   });
   var preview = document.getElementById('inquiryPreview');
+  /* שליחה במייל: נפתחת טיוטה עם הפרטים בתוכנת המייל, והכתובת מוצגת למי שמעדיף להעתיק */
+  if (EMAIL) {
+    var altActions = document.querySelector('.form-alt-actions');
+    var mail = document.createElement('a');
+    mail.className = 'btn btn-line btn-sm';
+    mail.id = 'mailInquiry';
+    mail.href = 'mailto:' + EMAIL;
+    mail.textContent = 'שליחה במייל';
+    altActions.appendChild(mail);
+    var addr = document.createElement('p');
+    addr.className = 'form-alt-mail';
+    addr.innerHTML = 'או לכתובת <span class="ltr"></span>';
+    addr.querySelector('span').textContent = EMAIL;
+    altActions.parentNode.insertBefore(addr, altActions.nextSibling);
+    mail.addEventListener('click', function (e) {
+      if (!checkForm()) { e.preventDefault(); return; }
+      mail.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('בקשת הצעת מחיר להגברה') + '&body=' + encodeURIComponent(buildMessage());
+      status.textContent = 'נפתחה טיוטת מייל עם פרטי הפנייה. אם לא נפתחה, אפשר להעתיק את הפרטים ולשלוח לכתובת שמופיעה כאן.';
+    });
+  }
   document.getElementById('copyInquiry').addEventListener('click', async function () {
     if (!checkForm()) return;
     var message = buildMessage();
     try {
       await navigator.clipboard.writeText(message);
       preview.hidden = true;
-      status.textContent = 'פרטי הפנייה הועתקו.';
+      status.textContent = 'פרטי הפנייה הועתקו. אפשר להדביק אותם במייל או בהודעה.';
     } catch (error) {
       preview.value = message;
       preview.hidden = false;
