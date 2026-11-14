@@ -396,6 +396,12 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .brand-name small { font-size: 0.72rem; }
 }
 
+@media (max-width: 380px) {
+  .address-card { gap: 10px; padding: 16px 14px; }
+  .address-card > .icon { width: 24px; height: 24px; }
+  .address-card strong { font-size: 1.3rem; }
+}
+
 @media (max-width: 360px) {
   .hero-actions { grid-template-columns: 1fr; }
   .hero-actions .btn:first-child { grid-column: auto; }
