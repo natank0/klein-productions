@@ -1,0 +1,27 @@
+name: Live site QA
+on:
+  push:
+    branches: ['live-qa/**']
+permissions:
+  contents: write
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Full test suite against the live site
+        run: QA_BASE=https://natank0.github.io/klein-productions/ npm test 2>&1 | tee qa-live/suite-live.txt; echo "exit=${PIPESTATUS[0]}" >> qa-live/suite-live.txt
+      - name: Screenshots, link targets, form, no-JS
+        run: node qa-live/live-check.js 2>&1 | tee qa-live/live-check.txt || true
+      - name: Commit results to this branch
+        if: always()
+        run: |
+          git config user.name "live-qa-bot"; git config user.email "noreply@github.com"
+          git add qa-live; git commit -m "Live QA results [skip ci]" || true; git push
