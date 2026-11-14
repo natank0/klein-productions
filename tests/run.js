@@ -126,34 +126,23 @@ function nextSaturday(minDays) {
   }
 
   /* ---------- 2. פריסה ברוחבים ---------- */
-  section('פריסה, רדאר ומשקל');
+  section('פריסה, מיקום ומשקל');
   for (const w of WIDTHS) {
     const compact = w <= 860;
     const mobile = w < 800;
     const c = await ctx({ viewport: { width: w, height: mobile ? 800 : 900 }, isMobile: mobile, hasTouch: mobile });
     const { p, errs, ext, csp } = await open(c);
-    await p.evaluate(() => document.querySelector('.radar').scrollIntoView({ block: 'start' }));
+    await p.evaluate(() => document.querySelector('.location-visual').scrollIntoView({ block: 'start' }));
     const m = await p.evaluate(() => {
       const vis = e => { const r = e.getBoundingClientRect(); return e.offsetParent && r.width > 0 && r.height > 0 && !e.closest('[hidden]') && !e.closest('details:not([open]) > :not(summary)') && !e.closest('noscript') && !e.closest('dialog'); };
       const small = [...document.querySelectorAll('a,button,select,input:not([type=checkbox]),summary,.check span')].filter(e => vis(e) && e.getBoundingClientRect().height < 44 && !e.classList.contains('skip-link')).map(e => (e.textContent || e.id).trim().slice(0, 14) + ':' + Math.round(e.getBoundingClientRect().height));
-      const fig = document.querySelector('.radar').getBoundingClientRect();
-      const boxes = [...document.querySelectorAll('.radar-label, .radar-home, .radar-north')].map(e => ({ n: e.textContent.trim().slice(0, 12), r: e.getBoundingClientRect() }));
-      const dots = [...document.querySelectorAll('.radar-dot, .radar-center')].map(e => ({ n: e.closest('.radar-node') ? e.closest('.radar-node').getAttribute('data-hall') : 'center', r: e.getBoundingClientRect() }));
-      const hit = (a, b) => a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1;
-      const overlaps = [];
-      for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) if (hit(boxes[i].r, boxes[j].r)) overlaps.push(boxes[i].n + '×' + boxes[j].n);
-      for (const b of boxes) for (const d of dots) if (hit(b.r, d.r) && !(b.n.startsWith('קליין') && d.n === 'center')) overlaps.push(b.n + '×' + d.n);
-      const outside = boxes.filter(x => x.r.left < fig.left || x.r.right > fig.right || x.r.top < fig.top || x.r.bottom > fig.bottom).map(x => x.n);
-      const placed = [...document.querySelectorAll('.radar-node')].filter(n => getComputedStyle(n).left === '0px' || getComputedStyle(n).top === '0px').map(n => n.getAttribute('data-hall'));
-      const minFont = Math.min(...[...document.querySelectorAll('.radar-label')].map(e => parseFloat(getComputedStyle(e).fontSize)));
-      return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, small, overlaps, outside, placed, minFont };
+      const fig = document.querySelector('.location-visual').getBoundingClientRect();
+      const pin = document.querySelector('.location-pin').getBoundingClientRect();
+      return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, small, pinInside: pin.left >= fig.left && pin.right <= fig.right && pin.top >= fig.top && pin.bottom <= fig.bottom };
     });
     check(`${w}: אין גלילה אופקית`, m.ov === 0, m.ov);
     check(`${w}: אזורי מגע ≥ 44px`, m.small.length === 0, m.small);
-    check(`${w}: רדאר בלי חפיפות`, m.overlaps.length === 0, m.overlaps);
-    check(`${w}: רדאר בלי חריגה מהמסגרת`, m.outside.length === 0, m.outside);
-    check(`${w}: לכל נקודה ברדאר יש מיקום ב-CSS`, m.placed.length === 0, m.placed);
-    check(`${w}: גופן תוויות הרדאר ≥ 13px`, m.minFont >= 13, m.minFont);
+    check(`${w}: סמן המחסן נמצא בתוך ההמחשה`, m.pinInside, m);
     check(`${w}: בלי שגיאות קונסולה`, errs.length === 0, errs);
     check(`${w}: בלי הפרות CSP`, csp.length === 0, csp);
     check(`${w}: בלי בקשות חיצוניות`, ext.length === 0, ext);
@@ -177,18 +166,21 @@ function nextSaturday(minDays) {
     p.on('response', async r => { try { const b = (await r.body()).length; bytes += b; const t = r.request().resourceType(); types[t] = (types[t] || 0) + b; } catch (e) { /* redirect */ } });
     await p.goto(BASE, { waitUntil: 'networkidle' });
     await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); await p.waitForTimeout(400);
-    check('משקל הדף (כולל תמונות שנטענו) ≤ 150KB', bytes <= 150 * 1024, Math.round(bytes / 1024) + 'KB ' + JSON.stringify(types));
-    const halls = await p.evaluate(() => {
-      const legend = [...document.querySelectorAll('.radar-legend li[data-hall]')].map(l => l.dataset.hall).sort();
-      const labels = [...document.querySelectorAll('.radar-label [data-hall]')].map(l => l.dataset.hall).sort();
-      const media = Object.keys(JSON.parse(document.getElementById('hallMedia').textContent)).sort();
-      return { legend, labels, media };
-    });
-    check('אותם אולמות במקרא, ברדאר וב-#hallMedia', JSON.stringify(halls.legend) === JSON.stringify(halls.labels) && JSON.stringify(halls.legend) === JSON.stringify(halls.media), halls);
+    check('משקל הדף (כולל תמונות שנטענו) ≤ 320KB', bytes <= 320 * 1024, Math.round(bytes / 1024) + 'KB ' + JSON.stringify(types));
+    const location = await p.evaluate(() => ({
+      pins: document.querySelectorAll('.location-pin').length,
+      image: document.querySelector('.location-visual img')?.getAttribute('src'),
+      address: document.querySelector('.location-pin span span')?.textContent.trim(),
+      old: document.querySelectorAll('[data-hall], .radar, #hallDialog, #hallMedia').length,
+      nav: [...document.querySelectorAll('.navigation-link')].map(a => a.href),
+      icons: [...document.querySelectorAll('.navigation-link img')].map(i => ({ src: i.getAttribute('src'), loaded: i.complete && i.naturalWidth > 0 }))
+    }));
+    check('מודול מיקום יחיד, כתובת נכונה וללא רכיבי אולמות ישנים', location.pins === 1 && location.image === 'assets/img/city-schematic.jpg' && location.address === 'כהנמן 64, בני ברק' && location.old === 0, location);
+    check('קישורי ניווט ואייקונים מקומיים תקינים', location.nav.some(u => u.startsWith('https://waze.com/ul')) && location.nav.some(u => u.startsWith('https://www.google.com/maps/')) && location.icons.length === 2 && location.icons.every(i => i.loaded && i.src.startsWith('assets/img/')), location);
     await c.close();
   }
 
-  /* ---------- 3. נגישות (axe) וניגודיות על רקע מדורג ---------- */
+  /* ---------- 3. נגישות (axe) ---------- */
   section('נגישות');
   for (const w of [390, 1440]) {
     for (const url of [BASE, BASE + '404.html']) {
@@ -197,31 +189,6 @@ function nextSaturday(minDays) {
       await p.addScriptTag({ content: AXE });
       const v = await p.evaluate(async () => (await window.axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'] })).violations.map(x => x.id + ':' + x.nodes.map(n => n.target.join(' ')).slice(0, 3).join(',')));
       check(`axe ${w} ${url.endsWith('404.html') ? '404' : 'index'}: אפס הפרות`, v.length === 0, v);
-      await c.close();
-    }
-  }
-  {
-    const lum = (r, g, b) => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
-    const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
-    for (const w of [390, 1440]) {
-      const c = await ctx({ viewport: { width: w, height: 900 }, bypassCSP: true });
-      const p = await c.newPage(); await p.goto(BASE, { waitUntil: 'networkidle' });
-      const bad = [];
-      for (const el of await p.$$('.radar-north, .radar-home > *, .radar-label [data-hall], .radar-legend-title, .legend-name, #radarNote')) {
-        await el.scrollIntoViewIfNeeded();
-        const info = await el.evaluate(e => { const s = getComputedStyle(e); return { color: s.color, fs: parseFloat(s.fontSize), fw: +s.fontWeight, t: e.textContent.trim().slice(0, 14) }; });
-        const bb = await el.boundingBox();
-        const tag = await p.addStyleTag({ content: '.radar *, .radar *::before, .radar *::after { color: transparent !important; }' });
-        const buf = await p.screenshot({ clip: { x: bb.x + 3, y: bb.y + 3, width: Math.max(1, bb.width - 6), height: Math.max(1, bb.height - 6) } });
-        await tag.evaluate(n => n.remove());
-        const px = await p.evaluate(async b64 => { const img = new Image(); img.src = 'data:image/png;base64,' + b64; await img.decode(); const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height; const x = cv.getContext('2d'); x.drawImage(img, 0, 0); return Array.from(x.getImageData(0, 0, cv.width, cv.height).data); }, buf.toString('base64'));
-        let hi = -1, lo = 2; for (let i = 0; i < px.length; i += 4) { const l = lum(px[i], px[i + 1], px[i + 2]); hi = Math.max(hi, l); lo = Math.min(lo, l); }
-        const t = info.color.match(/[\d.]+/g).map(Number); const tl = lum(t[0], t[1], t[2]);
-        const worst = Math.min(ratio(tl, hi), ratio(tl, lo));
-        const need = info.fs >= 24 || (info.fs >= 18.66 && info.fw >= 700) ? 3 : 4.5;
-        if (worst < need) bad.push(info.t + ' ' + worst.toFixed(2));
-      }
-      check(`${w}: ניגודיות בתוך הרדאר (המקרה הגרוע, פיקסל אחר פיקסל) ≥ AA`, bad.length === 0, bad);
       await c.close();
     }
   }
@@ -254,51 +221,44 @@ function nextSaturday(minDays) {
     for (const [ph, ok] of Object.entries(phones)) { await p.fill('#phone', ph); await p.click('.form-submit'); const accepted = (await p.textContent('#phoneError')) === ''; if (accepted !== ok) wrong.push(ph); }
     check('אימות טלפון (7 מקרים)', wrong.length === 0, wrong);
     await p.fill('#phone', '050-1234567');
+    await p.click('.form-options summary');
+    await p.selectOption('#city', 'אחר');
+    const other0 = await p.evaluate(() => ({ hidden: document.getElementById('cityOther').hidden, labelHidden: document.getElementById('cityOtherLabel').hidden, required: document.getElementById('cityOther').required }));
+    await p.check('#dateUnknown');
+    await p.click('.form-submit');
+    check('בחירת עיר אחרת חושפת שדה חובה וממקדת שגיאה', !other0.hidden && !other0.labelHidden && other0.required && (await p.evaluate(() => document.activeElement.id)) === 'cityOther');
+    await p.fill('#cityOther', 'רחובות');
+    await p.uncheck('#dateUnknown');
     await p.fill('#date', '2020-01-01'); urls.length = 0; await p.click('.form-submit');
     check('תאריך שעבר נדחה ולא נפתח וואטסאפ', (await p.textContent('#dateError')).includes('עבר') && urls.length === 0);
     const sat = nextSaturday(30);
     await p.fill('#date', sat.iso);
-    await p.click('.form-options summary'); await p.fill('#notes', 'א'.repeat(450));
+    await p.fill('#notes', 'א'.repeat(450));
     urls.length = 0; await p.click('.form-submit');
     const msg = decodeURIComponent((urls[0] || '').split('text=')[1] || '');
     check('ההודעה נבנית ונשלחת למספר העסק בלבד', (urls[0] || '').startsWith('https://wa.me/' + WA + '?text='), urls[0]);
     check('יום שבת מוצג במילים בהודעה', msg.includes('תאריך: יום שבת, ' + sat.shown), (msg.match(/תאריך: .*/) || [''])[0]);
     check('הערות נחתכות ב-400 תווים', ((msg.match(/הערות: (א+)/) || ['', ''])[1].length) === 400);
     check('סוג האירוע בהודעה', msg.includes('סוג האירוע: פדיון הבן'));
+    check('עיר אחרת נכתבת בשם שהוזן', msg.includes('עיר: רחובות') && !msg.includes('עיר: אחר'));
     await p.click('.form-help summary'); await p.click('#copyInquiry'); await p.waitForTimeout(100);
     check('ההעתקה זהה להודעה', (await p.evaluate(() => navigator.clipboard.readText())) === msg);
     await c.close();
   }
 
-  /* ---------- 5. מדיה לאולמות: תצוגה, נגישות וחסימת מקורות זרים ---------- */
-  section('מדיה לאולמות');
+  /* ---------- 5. מודול המיקום ---------- */
+  section('מודול מיקום');
   {
     const c = await ctx({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
     const p = await c.newPage(); const ext = [];
     p.on('request', r => { if (!r.url().startsWith(ORIGIN) && !r.url().startsWith('data:')) ext.push(r.url()); });
-    /* מזריקים נתוני בדיקה ל-#hallMedia לפני שהסקריפט קורא אותם (עובד גם מול האתר החי) */
-    await p.addInitScript(() => {
-      const fix = () => {
-        const el = document.getElementById('hallMedia');
-        if (!el || !el.textContent.includes('"chen": []')) return false;
-        el.textContent = el.textContent
-          .replace('"chen": []', '"chen": [{"type":"image","src":"assets/img/og-image.jpg","alt":"בדיקה","width":1200,"height":630,"caption":"תמונת בדיקה"},{"type":"video","src":"assets/media/test.mp4","mime":"video/mp4","poster":"https://example.com/p.jpg"},{"type":"image","src":"https://example.com/x.jpg","alt":"זר"},{"type":"image","src":"javascript:alert(1)","alt":"js"},{"type":"image","src":"data:image/png;base64,AAAA","alt":"data"}]')
-          .replace('"marom": []', '"marom": [{"type":"image","src":"https://example.com/only.jpg","alt":"זר בלבד"}]');
-        return true;
-      };
-      const mo = new MutationObserver(() => { if (fix()) mo.disconnect(); });
-      mo.observe(document, { childList: true, subtree: true, characterData: true });
-    });
     await p.goto(BASE, { waitUntil: 'networkidle' });
-    const buttons = await p.$$eval('.radar-legend button', b => b.map(x => x.getAttribute('aria-label')));
-    check('רק אולם עם מדיה מקומית הופך לכפתור', buttons.length === 1 && buttons[0].startsWith('ארמונות חן'), buttons);
-    await p.click('.radar-legend button');
-    const d = await p.evaluate(() => ({ open: document.getElementById('hallDialog').open, title: document.getElementById('hallDialogTitle').textContent, imgs: [...document.querySelectorAll('#hallMediaList img')].map(i => i.getAttribute('src') ? new URL(i.src).pathname : ''), vids: document.querySelectorAll('#hallMediaList video').length, poster: (document.querySelector('#hallMediaList video') || {}).poster }));
-    check('החלון נפתח עם שם האולם', d.open && d.title === 'ארמונות חן', d);
-    check('כתובות זרות, javascript: ו-data: נחסמות', d.imgs.length === 1 && d.imgs[0].endsWith('/assets/img/og-image.jpg') && d.vids === 1 && !d.poster, d);
-    await p.keyboard.press('Escape');
-    const after = await p.evaluate(() => ({ open: document.getElementById('hallDialog').open, focus: document.activeElement.getAttribute('aria-label') || '' }));
-    check('Esc סוגר והמיקוד חוזר לכפתור', !after.open && after.focus.startsWith('ארמונות חן'), after);
+    const d = await p.evaluate(() => ({
+      caption: document.getElementById('locationCaption').textContent.trim(),
+      disclaimer: document.querySelector('.location-disclaimer').textContent.trim(),
+      decorative: document.querySelector('.location-art').getAttribute('alt') === '' && document.querySelector('.location-art').getAttribute('aria-hidden') === 'true'
+    }));
+    check('המחשה סכמטית מסומנת כדקורטיבית ומוסברת בטקסט', d.decorative && d.caption.includes('כהנמן 64') && d.disclaimer.includes('אינה מפת רחובות'), d);
     check('אין פנייה לשרתים זרים', ext.length === 0, ext);
     await c.close();
   }
@@ -308,17 +268,12 @@ function nextSaturday(minDays) {
   {
     const c = await browser.newContext({ viewport: { width: 390, height: 800 }, reducedMotion: 'no-preference' });
     const p = await c.newPage(); await p.goto(BASE, { waitUntil: 'networkidle' });
-    const before = await p.evaluate(() => document.querySelector('.radar').classList.contains('is-playing'));
-    await p.evaluate(() => document.querySelector('.radar').scrollIntoView({ block: 'center', behavior: 'instant' }));
-    await p.waitForFunction(() => document.querySelector('.radar').classList.contains('is-playing'), null, { timeout: 4000 });
     const its = await p.evaluate(() => document.getAnimations().map(a => a.effect.getTiming().iterations));
-    await p.waitForTimeout(3200);
-    const running = await p.evaluate(() => document.getAnimations().filter(a => a.playState === 'running').length);
-    check('פעימת הרדאר: מתחילה רק בכניסה, פעם אחת, ונעצרת', !before && its.length > 0 && Math.max(...its) === 1 && running === 0, { before, its, running });
+    check('אין אנימציות אינסופיות', its.every(n => n !== Infinity), its);
     await c.close();
     const c2 = await ctx({ viewport: { width: 390, height: 800 } });
     const p2 = await c2.newPage(); await p2.goto(BASE, { waitUntil: 'networkidle' });
-    await p2.evaluate(() => document.querySelector('.radar').scrollIntoView({ block: 'center', behavior: 'instant' })); await p2.waitForTimeout(500);
+    await p2.evaluate(() => document.querySelector('.location-visual').scrollIntoView({ block: 'center', behavior: 'instant' })); await p2.waitForTimeout(500);
     check('בהפחתת תנועה אין אנימציה', (await p2.evaluate(() => document.getAnimations().length)) === 0);
     await c2.close();
   }
@@ -328,8 +283,8 @@ function nextSaturday(minDays) {
   {
     const c = await browser.newContext({ viewport: { width: 390, height: 800 }, javaScriptEnabled: false });
     const p = await c.newPage(); await p.goto(BASE);
-    const r = await p.evaluate(() => ({ nav: !!document.querySelector('#siteNav a[href="#faq"]').offsetParent, bar: getComputedStyle(document.querySelector('.action-bar')).visibility, direct: [...document.querySelectorAll('.hero-direct')].filter(a => a.offsetParent && a.getBoundingClientRect().height >= 44).length, legend: document.querySelectorAll('.radar-legend li').length, labels: document.querySelectorAll('.radar-label [data-hall]').length, addr: document.querySelector('.address-card strong').textContent, radarHelp: document.getElementById('radarNote').textContent, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
-    check('בלי JS: ניווט, שתי דרכי קשר ישירות, פס חיוג, רדאר ומקרא, כתובת, בלי גלילה אופקית', r.nav && r.direct === 2 && r.bar === 'visible' && r.legend === r.labels && r.legend > 0 && r.addr === 'כהנמן 64, בני ברק' && r.radarHelp.includes('לא מסלול נסיעה או הליכה') && r.ov === 0, r);
+    const r = await p.evaluate(() => ({ nav: !!document.querySelector('#siteNav a[href="#faq"]').offsetParent, bar: getComputedStyle(document.querySelector('.action-bar')).visibility, direct: [...document.querySelectorAll('.hero-direct')].filter(a => a.offsetParent && a.getBoundingClientRect().height >= 44).length, addr: document.querySelector('.address-card strong').textContent, pin: document.querySelector('.location-pin span span').textContent, links: document.querySelectorAll('.navigation-link').length, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+    check('בלי JS: ניווט, שתי דרכי קשר ישירות, פס חיוג, כתובת וניווט, בלי גלילה אופקית', r.nav && r.direct === 2 && r.bar === 'visible' && r.addr === 'כהנמן 64, בני ברק' && r.pin === 'כהנמן 64, בני ברק' && r.links === 2 && r.ov === 0, r);
     await c.close();
     const c2 = await ctx({ viewport: { width: 390, height: 800 } });
     const o = await open(c2, BASE + 'beit-shemesh/');

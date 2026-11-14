@@ -9,106 +9,6 @@
 
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
-  /* רדאר אולמות: פעימה אחת מהמחסן כשהרדאר נכנס למסך; מצב סופי יציב */
-  var radar = document.querySelector('.radar');
-  var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-  if (radar && motionOK && 'IntersectionObserver' in window) {
-    var radarObserver = new IntersectionObserver(function (entries) {
-      if (!entries[0].isIntersecting) return;
-      radar.classList.add('is-playing');
-      radarObserver.disconnect();
-    }, { threshold: 0.35 });
-    radarObserver.observe(radar);
-  }
-
-  /* מקרא ↔ נקודה ברדאר, ומדיה לכל אולם (נתונים ב-#hallMedia) */
-  if (radar) {
-    var nodes = Array.prototype.slice.call(radar.querySelectorAll('.radar-node'));
-    var nodeFor = function (id) { return nodes.filter(function (n) { return (' ' + n.getAttribute('data-hall') + ' ').indexOf(' ' + id + ' ') !== -1; })[0]; };
-    var media = {};
-    try { media = JSON.parse((document.getElementById('hallMedia') || {}).textContent || '{}'); } catch (err) { media = {}; }
-    var dialog = document.getElementById('hallDialog');
-    var dialogTitle = document.getElementById('hallDialogTitle');
-    var dialogList = document.getElementById('hallMediaList');
-    var lastTrigger = null;
-
-    function hot(id, on) { var n = nodeFor(id); if (n) n.classList.toggle('is-hot', on); }
-    /* מדיה רק מקבצי האתר עצמו: כתובת חיצונית, data: או javascript: נדחות */
-    function local(u) {
-      if (typeof u !== 'string' || !u.trim()) return '';
-      try { var url = new URL(u, document.baseURI); return url.origin === window.location.origin ? url.href : ''; } catch (err) { return ''; }
-    }
-    function localSrcset(set) {
-      if (typeof set !== 'string') return '';
-      var parts = set.split(',').map(function (c) { var bits = c.trim().split(/\s+/); var u = local(bits[0]); return u ? [u].concat(bits.slice(1)).join(' ') : ''; });
-      return parts.every(Boolean) ? parts.join(', ') : '';
-    }
-    function usable(m) { return m && (m.type === 'image' || m.type === 'video') && local(m.src); }
-    function openHall(id, name, trigger) {
-      var items = (media[id] || []).filter(usable);
-      if (!items.length || !dialog || typeof dialog.showModal !== 'function') return;
-      dialogTitle.textContent = name;
-      dialogList.textContent = '';
-      items.forEach(function (m) {
-        var fig = document.createElement('figure');
-        if (m.type === 'video') {
-          var v = document.createElement('video');
-          v.controls = true; v.preload = 'none'; v.playsInline = true;
-          if (local(m.poster)) v.poster = local(m.poster);
-          if (m.width) v.width = m.width;
-          if (m.height) v.height = m.height;
-          var src = document.createElement('source'); src.src = local(m.src); if (m.mime) src.type = m.mime;
-          v.appendChild(src);
-          if (local(m.captions)) { var t = document.createElement('track'); t.kind = 'captions'; t.srclang = 'he'; t.label = 'עברית'; t.src = local(m.captions); t.default = true; v.appendChild(t); }
-          fig.appendChild(v);
-        } else {
-          var img = document.createElement('img');
-          img.src = local(m.src); img.alt = m.alt || ''; img.loading = 'lazy'; img.decoding = 'async';
-          if (localSrcset(m.srcset)) img.srcset = localSrcset(m.srcset);
-          if (m.sizes) img.sizes = m.sizes;
-          if (m.width) img.width = m.width;
-          if (m.height) img.height = m.height;
-          fig.appendChild(img);
-        }
-        if (m.caption) { var cap = document.createElement('figcaption'); cap.textContent = m.caption; fig.appendChild(cap); }
-        dialogList.appendChild(fig);
-      });
-      lastTrigger = trigger || null;
-      dialog.showModal();
-    }
-    if (dialog) {
-      dialog.querySelector('.hall-dialog-close').addEventListener('click', function () { dialog.close(); });
-      dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
-      dialog.addEventListener('close', function () {
-        dialogList.querySelectorAll('video').forEach(function (v) { v.pause(); });
-        if (lastTrigger) lastTrigger.focus();
-      });
-    }
-
-    document.querySelectorAll('.radar-legend li[data-hall]').forEach(function (li) {
-      var id = li.getAttribute('data-hall');
-      var nameEl = li.querySelector('.legend-name');
-      var name = nameEl.textContent;
-      var target = nameEl;
-      if ((media[id] || []).some(usable)) {
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.innerHTML = '<span></span><span class="media-mark" aria-hidden="true">▶</span>';
-        btn.firstChild.textContent = name;
-        btn.setAttribute('aria-label', name + ' – צפייה בתמונות ובסרטונים מהאולם');
-        btn.addEventListener('click', function () { openHall(id, name, btn); });
-        li.replaceChild(btn, nameEl);
-        target = btn;
-        radar.querySelectorAll('.radar-label [data-hall="' + id + '"]').forEach(function (el) {
-          el.classList.add('has-media');
-          el.addEventListener('click', function () { openHall(id, name, btn); });
-        });
-      }
-      ['mouseenter', 'focus'].forEach(function (ev) { target.addEventListener(ev, function () { hot(id, true); }); });
-      ['mouseleave', 'blur'].forEach(function (ev) { target.addEventListener(ev, function () { hot(id, false); }); });
-    });
-  }
-
   /* תפריט מובייל */
   var toggle = document.getElementById('menuToggle');
   var nav = document.getElementById('siteNav');
@@ -160,6 +60,8 @@
   var eventContext = document.getElementById('eventContext');
   var eventGroups = Array.from(eventType.querySelectorAll('optgroup'));
   var dateUnknown = form.elements.dateUnknown;
+  var city = form.elements.city;
+  var cityOther = form.elements.cityOther;
   function groupOf(value) {
     var opt = Array.prototype.filter.call(eventType.options, function (o) { return o.value === value; })[0];
     return opt && opt.parentNode && opt.parentNode.tagName === 'OPTGROUP' ? opt.parentNode : null;
@@ -235,6 +137,21 @@
   dateUnknown.addEventListener('change', syncDate);
   syncDate();
 
+  function syncCity() {
+    var other = city && city.value === 'אחר';
+    if (cityOther) {
+      cityOther.hidden = !other;
+      cityOther.required = other;
+      cityOther.setAttribute('aria-hidden', String(!other));
+      if (!other) { cityOther.value = ''; setError('cityOther', ''); }
+    }
+    var label = document.getElementById('cityOtherLabel');
+    if (label) label.hidden = !other;
+  }
+  if (city) city.addEventListener('change', syncCity);
+  if (cityOther) cityOther.addEventListener('input', function () { setError('cityOther', ''); });
+  syncCity();
+
   function formatDate(iso) {
     var p = iso.split('-');
     if (p.length !== 3) return iso;
@@ -250,6 +167,7 @@
     var normalized = phone.replace(/[\s()-]/g, '');
     if (!/^(?:0[1-9]\d{7,8}|\+972[1-9]\d{7,8})$/.test(normalized)) errors.phone = messages.phone;
     if (!val('eventType')) errors.eventType = messages.eventType;
+    if (city && city.value === 'אחר' && !val('cityOther')) errors.cityOther = 'נא לכתוב את שם העיר.';
     if (!dateUnknown.checked) {
       if (!val('date')) errors.date = messages.date;
       else if (val('date') < todayISO()) errors.date = messages.datePast;
@@ -265,7 +183,7 @@
     lines.push('סוג האירוע: ' + val('eventType'));
     lines.push('תאריך: ' + (dateUnknown.checked ? 'טרם נקבע' : formatDate(val('date'))));
     if (val('time')) lines.push('שעת התחלה: ' + val('time'));
-    if (val('city')) lines.push('עיר: ' + val('city'));
+    if (val('city')) lines.push('עיר: ' + (val('city') === 'אחר' ? val('cityOther') : val('city')));
     if (val('venue')) lines.push('אולם / כתובת: ' + val('venue'));
     if (val('access')) lines.push('גישה למקום: ' + val('access'));
     if (needs.length) lines.push('צריך: ' + needs.join(', '));
@@ -277,7 +195,7 @@
 
   function checkForm() {
     var errors = validate();
-    var order = ['name', 'phone', 'eventType', 'date'];
+    var order = ['name', 'phone', 'eventType', 'date', 'cityOther'];
     var first = null;
     order.forEach(function (n) {
       setError(n, errors[n] || '');

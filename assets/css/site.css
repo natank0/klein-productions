@@ -1,6 +1,5 @@
 /* קליין הפקות – גיליון סגנונות משותף
-   שפה עיצובית: נייר חם, פחם כהה וזהב מט. ללא גופנים חיצוניים.
-   תנועה: פעימה אחת ברדאר כשהוא נכנס למסך; ללא תנועה כשהמשתמש ביקש הפחתת תנועה. */
+   שפה עיצובית: נייר חם, פחם, שזיף וזהב מט. ללא גופנים חיצוניים. */
 :root {
   color-scheme: light;
   /* צבע */
@@ -16,6 +15,9 @@
   --gold: #a3803f;         /* זהב מט – קווים ופרטים */
   --gold-ink: #74561d;     /* זהב לטקסט על נייר */
   --gold-light: #d6b878;   /* זהב על רקע כהה */
+  --plum: #5a2f43;         /* שזיף עמוק מהשפה המורחבת */
+  --plum-dark: #3b202e;
+  --olive: #4d4a2b;
   --line: #d8cdb9;         /* קווי הפרדה */
   --wa: #1d6b44;           /* וואטסאפ – ירוק עמוק */
   --wa-hover: #175837;
@@ -90,7 +92,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .menu-toggle .icon { width: 22px; height: 22px; }
 
 /* מסך פתיחה */
-.hero { padding: clamp(40px, 6vw, 84px) 0 clamp(44px, 6vw, 76px); border-bottom: 1px solid var(--line); background: radial-gradient(ellipse at 82% 5%, #fffaf1, transparent 68%), var(--paper); }
+.hero { padding: clamp(40px, 6vw, 84px) 0 clamp(44px, 6vw, 76px); border-bottom: 1px solid var(--line); background: radial-gradient(ellipse at 82% 5%, #fffaf1 0, transparent 54%), linear-gradient(135deg, var(--paper) 58%, #e3d6c2); }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.85fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
 .h1-part { display: block; }
 .hero h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.85rem); font-weight: 800; letter-spacing: -0.025em; }
@@ -101,7 +103,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .hero-actions .btn { padding-inline: 18px; }
 
 /* פאנל "מה אתם מארגנים?" */
-.picker { padding: 26px 24px; border-radius: var(--radius); color: var(--on-dark); background: linear-gradient(150deg, #30281e, var(--charcoal) 58%); box-shadow: 0 16px 32px rgb(34 32 29 / 12%); }
+.picker { padding: 26px 24px; border-radius: var(--radius); color: var(--on-dark); background: linear-gradient(145deg, var(--plum-dark), var(--charcoal) 62%); box-shadow: 0 20px 42px rgb(34 32 29 / 20%); }
 .picker h2 { margin: 0 0 6px; font-size: 1.35rem; font-weight: 800; }
 .picker > p { color: var(--on-dark-soft); font-size: 0.95rem; }
 .picker ul { display: grid; gap: 6px; margin: 18px 0 0; padding: 0; list-style: none; }
@@ -124,6 +126,8 @@ main [tabindex="-1"]:focus { outline: none; }
 /* כניסות לפי סוג אירוע */
 .entries { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .entry { display: flex; flex-direction: column; gap: 20px; padding: 30px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.entry-featured { border-color: #9d7741; background: linear-gradient(145deg, #fffdf8, #f0e4d2); box-shadow: 0 18px 38px rgb(59 32 46 / 10%); }
+.entry-head .entry-kicker { width: fit-content; margin: 0 0 8px; padding: 3px 10px; border-radius: 999px; color: #fff; background: #22201d; font-size: 0.82rem; font-weight: 800; }
 .entry-head h3 { margin: 0; font-size: 1.6rem; font-weight: 800; }
 .entry-head p { margin-top: 10px; color: var(--ink-soft); }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
@@ -362,91 +366,38 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
   .no-js .header-events { display: none; }
 }
 
-/* בלב בני ברק: טקסט וכתובת לצד הרדאר */
+/* המחסן בבני ברק: תוכן לצד המחשה עירונית סכמטית */
+.section-location { color: var(--on-dark); background: linear-gradient(145deg, var(--plum-dark), var(--charcoal) 62%); }
+.section-location .section-title { color: #fff; }
+.section-location .section-lead { color: var(--on-dark-soft); }
 .areas-layout { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 52px; align-items: center; }
 .areas-text .section-lead { margin-bottom: 24px; }
-.address-card { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); font-style: normal; }
-.address-card > .icon { width: 28px; height: 28px; color: var(--gold-ink); }
+.address-card { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border: 1px solid rgba(214, 184, 120, 0.42); border-radius: var(--radius); color: var(--ink); background: #fffaf1; font-style: normal; box-shadow: 0 16px 30px rgb(0 0 0 / 16%); }
+.address-card > .icon { width: 28px; height: 28px; color: var(--plum); }
 .address-card strong { display: block; font-size: 1.3rem; font-weight: 800; line-height: 1.3; }
 .address-card span span { display: block; color: var(--ink-soft); font-size: 0.95rem; }
 .address-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-.address-links .btn { border-width: 1.5px; }
+.navigation-link { min-height: 52px; padding-inline: 16px; border: 1px solid #ded7ca; color: var(--ink); background: #fff; }
+.navigation-link:hover { border-color: var(--gold); background: #f8f5ef; }
+.navigation-link img { width: 32px; height: 32px; object-fit: contain; flex: 0 0 32px; }
+.section-location .areas-cta { color: var(--charcoal); background: var(--gold-light); }
+.section-location .areas-cta:hover { background: #f1d58f; }
 .areas-cta { margin-top: 28px; }
+.location-visual { position: relative; min-height: 420px; margin: 0; overflow: hidden; border: 1px solid rgba(214, 184, 120, 0.42); border-radius: calc(var(--radius) + 4px); background: #e9dbc4; box-shadow: 0 26px 64px rgb(0 0 0 / 28%); isolation: isolate; }
+.location-visual::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, transparent 55%, rgb(34 32 29 / 38%)); pointer-events: none; }
+.location-visual > img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; }
+.location-pin { position: absolute; z-index: 2; top: 50%; left: 50%; display: flex; align-items: center; gap: 12px; min-width: min(84%, 330px); padding: 16px 18px; border: 2px solid var(--gold-light); border-radius: 14px; color: var(--on-dark); background: rgb(34 32 29 / 94%); box-shadow: 0 18px 36px rgb(0 0 0 / 30%); transform: translate(-50%, -50%); }
+.location-pin > .icon { width: 34px; height: 34px; color: var(--gold-light); }
+.location-pin strong, .location-pin span span { display: block; }
+.location-pin strong { font-size: 1.1rem; }
+.location-pin span span { color: var(--gold-light); font-size: 0.92rem; font-weight: 700; }
+.location-disclaimer { position: absolute; z-index: 2; right: 16px; bottom: 12px; left: 16px; color: #fff; font-size: 0.82rem; font-weight: 700; text-align: center; text-shadow: 0 1px 3px #000; }
 
-/* רדאר: המחסן במרכז, אולמות השמחה לפי כיוונם ומרחקם היחסי (קו אוויר, נתוני מפה ציבוריים) */
-.radar { margin: 0; overflow: hidden; border-radius: var(--radius); color: var(--on-dark); background: radial-gradient(ellipse at 50% 42%, #3a3024, var(--charcoal) 72%); }
-.radar-scope { position: relative; width: min(100%, 540px); aspect-ratio: 1; margin: clamp(8px, 3vw, 28px) auto 0; }
-.radar-ring, .radar-axis, .radar-wave, .radar-center, .radar-north, .radar-home { position: absolute; pointer-events: none; }
-.radar-ring { top: 50%; left: 50%; width: var(--size); height: var(--size); border: 1px solid rgba(214, 184, 120, 0.3); border-radius: 50%; transform: translate(-50%, -50%); }
-.radar-ring:last-of-type { border-color: rgba(214, 184, 120, 0.18); }
-/* גאומטריית הרדאר: r = 44% × √(מרחק/2000 מ׳), צפון למעלה; --d = השהיית הפעימה. טבעות: 250, 500, 1000, 2000 מ׳ */
-.radar-ring:nth-of-type(1) { --size: 31.1%; }
-.radar-ring:nth-of-type(2) { --size: 44%; }
-.radar-ring:nth-of-type(3) { --size: 62.2%; }
-.radar-ring:nth-of-type(4) { --size: 88%; }
-.radar-node[data-hall="vagshal"] { left: 36.3%; top: 57.8%; --d: 0.57s; }
-.radar-cluster { left: 42.8%; top: 70.7%; --d: 0.78s; }
-.radar-node[data-hall="donolo"] { left: 29.7%; top: 33.7%; --d: 0.96s; }
-.radar-node[data-hall="marom"] { left: 26.8%; top: 66.2%; --d: 1.04s; }
-.radar-node[data-hall="dudaim"] { left: 29%; top: 13.2%; --d: 1.54s; }
-.radar-axis { background: rgba(214, 184, 120, 0.12); }
-.radar-axis-h { top: 50%; left: 6%; right: 6%; height: 1px; }
-.radar-axis-v { left: 50%; top: 6%; bottom: 6%; width: 1px; }
-.radar-north { top: 0; left: 50%; transform: translateX(-50%); padding: 0 6px; color: var(--gold-light); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; background: transparent; }
-.radar-center { top: 50%; left: 50%; width: 16px; height: 16px; border-radius: 50%; background: var(--gold-light); box-shadow: 0 0 0 5px rgba(214, 184, 120, 0.25), 0 0 0 12px rgba(214, 184, 120, 0.08); transform: translate(-50%, -50%); }
-.radar-home { top: 50%; left: 50%; transform: translate(10px, calc(-100% - 8px)); display: grid; padding: 2px 8px; border-radius: 8px; background: rgba(34, 32, 29, 0.9); text-align: start; line-height: 1.25; white-space: nowrap; }
-.radar-home strong { color: var(--on-dark); font-size: clamp(0.85rem, 2.3vw, 1rem); }
-.radar-home span { color: var(--gold-light); font-size: clamp(0.78rem, 2vw, 0.9rem); font-weight: 700; }
-.radar-wave { top: 50%; left: 50%; width: 88%; height: 88%; border: 2px solid rgba(241, 212, 138, 0.55); border-radius: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; }
-.radar-nodes { margin: 0; padding: 0; list-style: none; }
-.radar-node { position: absolute; width: 0; height: 0; }
-.radar-dot { position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--gold-light); box-shadow: 0 0 0 3px var(--charcoal); transition: box-shadow 200ms ease, background-color 200ms ease; }
-.radar-cluster .radar-dot { left: -8px; top: -8px; width: 16px; height: 16px; }
-.radar-label { position: absolute; top: 0; display: grid; gap: 1px; width: max-content; padding: 3px 9px; border: 1px solid rgba(214, 184, 120, 0.35); border-radius: 8px; background: rgba(34, 32, 29, 0.92); color: var(--on-dark); font-size: clamp(0.84rem, 2.2vw, 0.95rem); font-weight: 700; line-height: 1.35; transform: translateY(-50%); transition: border-color 200ms ease, background-color 200ms ease; }
-.radar-cluster .radar-label { font-weight: 600; transform: translateY(-36%); }
-.lbl-up .radar-label { transform: translateY(-72%); }
-.lbl-down .radar-label { transform: translateY(-28%); }
-.lbl-right .radar-label { left: 12px; }
-.lbl-left .radar-label { right: 12px; }
-.radar-node.is-hot .radar-dot { background: #fff4cd; box-shadow: 0 0 0 3px var(--charcoal), 0 0 0 7px rgba(241, 212, 138, 0.35); }
-.radar-node.is-hot .radar-label { border-color: var(--gold-light); background: #3a3024; }
-.radar-label [data-hall].has-media { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
-.radar figcaption { padding: clamp(14px, 3vw, 26px); padding-top: 6px; }
-.radar-legend-title { margin: 0 0 8px; color: var(--gold-light); font-size: 0.95rem; font-weight: 700; }
-.radar-legend { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; counter-reset: hall; }
-.radar-legend li { counter-increment: hall; }
-.radar-legend .legend-name, .radar-legend button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 12px; border: 1px solid rgba(214, 184, 120, 0.35); border-radius: 999px; color: var(--on-dark); background: transparent; font-size: 0.92rem; font-weight: 600; }
-.radar-legend .legend-name::before, .radar-legend button::before { content: counter(hall); color: var(--gold-light); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
-.radar-legend button { min-height: 44px; cursor: pointer; }
-.radar-legend button:hover, .radar-legend button:focus-visible { border-color: var(--gold-light); background: #3a3024; }
-.radar-legend button:focus-visible { outline-color: var(--gold-light); }
-.radar-legend button .media-mark { color: var(--gold-light); font-size: 0.8rem; }
-.radar-note { max-width: 74ch; margin-top: 12px; color: var(--on-dark-soft); font-size: 0.9rem; line-height: 1.6; }
-.radar-note strong { color: var(--on-dark); }
-
-@media (prefers-reduced-motion: no-preference) {
-  .radar.is-playing .radar-wave { animation: radar-wave 1.7s cubic-bezier(.2,.6,.3,1) both; }
-  .radar.is-playing .radar-dot { animation: radar-ping 0.8s var(--d, 0s) ease-out both; }
-}
-@keyframes radar-wave { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0.9; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
-@keyframes radar-ping { 0% { box-shadow: 0 0 0 3px var(--charcoal); } 40% { background: #fff4cd; box-shadow: 0 0 0 3px var(--charcoal), 0 0 0 9px rgba(241, 212, 138, 0.45); } 100% { box-shadow: 0 0 0 3px var(--charcoal); } }
-
-/* חלון מדיה לאולם (נפתח רק כשיש מדיה מאושרת לאולם) */
-.hall-dialog { width: min(100% - 32px, 880px); max-height: min(100% - 48px, 900px); padding: 0; border: 0; border-radius: var(--radius); color: var(--on-dark); background: var(--charcoal); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45); }
-.hall-dialog::backdrop { background: rgba(20, 18, 16, 0.72); }
-.hall-dialog-head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; background: var(--charcoal); border-bottom: 1px solid rgba(214, 184, 120, 0.25); }
-.hall-dialog-head h2 { margin: 0; font-size: 1.25rem; }
-.hall-dialog-close { width: 44px; height: 44px; border: 1px solid rgba(214, 184, 120, 0.35); border-radius: 10px; color: var(--on-dark); background: transparent; font-size: 1.5rem; line-height: 1; }
-.hall-dialog-close:focus-visible { outline-color: var(--gold-light); }
-.hall-media { display: grid; gap: 14px; padding: 18px; }
-.hall-media figure { margin: 0; }
-.hall-media img, .hall-media video { width: 100%; height: auto; border-radius: 10px; background: #111; }
-.hall-media figcaption { margin-top: 6px; color: var(--on-dark-soft); font-size: 0.92rem; }
-
-/* פריסת "בלב בני ברק" במסכים צרים – אחרי כללי הבסיס כדי לגבור עליהם */
+/* פריסת המחסן במסכים צרים */
 @media (max-width: 900px) {
   .areas-layout { grid-template-columns: 1fr; gap: 32px; }
-  .radar { max-width: 600px; width: 100%; margin-inline: auto; }
+  .location-visual { min-height: 360px; }
+  .location-visual > img { min-height: 360px; }
 }
 
 /* עמוד 404 */
