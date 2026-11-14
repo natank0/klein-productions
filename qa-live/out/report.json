@@ -1,0 +1,443 @@
+[
+  {
+    "k": "live index.html identical to main",
+    "v": true
+  },
+  {
+    "k": "asset assets/css/site.css",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "asset assets/js/site.js",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "asset assets/img/brands/waze-icon-24.png",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "asset assets/img/brands/waze-icon-48.png",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "asset assets/img/brands/google-maps-icon-24.png",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "asset assets/img/brands/google-maps-icon-48.png",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "asset 404.html",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "asset sitemap.xml",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "asset robots.txt",
+    "v": {
+      "status": 200,
+      "sameAsRepo": true
+    }
+  },
+  {
+    "k": "beit-shemesh status",
+    "v": 404
+  },
+  {
+    "k": "1440x900",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "1280x800",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "1024x768",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "820x1180",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "768x1024",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "414x896",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "390x844",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "375x812",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "360x800",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "320x640",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-48.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "844x390",
+    "v": {
+      "overflowX": 0,
+      "h1": "הגברה לחתונות, חופות ואירועים בבני ברק",
+      "icons": [
+        {
+          "src": "waze-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        },
+        {
+          "src": "google-maps-icon-24.png",
+          "ok": true,
+          "w": 24,
+          "h": 24,
+          "filter": "none"
+        }
+      ],
+      "pins": 1,
+      "pinInside": true,
+      "oldHalls": false,
+      "errs": [],
+      "ext": []
+    }
+  },
+  {
+    "k": "mobile menu open/escape",
+    "v": {
+      "open": "true",
+      "closed": {
+        "exp": "false",
+        "focus": "menuToggle"
+      }
+    }
+  },
+  {
+    "k": "form → whatsapp (intercepted, not sent)",
+    "v": {
+      "url": "https://wa.me/972527675138?text=%D7%A9%D",
+      "msg": "שלום, אשמח להצעת מחיר להגברה.\r\n\r\nשם: בדיקה\r\nטלפון: 050-1234567\r\nסוג האירוע: חתונה וחופה\r\nתאריך: טרם נקבע\r\nעיר: אלעד-בדיקה",
+      "status": "ההודעה מוכנה בוואטסאפ. בדקו ולחצו שם על שליחה. אם וואטסאפ לא נפתח, אפשר להעתיק את פרטי הפנייה."
+    }
+  },
+  {
+    "k": "no-js",
+    "v": {
+      "nav": 6,
+      "maps": 2,
+      "addr": "כהנמן 64, בני ברק"
+    }
+  },
+  {
+    "k": "desktop waze final URL",
+    "v": {
+      "start": "https://waze.com/ul?q=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&navigate=yes",
+      "final": "https://www.waze.com/ul?q=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F+64+%D7%91%D7%A0%D7%99+%D7%91%D7%A8%D7%A7&navigate=yes",
+      "title": "‫Waze: מסלולי נסיעה ודיווחי תנועה"
+    }
+  },
+  {
+    "k": "desktop google-maps final URL",
+    "v": {
+      "start": "https://www.google.com/maps/search/?api=1&query=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7",
+      "final": "https://www.google.com/maps/place/%D7%94%D7%A8%D7%91+%D7%9B%D7%94%D7%A0%D7%9E%D7%9F+64,+%D7%91%D7%A0%D7%99+%D7%91%D7%A8%D7%A7,+%D7%99%D7%A9%D7%A8%D7%90%D7%9C%E2%80%AD/@32.0820973,34.8409543,17z/data=!3m1!4b1!4m6!3m5!1s0x151d4a17f9eb0b97:0xfccea9669ae780c3!8m2!3d32.0820973!4d34.8409543!16s%2Fg%2F11x5rbh_l4?entry=ttu&g_ep=EgoyMDI2MTExMC4wIKXMDSoASAFQAw%3D%3D",
+      "title": "הרב כהנמן 64 - מפות ‪Google‬‏"
+    }
+  },
+  {
+    "k": "android waze final URL",
+    "v": {
+      "start": "https://waze.com/ul?q=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&navigate=yes",
+      "final": "https://www.waze.com/ul?q=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F+64+%D7%91%D7%A0%D7%99+%D7%91%D7%A8%D7%A7&navigate=yes",
+      "title": "‫Waze: מסלולי נסיעה ודיווחי תנועה"
+    }
+  },
+  {
+    "k": "android google-maps nav error",
+    "v": "page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.google.com/maps/search/?api=1&query=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7\", waiting until \"domcontentloaded\"\n"
+  },
+  {
+    "k": "android google-maps final URL",
+    "v": {
+      "start": "https://www.google.com/maps/search/?api=1&query=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7",
+      "final": "https://www.google.com/maps/place/%D7%94%D7%A8%D7%91+%D7%9B%D7%94%D7%A0%D7%9E%D7%9F+64,+%D7%91%D7%A0%D7%99+%D7%91%D7%A8%D7%A7,+%D7%99%D7%A9%D7%A8%D7%90%D7%9C%E2%80%AD/@32.0820973,34.8409543,15z/data=!4m6!3m5!1s0x151d4a17f9eb0b97:0xfccea9669ae780c3!8m2!3d32.0820973!4d34.8409543!16s%2Fg%2F11x5rbh_l4?g_ep=Eg1tbF8yMDI2MTExMF8wIJvbDyoASAJQAQ%3D%3D",
+      "title": "הרב כהנמן 64, בני ברק – רוצה לגלות את מפות Google?"
+    }
+  }
+]
