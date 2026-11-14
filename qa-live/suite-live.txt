@@ -1,0 +1,21 @@
+
+> test
+> node tests/run.js
+
+
+— HTML ותוכן
+
+בדיקות דפדפן מול https://natank0.github.io/klein-productions/
+
+— פריסה, מחסן ומשקל
+
+— נגישות
+
+— טופס
+
+— תנועה
+
+— בלי JavaScript ו-404
+
+175 עברו, 0 נכשלו
+exit=0
