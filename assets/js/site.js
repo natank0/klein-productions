@@ -193,7 +193,7 @@
     name: 'נא לכתוב שם.',
     phone: 'נא לכתוב מספר טלפון תקין, למשל 050-1234567.',
     eventType: 'נא לבחור סוג אירוע.',
-    date: 'נא לבחור תאריך.',
+    date: 'בחרו תאריך או סמנו שהתאריך עדיין לא סגור.',
     datePast: 'התאריך שנבחר כבר עבר.'
   };
 
@@ -270,7 +270,9 @@
     if (val('access')) lines.push('גישה למקום: ' + val('access'));
     if (needs.length) lines.push('צריך: ' + needs.join(', '));
     if (val('notes')) lines.push('הערות: ' + val('notes').slice(0, 400));
-    return lines.join('\n');
+    // Use the platform-neutral message convention expected by WhatsApp and
+    // Windows clipboard APIs, which normalize line breaks to CRLF.
+    return lines.join('\r\n');
   }
 
   function checkForm() {
