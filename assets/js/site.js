@@ -9,106 +9,6 @@
 
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
-  /* רדאר אולמות: פעימה אחת מהמחסן כשהרדאר נכנס למסך; מצב סופי יציב */
-  var radar = document.querySelector('.radar');
-  var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-  if (radar && motionOK && 'IntersectionObserver' in window) {
-    var radarObserver = new IntersectionObserver(function (entries) {
-      if (!entries[0].isIntersecting) return;
-      radar.classList.add('is-playing');
-      radarObserver.disconnect();
-    }, { threshold: 0.35 });
-    radarObserver.observe(radar);
-  }
-
-  /* מקרא ↔ נקודה ברדאר, ומדיה לכל אולם (נתונים ב-#hallMedia) */
-  if (radar) {
-    var nodes = Array.prototype.slice.call(radar.querySelectorAll('.radar-node'));
-    var nodeFor = function (id) { return nodes.filter(function (n) { return (' ' + n.getAttribute('data-hall') + ' ').indexOf(' ' + id + ' ') !== -1; })[0]; };
-    var media = {};
-    try { media = JSON.parse((document.getElementById('hallMedia') || {}).textContent || '{}'); } catch (err) { media = {}; }
-    var dialog = document.getElementById('hallDialog');
-    var dialogTitle = document.getElementById('hallDialogTitle');
-    var dialogList = document.getElementById('hallMediaList');
-    var lastTrigger = null;
-
-    function hot(id, on) { var n = nodeFor(id); if (n) n.classList.toggle('is-hot', on); }
-    /* מדיה רק מקבצי האתר עצמו: כתובת חיצונית, data: או javascript: נדחות */
-    function local(u) {
-      if (typeof u !== 'string' || !u.trim()) return '';
-      try { var url = new URL(u, document.baseURI); return url.origin === window.location.origin ? url.href : ''; } catch (err) { return ''; }
-    }
-    function localSrcset(set) {
-      if (typeof set !== 'string') return '';
-      var parts = set.split(',').map(function (c) { var bits = c.trim().split(/\s+/); var u = local(bits[0]); return u ? [u].concat(bits.slice(1)).join(' ') : ''; });
-      return parts.every(Boolean) ? parts.join(', ') : '';
-    }
-    function usable(m) { return m && (m.type === 'image' || m.type === 'video') && local(m.src); }
-    function openHall(id, name, trigger) {
-      var items = (media[id] || []).filter(usable);
-      if (!items.length || !dialog || typeof dialog.showModal !== 'function') return;
-      dialogTitle.textContent = name;
-      dialogList.textContent = '';
-      items.forEach(function (m) {
-        var fig = document.createElement('figure');
-        if (m.type === 'video') {
-          var v = document.createElement('video');
-          v.controls = true; v.preload = 'none'; v.playsInline = true;
-          if (local(m.poster)) v.poster = local(m.poster);
-          if (m.width) v.width = m.width;
-          if (m.height) v.height = m.height;
-          var src = document.createElement('source'); src.src = local(m.src); if (m.mime) src.type = m.mime;
-          v.appendChild(src);
-          if (local(m.captions)) { var t = document.createElement('track'); t.kind = 'captions'; t.srclang = 'he'; t.label = 'עברית'; t.src = local(m.captions); t.default = true; v.appendChild(t); }
-          fig.appendChild(v);
-        } else {
-          var img = document.createElement('img');
-          img.src = local(m.src); img.alt = m.alt || ''; img.loading = 'lazy'; img.decoding = 'async';
-          if (localSrcset(m.srcset)) img.srcset = localSrcset(m.srcset);
-          if (m.sizes) img.sizes = m.sizes;
-          if (m.width) img.width = m.width;
-          if (m.height) img.height = m.height;
-          fig.appendChild(img);
-        }
-        if (m.caption) { var cap = document.createElement('figcaption'); cap.textContent = m.caption; fig.appendChild(cap); }
-        dialogList.appendChild(fig);
-      });
-      lastTrigger = trigger || null;
-      dialog.showModal();
-    }
-    if (dialog) {
-      dialog.querySelector('.hall-dialog-close').addEventListener('click', function () { dialog.close(); });
-      dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
-      dialog.addEventListener('close', function () {
-        dialogList.querySelectorAll('video').forEach(function (v) { v.pause(); });
-        if (lastTrigger) lastTrigger.focus();
-      });
-    }
-
-    document.querySelectorAll('.radar-legend li[data-hall]').forEach(function (li) {
-      var id = li.getAttribute('data-hall');
-      var nameEl = li.querySelector('.legend-name');
-      var name = nameEl.textContent;
-      var target = nameEl;
-      if ((media[id] || []).some(usable)) {
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.innerHTML = '<span></span><span class="media-mark" aria-hidden="true">▶</span>';
-        btn.firstChild.textContent = name;
-        btn.setAttribute('aria-label', name + ' – צפייה בתמונות ובסרטונים מהאולם');
-        btn.addEventListener('click', function () { openHall(id, name, btn); });
-        li.replaceChild(btn, nameEl);
-        target = btn;
-        radar.querySelectorAll('.radar-label [data-hall="' + id + '"]').forEach(function (el) {
-          el.classList.add('has-media');
-          el.addEventListener('click', function () { openHall(id, name, btn); });
-        });
-      }
-      ['mouseenter', 'focus'].forEach(function (ev) { target.addEventListener(ev, function () { hot(id, true); }); });
-      ['mouseleave', 'blur'].forEach(function (ev) { target.addEventListener(ev, function () { hot(id, false); }); });
-    });
-  }
-
   /* תפריט מובייל */
   var toggle = document.getElementById('menuToggle');
   var nav = document.getElementById('siteNav');
@@ -179,22 +79,56 @@
       else showContext('קטגוריה: ' + group.label + '. אפשר לבחור מכל סוגי האירועים.');
     });
   });
-  document.querySelectorAll('.tag[data-event]').forEach(function (link) {
+  document.querySelectorAll('a[data-event]').forEach(function (link) {
     link.addEventListener('click', function () {
       var value = link.getAttribute('data-event');
       var group = groupOf(value);
       promote(group);
       eventType.value = value;
       setError('eventType', '');
+      suggestNeeds();
       showContext('נבחר: ' + value + (group ? ' (' + group.label + ')' : '') + '. אפשר לשנות בכל רגע.');
     });
   });
+
+  /* צרכים נפוצים לפי סוג האירוע: רק סימון עדין, בלי לבחור או לבטל בשביל הפונה */
+  var SUGGEST = {
+    weddings: ['פיזור לעזרת נשים', 'רמקול לחופה', 'קלידן או נגן', 'מוניטור לזמר'],
+    family: ['קלידן או נגן', 'מיקרופון אלחוטי', 'פיזור לעזרת נשים'],
+    shul: ['מיקרופון לדרשה', 'מיקרופונים למקהלה', 'קלידן או נגן'],
+    institutions: ['מיקרופונים למקהלה', 'מיקרופון אלחוטי', 'הקלטה', 'מקרן ומסך'],
+    holidays: ['קלידן או נגן', 'מיקרופון אלחוטי', 'תאורה']
+  };
+  var needsHint = document.getElementById('needsHint');
+  function suggestNeeds() {
+    var group = groupOf(eventType.value);
+    var key = group ? group.getAttribute('data-event-group') : '';
+    var list = SUGGEST[key] || [];
+    form.querySelectorAll('input[name="needs"]').forEach(function (c) { c.parentNode.classList.toggle('is-suggested', list.indexOf(c.value) !== -1); });
+    if (needsHint) {
+      needsHint.hidden = !list.length;
+      needsHint.textContent = list.length ? 'מסומנים בנקודה: צרכים נפוצים ב' + group.label + '. אפשר לבחור כל צורך אחר.' : '';
+    }
+  }
+  eventType.addEventListener('change', suggestNeeds);
+
+  /* עיר "אחר" פותחת שדה לשם העיר */
+  var city = form.elements.city;
+  var cityOtherField = document.getElementById('cityOtherField');
+  function syncCity() {
+    var other = city.value === 'אחר';
+    cityOtherField.hidden = !other;
+    form.elements.cityOther.required = other;
+    if (!other) setError('cityOther', '');
+  }
+  city.addEventListener('change', syncCity);
   var messages = {
     name: 'נא לכתוב שם.',
     phone: 'נא לכתוב מספר טלפון תקין, למשל 050-1234567.',
     eventType: 'נא לבחור סוג אירוע.',
     date: 'בחרו תאריך או סמנו שהתאריך עדיין לא סגור.',
-    datePast: 'התאריך שנבחר כבר עבר.'
+    datePast: 'התאריך שנבחר כבר עבר.',
+    cityOther: 'נא לכתוב את שם העיר.'
   };
 
   function field(name) { return form.elements[name]; }
@@ -207,7 +141,7 @@
     }
     if (err) err.textContent = msg || '';
   }
-  ['name', 'phone', 'eventType', 'date'].forEach(function (n) {
+  ['name', 'phone', 'eventType', 'date', 'cityOther'].forEach(function (n) {
     var el = field(n);
     if (!el) return;
     el.addEventListener('input', function () { setError(n, ''); });
@@ -234,6 +168,8 @@
   }
   dateUnknown.addEventListener('change', syncDate);
   syncDate();
+  syncCity();
+  suggestNeeds();
 
   function formatDate(iso) {
     var p = iso.split('-');
@@ -254,6 +190,7 @@
       if (!val('date')) errors.date = messages.date;
       else if (val('date') < todayISO()) errors.date = messages.datePast;
     }
+    if (val('city') === 'אחר' && !val('cityOther')) errors.cityOther = messages.cityOther;
     return errors;
   }
 
@@ -265,7 +202,7 @@
     lines.push('סוג האירוע: ' + val('eventType'));
     lines.push('תאריך: ' + (dateUnknown.checked ? 'טרם נקבע' : formatDate(val('date'))));
     if (val('time')) lines.push('שעת התחלה: ' + val('time'));
-    if (val('city')) lines.push('עיר: ' + val('city'));
+    if (val('city')) lines.push('עיר: ' + (val('city') === 'אחר' ? val('cityOther') : val('city')));
     if (val('venue')) lines.push('אולם / כתובת: ' + val('venue'));
     if (val('access')) lines.push('גישה למקום: ' + val('access'));
     if (needs.length) lines.push('צריך: ' + needs.join(', '));
@@ -277,7 +214,7 @@
 
   function checkForm() {
     var errors = validate();
-    var order = ['name', 'phone', 'eventType', 'date'];
+    var order = ['name', 'phone', 'eventType', 'date', 'cityOther'];
     var first = null;
     order.forEach(function (n) {
       setError(n, errors[n] || '');
@@ -286,6 +223,8 @@
     if (first) {
       status.textContent = 'יש לתקן את השדות המסומנים.';
       status.classList.add('is-error');
+      var fold = first.closest('details');
+      if (fold) fold.open = true;
       first.focus();
       return false;
     }
@@ -299,7 +238,7 @@
     var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(buildMessage());
     var win = window.open(url, '_blank');
     if (win) { try { win.opener = null; } catch (err) { /* ignore */ } } else { window.location.href = url; }
-    status.textContent = 'ההודעה מוכנה בוואטסאפ: בדקו אותה ולחצו שם על שליחה. אם וואטסאפ לא נפתח, אפשר להעתיק את פרטי הפנייה.';
+    status.textContent = 'ההודעה מוכנה בוואטסאפ. בדקו ולחצו שם על שליחה. אם וואטסאפ לא נפתח, אפשר להעתיק את פרטי הפנייה.';
   });
   var preview = document.getElementById('inquiryPreview');
   document.getElementById('copyInquiry').addEventListener('click', async function () {
