@@ -26,7 +26,7 @@ function check(name, ok, detail) {
 function section(t) { console.log('\n— ' + t); }
 
 /* ---------- שרת סטטי ---------- */
-const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json', '.xml': 'application/xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.mp4': 'video/mp4', '.vtt': 'text/vtt', '.md': 'text/plain; charset=utf-8' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json', '.xml': 'application/xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.mp4': 'video/mp4', '.vtt': 'text/vtt', '.md': 'text/plain; charset=utf-8' };
 function serve() {
   return new Promise(resolve => {
     const srv = http.createServer((req, res) => {
@@ -116,6 +116,12 @@ function nextSaturday(minDays) {
   check('וואטסאפ נכתב בעברית בטקסט הגלוי', !/>[^<]*WhatsApp[^<]*</.test(index.replace(/<title>[\s\S]*?<\/title>/, '')));
   check('משפט פרטיות ליד כפתור השליחה', /class="form-privacy">הפרטים לא נשמרים באתר/.test(index));
   check('חתונות: ארבעה שלבים לפי מהלך החתונה (קבלת פנים, חופה, סעודה, רחבת השמחה)', (() => { const m = index.match(/<ol class="wedding-flow">([\s\S]*?)<\/ol>/); const st = m ? [...m[1].matchAll(/<strong>([^<]+)<\/strong>/g)].map(x => x[1]) : []; return st.join('|') === 'קבלת פנים|חופה|סעודה|רחבת השמחה'; })());
+  check('פתיחה: שתי פעולות בלבד, טופס הצעת מחיר וחיוג עם המספר גלוי (וואטסאפ ישיר רק בפס, בטופס ובפוטר)', (() => { const m = index.match(/<div class="hero-actions">([\s\S]*?)<\/div>/); const b = m ? [...m[1].matchAll(/<a [^>]*href="([^"]+)"/g)].map(x => x[1]) : []; return b.length === 2 && b[0] === '#order' && b[1] === 'tel:0527675138' && m[1].includes('052-7675138'); })());
+  check('כותרת: הקישור שמחוץ לתפריט מוביל לטופס, בלי כפילות של "חתונות"', index.includes('class="btn btn-primary btn-sm header-quote" href="#order"') && !index.includes('header-events'));
+  check('הציוד: שמות המותגים גלויים כבר בכותרת המקופלת', /<summary>[\s\S]*?הציוד שאנחנו עובדים איתו[\s\S]*?RCF[\s\S]*?Midas[\s\S]*?Shure[\s\S]*?<\/summary>/.test(index));
+  check('המחסן: הכותרת מבהירה שזו נקודת יציאה לאולמות ואיסוף בהשכרה', /class="address-card">[\s\S]*?נקודת היציאה לאולמות/.test(index));
+  check('שירות: איש סאונד לאורך האירוע כתוספת בתיאום', /תוספות בתיאום[\s\S]*?איש סאונד לאורך האירוע/.test(index));
+  check('גופן: מקומי בלבד (woff2 מהאתר), CSP עם font-src self, ורישיון OFL לצד הקבצים', (() => { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8'); const urls = [...css.matchAll(/url\("([^"]+)"\)/g)].map(m => m[1]); return urls.length >= 4 && urls.every(u => /^\.\.\/fonts\/[\w-]+\.woff2$/.test(u) && fs.existsSync(path.join(ROOT, 'assets/css', u))) && /font-display: swap/.test(css) && pages.every(({ html }) => /font-src 'self'/.test(html)) && fs.existsSync(path.join(ROOT, 'assets/fonts/OFL.txt')); })());
   check('פתיחה: שלוש עובדות על מה שכלול בהקמה', (index.match(/<ul class="hero-facts"[\s\S]*?<\/ul>/) || [''])[0].split('<li>').length - 1 === 3);
   check('סגירה אחרי השאלות: טופס, חיוג ווואטסאפ', (() => { const i = index.indexOf('id="closing-title"'); const blk = index.slice(i, index.indexOf('</section>', i)); return i > index.indexOf('id="faq"') && blk.includes('href="#order"') && blk.includes('href="tel:0527675138"') && blk.includes('https://wa.me/972527675138'); })());
   check('בפרק המחסן: משפט שמבהיר שהציוד מגיע אל מקום השמחה', /class="location-benefit">[^<]*מקום השמחה/.test(index));
@@ -196,13 +202,13 @@ function nextSaturday(minDays) {
       await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(150);
       const top = await p.evaluate(() => ({
         bar: getComputedStyle(document.querySelector('.action-bar')).visibility,
-        direct: [...document.querySelectorAll('.hero-direct')].map(a => ({ href: a.getAttribute('href'), visible: !!a.offsetParent && a.getBoundingClientRect().height >= 44 }))
+        direct: [...document.querySelectorAll('.hero-actions .btn')].map(a => ({ href: a.getAttribute('href'), visible: !!a.offsetParent && a.getBoundingClientRect().height >= 44 }))
       }));
       await p.evaluate(() => window.scrollTo(0, 1500)); await p.waitForTimeout(300);
-      const mid = await p.evaluate(() => getComputedStyle(document.querySelector('.action-bar')).visibility);
+      const mid = await p.evaluate(() => { const bar = document.querySelector('.action-bar'); return getComputedStyle(bar).visibility === 'visible' && !!bar.querySelector('a[href^="https://wa.me/"]') ? 'visible' : 'hidden'; });
       await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); await p.waitForTimeout(300);
       const foot = await p.evaluate(() => document.querySelector('.footer-bottom').getBoundingClientRect().bottom <= document.querySelector('.action-bar').getBoundingClientRect().top);
-      check(`${w}: חיוג ו-WhatsApp גלויים בפתיחה; הפס מופיע רק בגלילה ואינו מכסה את הפוטר`, top.bar === 'hidden' && top.direct.length === 2 && top.direct.every(x => x.visible) && top.direct.some(x => x.href.startsWith('tel:')) && top.direct.some(x => x.href.startsWith('https://wa.me/')) && mid === 'visible' && foot, { top, mid, foot });
+      check(`${w}: בפתיחה שתי פעולות (טופס וחיוג, בלי וואטסאפ שעוקף את הטופס); פס חיוג ווואטסאפ מופיע רק בגלילה ואינו מכסה את הפוטר`, top.bar === 'hidden' && top.direct.length === 2 && top.direct.every(x => x.visible) && top.direct[0].href === '#order' && top.direct[1].href.startsWith('tel:') && mid === 'visible' && foot, { top, mid, foot });
     }
     await c.close();
   }
@@ -302,6 +308,9 @@ function nextSaturday(minDays) {
     await p.fill('#date', sat.iso);
     const echo = await p.evaluate(() => { const h = document.getElementById('dateHint'); return { shown: !h.hidden, text: h.textContent }; });
     check('מתחת לתאריך מוצג התאריך כפי שיופיע בהודעה (יום בשבוע ו-DD/MM/YYYY)', echo.shown && echo.text === 'בהודעה יופיע: יום שבת, ' + sat.shown, echo);
+    const accessVisible = await p.evaluate(() => [...document.querySelectorAll('input[name="access"]')].every(i => !!i.parentNode.offsetParent && !i.closest('details')));
+    check('גישה למקום גלויה בלי לפתוח אקורדיון', accessVisible);
+    await p.click('.check:has(input[name="access"][value="יש מעלית"])'); await p.click('.check:has(input[name="access"][value="אירוע בחוץ"])');
     await p.click('.form-options summary'); await p.fill('#notes', 'א'.repeat(450));
     urls.length = 0; await p.click('.form-submit');
     const msg = decodeURIComponent((urls[0] || '').split('text=')[1] || '');
@@ -309,6 +318,7 @@ function nextSaturday(minDays) {
     check('יום שבת מוצג במילים בהודעה', msg.includes('תאריך: יום שבת, ' + sat.shown), (msg.match(/תאריך: .*/) || [''])[0]);
     check('הערות נחתכות ב-400 תווים', ((msg.match(/הערות: (א+)/) || ['', ''])[1].length) === 400);
     check('סוג האירוע בהודעה', msg.includes('סוג האירוע: פדיון הבן'));
+    check('גישה למקום: תגיות גלויות בלי אקורדיון, והבחירה נכנסת להודעה', msg.includes('גישה למקום: יש מעלית, אירוע בחוץ'), (msg.match(/גישה למקום: .*/) || [''])[0]);
     const alt = await p.evaluate(() => { const box = document.querySelector('.form-alt'); const vis = e => !!e && !!e.offsetParent && !e.closest('details:not([open])'); return { box: vis(box), tel: vis(box && box.querySelector('a[href="tel:0527675138"]')), copy: vis(document.getElementById('copyInquiry')) }; });
     check('בלי וואטסאפ: חיוג והעתקת הפנייה גלויים מתחת לכפתור השליחה, בלי לפתוח אקורדיון', alt.box && alt.tel && alt.copy, alt);
     await p.click('#copyInquiry'); await p.waitForTimeout(100);
@@ -368,7 +378,7 @@ function nextSaturday(minDays) {
   {
     const c = await browser.newContext({ viewport: { width: 390, height: 800 }, javaScriptEnabled: false });
     const p = await c.newPage(); await p.goto(BASE);
-    const r = await p.evaluate(() => ({ nav: !!document.querySelector('#siteNav a[href="#faq"]').offsetParent, bar: getComputedStyle(document.querySelector('.action-bar')).visibility, direct: [...document.querySelectorAll('.hero-direct')].filter(a => a.offsetParent && a.getBoundingClientRect().height >= 44).length, maps: [...document.querySelectorAll('.navigation-link')].filter(a => a.offsetParent).map(a => a.dataset.app), pin: !!document.querySelector('.location-map iframe').offsetParent, addr: document.querySelector('.address-card strong').textContent, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+    const r = await p.evaluate(() => ({ nav: !!document.querySelector('#siteNav a[href="#faq"]').offsetParent, bar: getComputedStyle(document.querySelector('.action-bar')).visibility, direct: [...document.querySelectorAll('.hero-actions .btn')].filter(a => a.offsetParent && a.getBoundingClientRect().height >= 44).length, maps: [...document.querySelectorAll('.navigation-link')].filter(a => a.offsetParent).map(a => a.dataset.app), pin: !!document.querySelector('.location-map iframe').offsetParent, addr: document.querySelector('.address-card strong').textContent, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
     check('בלי JS: ניווט, שתי דרכי קשר ישירות, פס חיוג, המחסן עם מפה, Waze ו-Google Maps, כתובת, בלי גלילה אופקית', r.nav && r.direct === 2 && r.bar === 'visible' && r.maps.join() === 'waze,google-maps' && r.pin && r.addr === 'כהנמן 64, בני ברק' && r.ov === 0, r);
     await c.close();
     const c2 = await ctx({ viewport: { width: 390, height: 800 } });
