@@ -107,14 +107,14 @@ function nextSaturday(minDays) {
   check('המחסן: פין אחד בלבד, בלי נקודות נוספות', (index.match(/class="location-pin"/g) || []).length === 1 && (index.match(/class="pin-mark"/g) || []).length === 1 && !/radar-node|radar-dot|radar-legend/.test(index));
   const WAZE_URL = 'https://waze.com/ul?q=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;navigate=yes';
   const GMAPS_URL = 'https://www.google.com/maps/search/?api=1&amp;query=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7';
-  const navLinks = [...index.matchAll(/<a class="navigation-link" data-app="([a-z-]+)" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map(m => ({ app: m[1], href: m[2], text: m[3].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(), svg: m[3].includes('<svg') }));
+  const navLinks = [...index.matchAll(/<a class="navigation-link" data-app="([a-z-]+)" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map(m => ({ app: m[1], href: m[2], text: m[3].replace(/<img[^>]*>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(), svg: m[3].includes('<svg') }));
   check('קישורי ניווט: Waze ו-Google Maps לכתובת המחסן, עם טקסט גלוי', navLinks.length === 2 && navLinks.some(l => l.app === 'waze' && l.href === WAZE_URL && l.text === 'ניווט ב-Waze') && navLinks.some(l => l.app === 'google-maps' && l.href === GMAPS_URL && l.text === 'פתיחה ב-Google Maps'), navLinks);
   check('קישורי ניווט: בלי אייקון סיכה או חץ גנרי משותף', navLinks.every(l => !l.svg), navLinks);
   /* סמלי המותג הרשמיים: אם נוספו קבצים, הם מקומיים, מוצגים בקישור הנכון ולא צבועים מחדש */
-  for (const [app, file] of [['waze', 'assets/img/brands/waze-icon.svg'], ['google-maps', 'assets/img/brands/google-maps-icon.svg']]) {
-    if (!fs.existsSync(path.join(ROOT, file))) continue;
-    const link = navLinks.find(l => l.app === app);
-    check(`${file}: מוצג בקישור ${app}`, !!link && index.includes(file));
+  for (const app of ['waze', 'google-maps']) {
+    const files = [`assets/img/brands/${app}-icon-24.png`, `assets/img/brands/${app}-icon-48.png`];
+    const link = [...index.matchAll(/<a class="navigation-link" data-app="([a-z-]+)"[^>]*>([\s\S]*?)<\/a>/g)].find(m => m[1] === app);
+    check(`סמל ${app}: קבצים מקומיים קיימים ומוצגים בקישור הנכון עם alt ריק`, files.every(f => fs.existsSync(path.join(ROOT, f))) && !!link && files.every(f => link[2].includes(f)) && /<img [^>]*alt=""/.test(link[2]), app);
   }
   check('CSS: אין filter על סמלי מותג', !/navigation-link[^{]*img[^{]*\{[^}]*filter/.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('אין טענת "מרכז גאוגרפי" או זמני הגעה', !/מרכז גאוגרפי|מרכז גיאוגרפי|דקות נסיעה|דקות מהמחסן|ק״מ|ק"מ/.test(visibleText(index)));
@@ -166,7 +166,7 @@ function nextSaturday(minDays) {
       const inside = r => r.left >= canvas.left && r.right <= canvas.right && r.top >= canvas.top && r.bottom <= canvas.bottom;
       const tip = { x: (pin.left + pin.right) / 2, y: pin.bottom };
       const centered = Math.abs(tip.x - (canvas.left + canvas.width / 2)) < 2 && Math.abs(tip.y - (canvas.top + canvas.height / 2)) < 2;
-      const navs = [...document.querySelectorAll('.navigation-link')].map(a => { const r = a.getBoundingClientRect(); const s = a.querySelector('span').getBoundingClientRect(); return { h: Math.round(r.height), clipped: s.right > r.right + 1 || s.left < r.left - 1 || a.scrollWidth > a.clientWidth + 1 }; });
+      const navs = [...document.querySelectorAll('.navigation-link')].map(a => { const r = a.getBoundingClientRect(); const s = a.querySelector('span').getBoundingClientRect(); const i = a.querySelector('img'); return { icon: !!i && i.complete && i.naturalWidth > 0 && getComputedStyle(i).filter === 'none', h: Math.round(r.height), clipped: s.right > r.right + 1 || s.left < r.left - 1 || a.scrollWidth > a.clientWidth + 1 }; });
       const text = document.querySelector('.location-text').getBoundingClientRect();
       return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, small, pinInside: inside(pin) && inside(label), centered, navs, linksBeforeMap: mobileFirst(text, canvas), labelFont: parseFloat(getComputedStyle(document.querySelector('.pin-label strong')).fontSize) };
       function mobileFirst(t, cv) { return t.bottom <= cv.top + 1 || t.left >= cv.right - 1; }
@@ -175,7 +175,7 @@ function nextSaturday(minDays) {
     check(`${w}: אזורי מגע ≥ 44px`, m.small.length === 0, m.small);
     check(`${w}: הפין והתווית בתוך ההמחשה`, m.pinInside, m);
     check(`${w}: חוד הפין במרכז ההמחשה`, m.centered, m);
-    check(`${w}: כפתורי Waze ו-Google Maps בגובה ≥ 48px, בלי חיתוך`, m.navs.length === 2 && m.navs.every(n => n.h >= 48 && !n.clipped), m.navs);
+    check(`${w}: כפתורי Waze ו-Google Maps: סמל רשמי נטען בלי filter, גובה ≥ 48px, בלי חיתוך`, m.navs.length === 2 && m.navs.every(n => n.icon && n.h >= 48 && !n.clipped), m.navs);
     check(`${w}: כתובת וכפתורי ניווט לפני ההמחשה או לצידה`, m.linksBeforeMap, m);
     check(`${w}: גופן תווית הפין ≥ 14px`, m.labelFont >= 14, m.labelFont);
     check(`${w}: בלי שגיאות קונסולה`, errs.length === 0, errs);
