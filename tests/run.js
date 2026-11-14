@@ -115,6 +115,9 @@ function nextSaturday(minDays) {
   check('אין מחלקת btn-dark מטעה (הכפתור זהב)', !/btn-dark/.test(index + pages[1].html + fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('וואטסאפ נכתב בעברית בטקסט הגלוי', !/>[^<]*WhatsApp[^<]*</.test(index.replace(/<title>[\s\S]*?<\/title>/, '')));
   check('משפט פרטיות ליד כפתור השליחה', /class="form-privacy">הפרטים לא נשמרים באתר/.test(index));
+  check('חתונות: ארבעה שלבים לפי מהלך החתונה (קבלת פנים, חופה, סעודה, רחבת השמחה)', (() => { const m = index.match(/<ol class="wedding-flow">([\s\S]*?)<\/ol>/); const st = m ? [...m[1].matchAll(/<strong>([^<]+)<\/strong>/g)].map(x => x[1]) : []; return st.join('|') === 'קבלת פנים|חופה|סעודה|רחבת השמחה'; })());
+  check('פתיחה: שלוש עובדות על מה שכלול בהקמה', (index.match(/<ul class="hero-facts"[\s\S]*?<\/ul>/) || [''])[0].split('<li>').length - 1 === 3);
+  check('סגירה אחרי השאלות: טופס, חיוג ווואטסאפ', (() => { const i = index.indexOf('id="closing-title"'); const blk = index.slice(i, index.indexOf('</section>', i)); return i > index.indexOf('id="faq"') && blk.includes('href="#order"') && blk.includes('href="tel:0527675138"') && blk.includes('https://wa.me/972527675138'); })());
   check('בפרק המחסן: משפט שמבהיר שהציוד מגיע אל מקום השמחה', /class="location-benefit">[^<]*מקום השמחה/.test(index));
   check('אין משטחים כהים ב-CSS (רקע של שזיף כהה או פחם)', !/#160f1f|#221a2d|#33273f|#22201d|plum-950|plum-900/i.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('ארבעת סוגי האירועים הנוספים כרשימה, לכל אחד קישור הצעת מחיר ייחודי', (() => { const labels = [...index.matchAll(/class="btn btn-line entry-cta"[^>]*>[\s\S]*?<\/svg>([^<]+)<\/a>/g)].map(m => m[1]); return /<ul class="entries">/.test(index) && labels.length === 4 && new Set(labels).size === 4; })());
@@ -235,7 +238,7 @@ function nextSaturday(minDays) {
       const c = await ctx({ viewport: { width: w, height: 900 }, bypassCSP: true });
       const p = await c.newPage(); await p.goto(BASE, { waitUntil: 'networkidle' });
       const bad = [];
-      for (const el of await p.$$('.hero h1 .h1-part, .hero-lead, .hero-area, .event-wide-head h3, .event-wide-head p, .event-wide-body h4, .group-title, .location-benefit, .scope-col h3, .scope-note, .footer p')) {
+      for (const el of await p.$$('.hero h1 .h1-part, .hero-lead, .hero-area, .hero-facts span, .event-wide-head h3, .event-wide-head p, .event-wide-body h4, .group-title, .location-benefit, .scope-col h3, .scope-note, .footer p')) {
         await el.scrollIntoViewIfNeeded();
         const info = await el.evaluate(e => { const s = getComputedStyle(e); return { color: s.color, fs: parseFloat(s.fontSize), fw: +s.fontWeight, t: e.textContent.trim().slice(0, 14) }; });
         const bb = await el.boundingBox();

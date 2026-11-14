@@ -86,10 +86,14 @@ main [tabindex="-1"]:focus { outline: none; }
 .h1-part { display: block; }
 .hero h1 { margin: 0; font-size: clamp(2rem, 4.8vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
 .hero h1::before { content: ""; display: block; width: 64px; height: 2px; margin: 0 auto 26px; background: var(--gold); }
-.hero-lead { max-width: 46ch; margin-top: 20px; color: var(--ink-soft); font-size: 1.14rem; line-height: 1.7; text-wrap: balance; }
+.hero-lead { max-width: 60ch; margin-top: 20px; color: var(--ink-soft); font-size: 1.14rem; line-height: 1.7; text-wrap: balance; }
 .hero-area { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 6px 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--gold-ink); font-size: 1rem; font-weight: 700; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
 .hero-actions .btn { padding-inline: 20px; }
+/* מה כלול בהזמנה עם הקמה: שלוש עובדות קצרות מתחת לכפתורים */
+.hero-facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; margin: 22px 0 0; padding: 0; list-style: none; color: var(--ink-soft); font-size: 0.97rem; font-weight: 600; }
+.hero-facts li { display: inline-flex; align-items: center; gap: 6px; }
+.hero-facts .icon { width: 1.05em; height: 1.05em; color: var(--gold-ink); }
 
 /* מקטעים */
 .section { padding: 84px 0; }
@@ -109,8 +113,14 @@ main [tabindex="-1"]:focus { outline: none; }
 .event-wide-head .btn { margin-top: 6px; }
 .event-wide-body { padding: clamp(26px, 4vw, 44px); }
 .event-wide-body h4 { margin: 0 0 14px; color: var(--plum); font-size: 1.05rem; }
-.event-wide-body .checklist { gap: 12px; }
-.event-note { margin-top: 22px; padding: 12px 16px; border-right: 2px solid var(--gold); background: var(--paper); color: var(--ink-soft); }
+/* הסאונד לפי מהלך החתונה: ארבעה שלבים על קו זהב אנכי */
+.wedding-flow { margin: 0; padding: 0; list-style: none; counter-reset: stage; }
+.wedding-flow li { position: relative; display: grid; gap: 2px; padding: 0 44px 18px 0; counter-increment: stage; }
+.wedding-flow li:last-child { padding-bottom: 0; }
+.wedding-flow li::before { content: counter(stage); position: absolute; top: 0; right: 0; display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #a9834b; border-radius: 50%; background: var(--gold-soft); color: var(--ink); font-size: 0.9rem; font-weight: 800; }
+.wedding-flow li:not(:last-child)::after { content: ""; position: absolute; top: 32px; bottom: 2px; right: 14.5px; width: 1px; background: var(--gold); }
+.wedding-flow strong { font-size: 1.08rem; line-height: 30px; }
+.wedding-flow span { color: var(--ink-soft); }
 .group-title { margin: 56px 0 22px; text-align: center; color: var(--plum); font-size: 1.2rem; font-weight: 800; }
 .group-title::before, .group-title::after { content: ""; display: inline-block; width: 36px; height: 1px; margin: 0 14px; vertical-align: middle; background: var(--gold); }
 .entries { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; }
@@ -135,6 +145,16 @@ main [tabindex="-1"]:focus { outline: none; }
 /* מקום שמור לתמונה עתידית מאושרת: <figure class="entry-media"><img loading="lazy" decoding="async" ...></figure> */
 .entry-media { grid-column: 1 / -1; margin: 0; aspect-ratio: 16 / 7; overflow: hidden; border-radius: 10px; background: var(--sand); }
 .entry-media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* מקומות מוכנים למדיה (תמונות וסרטונים מהשטח, יתווספו בהמשך; ראו README) */
+.event-wide-media { grid-column: 1 / -1; margin: 0; aspect-ratio: 21 / 8; overflow: hidden; background: var(--sand); border-bottom: 1px solid var(--line); }
+.event-wide-media img, .event-wide-media video { width: 100%; height: 100%; object-fit: cover; }
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.gallery figure { margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.gallery figcaption { padding: 10px 14px; color: var(--ink-soft); font-size: 0.95rem; }
+.media-video { max-width: 880px; margin: 0 auto; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--sand); box-shadow: var(--shadow); }
+.media-video video { display: block; width: 100%; height: auto; }
 
 /* מה כולל השירות – שתי עמודות שוות */
 .scope { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
@@ -243,6 +263,11 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 #eventContext { color: var(--gold-ink); font-weight: 700; }
 .no-js .order-form > :not(noscript) { display: none; }
 
+/* סגירה: קריאה לפעולה אחרי השאלות, כי הטופס כבר מעליהן */
+.closing-inner { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.closing .section-title::after { content: ""; display: block; width: 48px; height: 2px; margin: 18px auto 0; background: var(--gold); }
+.closing-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
+
 /* פוטר – חול בהיר, שלוש עמודות שוות */
 .footer { padding: 56px 0 32px; color: var(--ink); background: var(--sand); border-top: 1px solid var(--line); text-align: center; }
 .footer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
@@ -281,6 +306,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .location-map { max-width: 720px; width: 100%; margin-inline: auto; }
   .entry { padding: 24px; }
   .gear { grid-template-columns: 1fr; }
+  .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 860px) {
@@ -329,7 +355,10 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .hero-lead { font-size: 1.02rem; }
   .hero-area { font-size: 1rem; }
   .group-title { margin-top: 44px; }
-  .scope, .form-grid { grid-template-columns: 1fr; }
+  .scope, .form-grid, .gallery { grid-template-columns: 1fr; }
+  .event-wide-media { aspect-ratio: 16 / 9; }
+  .closing-actions { display: grid; grid-template-columns: 1fr; width: 100%; max-width: 420px; }
+  .hero-facts { margin-top: 16px; font-size: 0.92rem; gap: 6px 16px; }
   .field.full { grid-column: auto; }
   .order-form { padding: 22px 16px; }
   .entry { padding: 20px 16px; }
