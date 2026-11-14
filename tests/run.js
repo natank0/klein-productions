@@ -168,7 +168,8 @@ function nextSaturday(minDays) {
       const centered = Math.abs(tip.x - (canvas.left + canvas.width / 2)) < 2 && Math.abs(tip.y - (canvas.top + canvas.height / 2)) < 2;
       const navs = [...document.querySelectorAll('.navigation-link')].map(a => { const r = a.getBoundingClientRect(); const s = a.querySelector('span').getBoundingClientRect(); const i = a.querySelector('img'); return { icon: !!i && i.complete && i.naturalWidth > 0 && getComputedStyle(i).filter === 'none', h: Math.round(r.height), clipped: s.right > r.right + 1 || s.left < r.left - 1 || a.scrollWidth > a.clientWidth + 1 }; });
       const text = document.querySelector('.location-text').getBoundingClientRect();
-      return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, small, pinInside: inside(pin) && inside(label), centered, navs, linksBeforeMap: mobileFirst(text, canvas), labelFont: parseFloat(getComputedStyle(document.querySelector('.pin-label strong')).fontSize) };
+      const addr = document.querySelector('.address-card strong'); const addrLines = Math.round(addr.getBoundingClientRect().height / parseFloat(getComputedStyle(addr).lineHeight));
+      return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, small, pinInside: inside(pin) && inside(label), centered, navs, linksBeforeMap: mobileFirst(text, canvas), labelFont: parseFloat(getComputedStyle(document.querySelector('.pin-label strong')).fontSize), addrLines };
       function mobileFirst(t, cv) { return t.bottom <= cv.top + 1 || t.left >= cv.right - 1; }
     });
     check(`${w}: אין גלילה אופקית`, m.ov === 0, m.ov);
@@ -178,6 +179,7 @@ function nextSaturday(minDays) {
     check(`${w}: כפתורי Waze ו-Google Maps: סמל רשמי נטען בלי filter, גובה ≥ 48px, בלי חיתוך`, m.navs.length === 2 && m.navs.every(n => n.icon && n.h >= 48 && !n.clipped), m.navs);
     check(`${w}: כתובת וכפתורי ניווט לפני ההמחשה או לצידה`, m.linksBeforeMap, m);
     check(`${w}: גופן תווית הפין ≥ 14px`, m.labelFont >= 14, m.labelFont);
+    check(`${w}: כתובת המחסן בשורה אחת`, m.addrLines === 1, m.addrLines);
     check(`${w}: בלי שגיאות קונסולה`, errs.length === 0, errs);
     check(`${w}: בלי הפרות CSP`, csp.length === 0, csp);
     check(`${w}: בלי בקשות חיצוניות`, ext.length === 0, ext);
