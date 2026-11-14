@@ -90,7 +90,8 @@ function nextSaturday(minDays) {
     check(`${f}: קישורים לחלון חדש עם noopener`, [...html.matchAll(/<a [^>]*target="_blank"[^>]*>/g)].every(m => /rel="[^"]*noopener/.test(m[0])));
   }
   for (const asset of ['assets/css/site.css', 'assets/js/site.js']) {
-    const v = crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, asset))).digest('hex').slice(0, 8);
+    const canonical = fs.readFileSync(path.join(ROOT, asset), 'utf8').replace(/\r\n/g, '\n');
+    const v = crypto.createHash('sha256').update(canonical).digest('hex').slice(0, 8);
     for (const { f, html } of pages) {
       if (!html.includes(asset)) continue;
       check(`${f}: ${asset} עם ?v= תואם לתוכן (אחרת דפדפן עם מטמון ישן יקבל CSS/JS שלא מתאים; מריצים npm run stamp)`, html.includes(asset + '?v=' + v + '"'), (html.match(new RegExp(asset.replace(/[.]/g, '\\.') + '[^"]*')) || [''])[0] + ' ≠ ?v=' + v);
