@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://natank0.github.io/klein-productions/sitemap.xml

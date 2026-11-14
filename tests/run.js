@@ -13,7 +13,7 @@ const { HtmlValidate, FileSystemConfigLoader } = require('html-validate');
 const ROOT = path.resolve(__dirname, '..');
 const PREFIX = '/klein-productions/';
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
-const WIDTHS = [320, 360, 390, 430, 768, 1024, 1440];
+const WIDTHS = [320, 360, 390, 430, 768, 860, 900, 1024, 1440, 1920];
 const PHONE = '0527675138';
 const WA = '972527675138';
 
@@ -101,6 +101,8 @@ function nextSaturday(minDays) {
   check('JSON-LD: טלפון', ld.telephone === '+972-52-767-5138', ld.telephone);
   const sitemap = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
   check('sitemap: כתובת אחת, הדף הראשי', (sitemap.match(/<loc>/g) || []).length === 1 && sitemap.includes('<loc>https://natank0.github.io/klein-productions/</loc>'));
+  const robots = fs.readFileSync(path.join(ROOT, 'robots.txt'), 'utf8');
+  check('robots: מאפשר סריקה ומפנה למפת האתר', /User-agent:\s*\*/.test(robots) && /Allow:\s*\//.test(robots) && robots.includes('Sitemap: https://natank0.github.io/klein-productions/sitemap.xml'));
   check('עמוד בית שמש לא קיים', !fs.existsSync(path.join(ROOT, 'beit-shemesh')));
 
   const srv = process.env.QA_BASE ? null : await serve();
@@ -125,6 +127,7 @@ function nextSaturday(minDays) {
   /* ---------- 2. פריסה ברוחבים ---------- */
   section('פריסה, רדאר ומשקל');
   for (const w of WIDTHS) {
+    const compact = w <= 860;
     const mobile = w < 800;
     const c = await ctx({ viewport: { width: w, height: mobile ? 800 : 900 }, isMobile: mobile, hasTouch: mobile });
     const { p, errs, ext, csp } = await open(c);
@@ -153,14 +156,17 @@ function nextSaturday(minDays) {
     check(`${w}: בלי שגיאות קונסולה`, errs.length === 0, errs);
     check(`${w}: בלי הפרות CSP`, csp.length === 0, csp);
     check(`${w}: בלי בקשות חיצוניות`, ext.length === 0, ext);
-    if (mobile) {
+    if (compact) {
       await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(150);
-      const top = await p.evaluate(() => getComputedStyle(document.querySelector('.action-bar')).visibility);
+      const top = await p.evaluate(() => ({
+        bar: getComputedStyle(document.querySelector('.action-bar')).visibility,
+        direct: [...document.querySelectorAll('.hero-direct')].map(a => ({ href: a.getAttribute('href'), visible: !!a.offsetParent && a.getBoundingClientRect().height >= 44 }))
+      }));
       await p.evaluate(() => window.scrollTo(0, 1500)); await p.waitForTimeout(300);
       const mid = await p.evaluate(() => getComputedStyle(document.querySelector('.action-bar')).visibility);
       await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); await p.waitForTimeout(300);
       const foot = await p.evaluate(() => document.querySelector('.footer-bottom').getBoundingClientRect().bottom <= document.querySelector('.action-bar').getBoundingClientRect().top);
-      check(`${w}: פס החיוג מוסתר בפתיחה, מופיע בגלילה, לא מכסה את הפוטר`, top === 'hidden' && mid === 'visible' && foot, { top, mid, foot });
+      check(`${w}: חיוג ו-WhatsApp גלויים בפתיחה; הפס מופיע רק בגלילה ואינו מכסה את הפוטר`, top.bar === 'hidden' && top.direct.length === 2 && top.direct.every(x => x.visible) && top.direct.some(x => x.href.startsWith('tel:')) && top.direct.some(x => x.href.startsWith('https://wa.me/')) && mid === 'visible' && foot, { top, mid, foot });
     }
     await c.close();
   }
@@ -321,8 +327,8 @@ function nextSaturday(minDays) {
   {
     const c = await browser.newContext({ viewport: { width: 390, height: 800 }, javaScriptEnabled: false });
     const p = await c.newPage(); await p.goto(BASE);
-    const r = await p.evaluate(() => ({ nav: !!document.querySelector('#siteNav a[href="#faq"]').offsetParent, bar: getComputedStyle(document.querySelector('.action-bar')).visibility, legend: document.querySelectorAll('.radar-legend li').length, labels: document.querySelectorAll('.radar-label [data-hall]').length, addr: document.querySelector('.address-card strong').textContent, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
-    check('בלי JS: ניווט, פס חיוג, רדאר ומקרא, כתובת, בלי גלילה אופקית', r.nav && r.bar === 'visible' && r.legend === r.labels && r.legend > 0 && r.addr === 'כהנמן 64, בני ברק' && r.ov === 0, r);
+    const r = await p.evaluate(() => ({ nav: !!document.querySelector('#siteNav a[href="#faq"]').offsetParent, bar: getComputedStyle(document.querySelector('.action-bar')).visibility, direct: [...document.querySelectorAll('.hero-direct')].filter(a => a.offsetParent && a.getBoundingClientRect().height >= 44).length, legend: document.querySelectorAll('.radar-legend li').length, labels: document.querySelectorAll('.radar-label [data-hall]').length, addr: document.querySelector('.address-card strong').textContent, radarHelp: document.getElementById('radarNote').textContent, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+    check('בלי JS: ניווט, שתי דרכי קשר ישירות, פס חיוג, רדאר ומקרא, כתובת, בלי גלילה אופקית', r.nav && r.direct === 2 && r.bar === 'visible' && r.legend === r.labels && r.legend > 0 && r.addr === 'כהנמן 64, בני ברק' && r.radarHelp.includes('לא מסלול נסיעה או הליכה') && r.ov === 0, r);
     await c.close();
     const c2 = await ctx({ viewport: { width: 390, height: 800 } });
     const o = await open(c2, BASE + 'beit-shemesh/');
