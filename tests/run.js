@@ -109,6 +109,8 @@ function nextSaturday(minDays) {
   check('המחסן: מפת Google אחת, לכתובת "הרב כהנמן 64, בני ברק", עם כותרת נגישה וטעינה עצלה', frames.length === 1 && frames[0].includes('src="' + MAP_SRC + '"') && /title="מפת Google: הרב כהנמן 64, בני ברק"/.test(frames[0]) && /loading="lazy"/.test(frames[0]), frames);
   check('CSP: frame-src מתיר רק את Google Maps', /frame-src https:\/\/www\.google\.com https:\/\/maps\.google\.com;/.test(index));
   check('אין כותרת "תחום הדגל"', !index.includes('תחום הדגל'));
+  check('הטופס לפני השאלות הנפוצות, ובלי פרק "איך מזמינים" שחוזר על המובן', index.indexOf('id="order"') > 0 && index.indexOf('id="order"') < index.indexOf('id="faq"') && !index.includes('id="how"'));
+  check('בפרק המחסן: משפט שמבהיר שהציוד מגיע אל מקום השמחה', /class="location-benefit">[^<]*מקום השמחה/.test(index));
   check('אין משטחים כהים ב-CSS (רקע של שזיף כהה או פחם)', !/#160f1f|#221a2d|#33273f|#22201d|plum-950|plum-900/i.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('ארבעת סוגי האירועים הנוספים כרשימה, לכל אחד קישור הצעת מחיר ייחודי', (() => { const labels = [...index.matchAll(/class="btn btn-line entry-cta"[^>]*>[\s\S]*?<\/svg>([^<]+)<\/a>/g)].map(m => m[1]); return /<ul class="entries">/.test(index) && labels.length === 4 && new Set(labels).size === 4; })());
   const WAZE_URL = 'https://waze.com/ul?q=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;navigate=yes';
@@ -279,6 +281,8 @@ function nextSaturday(minDays) {
     check('תאריך שעבר נדחה ולא נפתח וואטסאפ', (await p.textContent('#dateError')).includes('עבר') && urls.length === 0);
     const sat = nextSaturday(30);
     await p.fill('#date', sat.iso);
+    const echo = await p.evaluate(() => { const h = document.getElementById('dateHint'); return { shown: !h.hidden, text: h.textContent }; });
+    check('מתחת לתאריך מוצג התאריך כפי שיופיע בהודעה (יום בשבוע ו-DD/MM/YYYY)', echo.shown && echo.text === 'בהודעה יופיע: יום שבת, ' + sat.shown, echo);
     await p.click('.form-options summary'); await p.fill('#notes', 'א'.repeat(450));
     urls.length = 0; await p.click('.form-submit');
     const msg = decodeURIComponent((urls[0] || '').split('text=')[1] || '');
@@ -286,7 +290,9 @@ function nextSaturday(minDays) {
     check('יום שבת מוצג במילים בהודעה', msg.includes('תאריך: יום שבת, ' + sat.shown), (msg.match(/תאריך: .*/) || [''])[0]);
     check('הערות נחתכות ב-400 תווים', ((msg.match(/הערות: (א+)/) || ['', ''])[1].length) === 400);
     check('סוג האירוע בהודעה', msg.includes('סוג האירוע: פדיון הבן'));
-    await p.click('.form-help summary'); await p.click('#copyInquiry'); await p.waitForTimeout(100);
+    const alt = await p.evaluate(() => { const box = document.querySelector('.form-alt'); const vis = e => !!e && !!e.offsetParent && !e.closest('details:not([open])'); return { box: vis(box), tel: vis(box && box.querySelector('a[href="tel:0527675138"]')), copy: vis(document.getElementById('copyInquiry')) }; });
+    check('בלי וואטסאפ: חיוג והעתקת הפנייה גלויים מתחת לכפתור השליחה, בלי לפתוח אקורדיון', alt.box && alt.tel && alt.copy, alt);
+    await p.click('#copyInquiry'); await p.waitForTimeout(100);
     check('ההעתקה זהה להודעה', (await p.evaluate(() => navigator.clipboard.readText())) === msg);
     /* עיר "אחר" */
     const hiddenBefore = await p.evaluate(() => document.getElementById('cityOtherField').hidden);
@@ -294,8 +300,8 @@ function nextSaturday(minDays) {
     const shown = await p.evaluate(() => !document.getElementById('cityOtherField').hidden);
     await p.evaluate(() => { document.querySelector('.form-options').open = false; });
     urls.length = 0; await p.click('.form-submit');
-    const cityErr = await p.evaluate(() => ({ err: document.getElementById('cityOtherError').textContent, focus: document.activeElement.id, open: document.querySelector('.form-options').open }));
-    check('עיר "אחר": נפתח שדה, ושליחה בלי שם עיר נעצרת עם שגיאה ומיקוד', hiddenBefore && shown && cityErr.err.includes('שם העיר') && cityErr.focus === 'cityOther' && cityErr.open && urls.length === 0, { hiddenBefore, shown, cityErr, urls });
+    const cityErr = await p.evaluate(() => ({ err: document.getElementById('cityOtherError').textContent, focus: document.activeElement.id, visible: !!document.getElementById('cityOther').offsetParent }));
+    check('עיר "אחר": נפתח שדה, ושליחה בלי שם עיר נעצרת עם שגיאה ומיקוד', hiddenBefore && shown && cityErr.err.includes('שם העיר') && cityErr.focus === 'cityOther' && cityErr.visible && urls.length === 0, { hiddenBefore, shown, cityErr, urls });
     await p.fill('#cityOther', 'קריית ספר');
     urls.length = 0; await p.click('.form-submit');
     const msg2 = decodeURIComponent((urls[0] || '').split('text=')[1] || '');
@@ -306,6 +312,9 @@ function nextSaturday(minDays) {
     await p.click('#weddings a[data-event]');
     const wed = await p.evaluate(() => ({ v: document.getElementById('eventType').value, first: document.getElementById('eventType').children[1].label, sugg: [...document.querySelectorAll('.check.is-suggested input')].map(i => i.value), checked: [...document.querySelectorAll('input[name="needs"]:checked')].length, hint: !document.getElementById('needsHint').hidden }));
     check('חתונות: הכפתור בוחר "חתונה וחופה", מקדם את הקבוצה ומציע צרכים בלי לסמן', wed.v === 'חתונה וחופה' && wed.first === 'חתונות וחופות' && wed.sugg.includes('רמקול לחופה') && wed.checked === 0 && wed.hint, wed);
+    await p.evaluate(() => { document.querySelector('.form-options').open = false; });
+    const sr = await p.evaluate(() => { const sugg = [...document.querySelectorAll('.check.is-suggested input')]; const plain = [...document.querySelectorAll('.check:not(.is-suggested) input[name="needs"]')]; const d = document.getElementById('needsSuggested'); return { visible: sugg.length > 0 && sugg.every(i => !!i.parentNode.offsetParent && !i.closest('details')), city: !document.getElementById('city').closest('details') && !!document.getElementById('city').offsetParent, described: sugg.every(i => i.getAttribute('aria-describedby') === 'needsSuggested'), plain: plain.every(i => !i.hasAttribute('aria-describedby')), text: d.textContent }; });
+    check('צרכים ועיר גלויים בלי לפתוח אקורדיון; כל צורך מוצע מתואר לקורא מסך', sr.visible && sr.city && sr.described && sr.plain && sr.text === 'נפוץ בחתונות וחופות', sr);
     await c.close();
   }
 

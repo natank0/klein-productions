@@ -100,11 +100,18 @@
     holidays: ['קלידן או נגן', 'מיקרופון אלחוטי', 'תאורה']
   };
   var needsHint = document.getElementById('needsHint');
+  var needsSuggested = document.getElementById('needsSuggested');
   function suggestNeeds() {
     var group = groupOf(eventType.value);
     var key = group ? group.getAttribute('data-event-group') : '';
     var list = SUGGEST[key] || [];
-    form.querySelectorAll('input[name="needs"]').forEach(function (c) { c.parentNode.classList.toggle('is-suggested', list.indexOf(c.value) !== -1); });
+    /* הסימון החזותי מקבל גם תיאור לקורא מסך, על כל תיבה מוצעת בנפרד */
+    if (needsSuggested) needsSuggested.textContent = list.length ? 'נפוץ ב' + group.label : '';
+    form.querySelectorAll('input[name="needs"]').forEach(function (c) {
+      var on = list.indexOf(c.value) !== -1;
+      c.parentNode.classList.toggle('is-suggested', on);
+      if (on) c.setAttribute('aria-describedby', 'needsSuggested'); else c.removeAttribute('aria-describedby');
+    });
     if (needsHint) {
       needsHint.hidden = !list.length;
       needsHint.textContent = list.length ? 'מסומנים בנקודה: צרכים נפוצים ב' + group.label + '. אפשר לבחור כל צורך אחר.' : '';
@@ -157,16 +164,26 @@
   var dateReq = document.getElementById('dateReq');
   var dateHint = document.getElementById('dateHint');
   var formHint = document.getElementById('formHint');
+  /* מתחת לשדה: התאריך כפי שיופיע בהודעה (יום בשבוע ו-DD/MM/YYYY), גם כשהדפדפן מציג mm/dd/yyyy */
+  function syncDateHint() {
+    if (!dateHint) return;
+    var v = val('date');
+    var text = dateUnknown.checked ? 'טרם נקבע' : (v && v >= todayISO() ? formatDate(v) : '');
+    dateHint.textContent = text ? 'בהודעה יופיע: ' + text : '';
+    dateHint.hidden = !text;
+  }
   function syncDate() {
     var unknown = dateUnknown.checked;
     dateEl.disabled = unknown;
     dateEl.required = !unknown;
     if (dateReq) dateReq.hidden = unknown;
-    if (dateHint) dateHint.hidden = !unknown;
+    syncDateHint();
     if (formHint) formHint.textContent = unknown ? 'שדות חובה: שם, טלפון וסוג אירוע.' : 'שדות חובה: שם, טלפון, סוג אירוע ותאריך.';
     setError('date', '');
   }
   dateUnknown.addEventListener('change', syncDate);
+  dateEl.addEventListener('input', syncDateHint);
+  dateEl.addEventListener('change', syncDateHint);
   syncDate();
   syncCity();
   suggestNeeds();
