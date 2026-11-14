@@ -249,7 +249,9 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 
 @media (max-width: 860px) {
   .entries { grid-template-columns: 1fr; }
-  .hero-actions .hero-direct { display: none; }
+  .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-actions .btn:first-child { grid-column: 1 / -1; }
+  .hero-actions .btn { min-width: 0; padding-inline: 12px; }
   .order-grid { gap: 22px; }
   .contact-list { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 10px; }
   .contact-list a { min-height: 44px; gap: 7px; padding: 0; border: 0; background: transparent; text-decoration: underline; text-underline-offset: 3px; }
@@ -301,6 +303,8 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 }
 
 @media (max-width: 360px) {
+  .hero-actions { grid-template-columns: 1fr; }
+  .hero-actions .btn:first-child { grid-column: auto; }
   .form-submit { gap: 8px; font-size: 0.98rem; }
   .brand-name small { display: none; }
   .brand img { width: 40px; height: 40px; }
@@ -417,7 +421,8 @@ input:focus, select:focus, textarea:focus { outline-color: var(--gold-ink); }
 .radar-legend button:hover, .radar-legend button:focus-visible { border-color: var(--gold-light); background: #3a3024; }
 .radar-legend button:focus-visible { outline-color: var(--gold-light); }
 .radar-legend button .media-mark { color: var(--gold-light); font-size: 0.8rem; }
-.radar-note { margin-top: 12px; color: var(--on-dark-soft); font-size: 0.85rem; line-height: 1.55; }
+.radar-note { max-width: 74ch; margin-top: 12px; color: var(--on-dark-soft); font-size: 0.9rem; line-height: 1.6; }
+.radar-note strong { color: var(--on-dark); }
 
 @media (prefers-reduced-motion: no-preference) {
   .radar.is-playing .radar-wave { animation: radar-wave 1.7s cubic-bezier(.2,.6,.3,1) both; }

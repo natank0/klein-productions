@@ -6,7 +6,10 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const ROOT = path.resolve(__dirname, '..');
-const hash = f => crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, f))).digest('hex').slice(0, 8);
+/* Git שומר את קובצי הטקסט כ-LF, בעוד checkout ב-Windows עשוי להיות CRLF.
+ * מנרמלים לפני החתימה כדי לקבל אותו cache key מקומית וב-CI. */
+const canonicalText = f => fs.readFileSync(path.join(ROOT, f), 'utf8').replace(/\r\n/g, '\n');
+const hash = f => crypto.createHash('sha256').update(canonicalText(f)).digest('hex').slice(0, 8);
 const assets = { 'assets/css/site.css': hash('assets/css/site.css'), 'assets/js/site.js': hash('assets/js/site.js') };
 for (const page of ['index.html', '404.html']) {
   const file = path.join(ROOT, page);
