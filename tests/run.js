@@ -110,11 +110,16 @@ function nextSaturday(minDays) {
   check('CSP: frame-src מתיר רק את Google Maps', /frame-src https:\/\/www\.google\.com https:\/\/maps\.google\.com;/.test(index));
   check('אין כותרת "תחום הדגל"', !index.includes('תחום הדגל'));
   check('הטופס לפני השאלות הנפוצות, ובלי פרק "איך מזמינים" שחוזר על המובן', index.indexOf('id="order"') > 0 && index.indexOf('id="order"') < index.indexOf('id="faq"') && !index.includes('id="how"'));
+  check('כתובת אחת בכל הקישורים: המפה, Waze, Google Maps ו-JSON-LD מחפשים "הרב כהנמן 64, בני ברק"', (() => { const qs = [...index.matchAll(/(?:maps\?q|ul\?q|query)=([^&"]+)/g)].map(m => m[1]); return qs.length >= 5 && qs.every(q => q === '%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7'); })());
+  check('main מקבל מיקוד מקישור הדילוג (tabindex=-1)', /<main id="main" tabindex="-1">/.test(index));
+  check('אין מחלקת btn-dark מטעה (הכפתור זהב)', !/btn-dark/.test(index + pages[1].html + fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
+  check('וואטסאפ נכתב בעברית בטקסט הגלוי', !/>[^<]*WhatsApp[^<]*</.test(index.replace(/<title>[\s\S]*?<\/title>/, '')));
+  check('משפט פרטיות ליד כפתור השליחה', /class="form-privacy">הפרטים לא נשמרים באתר/.test(index));
   check('בפרק המחסן: משפט שמבהיר שהציוד מגיע אל מקום השמחה', /class="location-benefit">[^<]*מקום השמחה/.test(index));
   check('אין משטחים כהים ב-CSS (רקע של שזיף כהה או פחם)', !/#160f1f|#221a2d|#33273f|#22201d|plum-950|plum-900/i.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('ארבעת סוגי האירועים הנוספים כרשימה, לכל אחד קישור הצעת מחיר ייחודי', (() => { const labels = [...index.matchAll(/class="btn btn-line entry-cta"[^>]*>[\s\S]*?<\/svg>([^<]+)<\/a>/g)].map(m => m[1]); return /<ul class="entries">/.test(index) && labels.length === 4 && new Set(labels).size === 4; })());
-  const WAZE_URL = 'https://waze.com/ul?q=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;navigate=yes';
-  const GMAPS_URL = 'https://www.google.com/maps/search/?api=1&amp;query=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7';
+  const WAZE_URL = 'https://waze.com/ul?q=%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;navigate=yes';
+  const GMAPS_URL = 'https://www.google.com/maps/search/?api=1&amp;query=%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7';
   const navLinks = [...index.matchAll(/<a class="navigation-link" data-app="([a-z-]+)" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map(m => ({ app: m[1], href: m[2], text: m[3].replace(/<img[^>]*>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(), svg: m[3].includes('<svg') }));
   check('קישורי ניווט: Waze ו-Google Maps לכתובת המחסן, עם טקסט גלוי', navLinks.length === 2 && navLinks.some(l => l.app === 'waze' && l.href === WAZE_URL && l.text === 'ניווט ב-Waze') && navLinks.some(l => l.app === 'google-maps' && l.href === GMAPS_URL && l.text === 'פתיחה ב-Google Maps'), navLinks);
   check('קישורי ניווט: בלי אייקון סיכה או חץ גנרי משותף', navLinks.every(l => !l.svg), navLinks);
@@ -249,6 +254,17 @@ function nextSaturday(minDays) {
     }
   }
 
+  {
+    const c = await ctx({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
+    const { p } = await open(c);
+    await p.click('#menuToggle');
+    const opened = await p.evaluate(() => document.getElementById('siteNav').classList.contains('is-open'));
+    await p.mouse.click(200, 700);
+    const closed = await p.evaluate(() => !document.getElementById('siteNav').classList.contains('is-open') && document.getElementById('menuToggle').getAttribute('aria-expanded') === 'false');
+    check('תפריט המובייל נסגר בלחיצה מחוץ לו', opened && closed, { opened, closed });
+    await c.close();
+  }
+
   /* ---------- 4. טופס ההזמנה ---------- */
   section('טופס');
   {
@@ -307,10 +323,20 @@ function nextSaturday(minDays) {
     const msg2 = decodeURIComponent((urls[0] || '').split('text=')[1] || '');
     check('עיר "אחר": שם העיר נכנס להודעה', msg2.includes('עיר: קריית ספר') && !msg2.includes('עיר: אחר'), (msg2.match(/עיר: .*/) || [''])[0]);
     check('הודעת הסטטוס מבהירה שההודעה לא נשלחה', (await p.textContent('#formStatus')).startsWith('ההודעה מוכנה בוואטסאפ. בדקו ולחצו שם על שליחה.'));
+    /* סוג אירוע "אחר": שדה חובה לתיאור, והתיאור נכנס להודעה */
+    await p.selectOption('#eventType', 'אחר');
+    const eo0 = await p.evaluate(() => !document.getElementById('eventOtherField').hidden);
+    urls.length = 0; await p.click('.form-submit');
+    const eo1 = await p.evaluate(() => ({ err: document.getElementById('eventOtherError').textContent, focus: document.activeElement.id }));
+    await p.fill('#eventOther', 'הכנסת כלה'); urls.length = 0; await p.click('.form-submit');
+    const msg3 = decodeURIComponent((urls[0] || '').split('text=')[1] || '');
+    check('סוג אירוע "אחר": נפתח שדה, בלי תיאור השליחה נעצרת, והתיאור נכנס להודעה', eo0 && eo1.err.includes('איזה אירוע') && eo1.focus === 'eventOther' && msg3.includes('סוג האירוע: הכנסת כלה') && !msg3.includes('סוג האירוע: אחר'), { eo0, eo1, line: (msg3.match(/סוג האירוע: .*/) || [''])[0] });
     /* חתונות: כפתור הדגל בוחר "חתונה וחופה" ומסמן צרכים נפוצים בלי לבחור אותם */
     await p.evaluate(() => window.scrollTo(0, 0));
     await p.click('#weddings a[data-event]');
     const wed = await p.evaluate(() => ({ v: document.getElementById('eventType').value, first: document.getElementById('eventType').children[1].label, sugg: [...document.querySelectorAll('.check.is-suggested input')].map(i => i.value), checked: [...document.querySelectorAll('input[name="needs"]:checked')].length, hint: !document.getElementById('needsHint').hidden }));
+    const eoHidden = await p.evaluate(() => document.getElementById('eventOtherField').hidden);
+    check('בחירה מכפתור החתונות מסתירה את שדה "אחר"', eoHidden);
     check('חתונות: הכפתור בוחר "חתונה וחופה", מקדם את הקבוצה ומציע צרכים בלי לסמן', wed.v === 'חתונה וחופה' && wed.first === 'חתונות וחופות' && wed.sugg.includes('רמקול לחופה') && wed.checked === 0 && wed.hint, wed);
     await p.evaluate(() => { document.querySelector('.form-options').open = false; });
     const sr = await p.evaluate(() => { const sugg = [...document.querySelectorAll('.check.is-suggested input')]; const plain = [...document.querySelectorAll('.check:not(.is-suggested) input[name="needs"]')]; const d = document.getElementById('needsSuggested'); return { visible: sugg.length > 0 && sugg.every(i => !!i.parentNode.offsetParent && !i.closest('details')), city: !document.getElementById('city').closest('details') && !!document.getElementById('city').offsetParent, described: sugg.every(i => i.getAttribute('aria-describedby') === 'needsSuggested'), plain: plain.every(i => !i.hasAttribute('aria-describedby')), text: d.textContent }; });
