@@ -66,7 +66,7 @@ function nextSaturday(minDays) {
   }
   const visibleText = h => h.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ');
   for (const { f, html } of pages) {
-    check(`${f}: אין משאבים חיצוניים (סקריפט, גופן, iframe, תמונה)`, !/<script[^>]+src="https?:|<link[^>]+rel="stylesheet"[^>]+href="https?:|<iframe|<img[^>]+src="https?:|<video[^>]+src="https?:|@import/i.test(html));
+    check(`${f}: אין משאבים חיצוניים (סקריפט, גופן, תמונה); iframe רק של מפת Google`, !/<script[^>]+src="https?:|<link[^>]+rel="stylesheet"[^>]+href="https?:|<img[^>]+src="https?:|<video[^>]+src="https?:|@import/i.test(html) && [...html.matchAll(/<iframe[^>]*>/g)].every(m => /src="https:\/\/www\.google\.com\/maps\?q=/.test(m[0])));
     const text = visibleText(html);
     const banned = ['סניף', 'המובילים', 'המוביל ב', 'שנות ניסיון', 'שנות ותק', '₪', 'ש"ח', 'ש״ח', 'זמין בחג', 'פתוח בחג', 'בית שמש', 'נחמן'];
     const hits = banned.filter(w => text.includes(w));
@@ -104,7 +104,13 @@ function nextSaturday(minDays) {
     const found = HALLS.filter(w => body.includes(w));
     check(`${f}: אין שמות אולמות, רדאר או גלריית אולמות`, found.length === 0, found);
   }
-  check('המחסן: פין אחד בלבד, בלי נקודות נוספות', (index.match(/class="location-pin"/g) || []).length === 1 && (index.match(/class="pin-mark"/g) || []).length === 1 && !/radar-node|radar-dot|radar-legend/.test(index));
+  const MAP_SRC = 'https://www.google.com/maps?q=%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;hl=iw&amp;z=16&amp;output=embed';
+  const frames = [...index.matchAll(/<iframe([^>]*)>/g)].map(m => m[1]);
+  check('המחסן: מפת Google אחת, לכתובת "הרב כהנמן 64, בני ברק", עם כותרת נגישה וטעינה עצלה', frames.length === 1 && frames[0].includes('src="' + MAP_SRC + '"') && /title="מפת Google: הרב כהנמן 64, בני ברק"/.test(frames[0]) && /loading="lazy"/.test(frames[0]), frames);
+  check('CSP: frame-src מתיר רק את Google Maps', /frame-src https:\/\/www\.google\.com https:\/\/maps\.google\.com;/.test(index));
+  check('אין כותרת "תחום הדגל"', !index.includes('תחום הדגל'));
+  check('אין משטחים כהים ב-CSS (רקע של שזיף כהה או פחם)', !/#160f1f|#221a2d|#33273f|#22201d|plum-950|plum-900/i.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
+  check('ארבעת סוגי האירועים הנוספים כרשימה, לכל אחד קישור הצעת מחיר ייחודי', (() => { const labels = [...index.matchAll(/class="btn btn-line entry-cta"[^>]*>[\s\S]*?<\/svg>([^<]+)<\/a>/g)].map(m => m[1]); return /<ul class="entries">/.test(index) && labels.length === 4 && new Set(labels).size === 4; })());
   const WAZE_URL = 'https://waze.com/ul?q=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;navigate=yes';
   const GMAPS_URL = 'https://www.google.com/maps/search/?api=1&amp;query=%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7';
   const navLinks = [...index.matchAll(/<a class="navigation-link" data-app="([a-z-]+)" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map(m => ({ app: m[1], href: m[2], text: m[3].replace(/<img[^>]*>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(), svg: m[3].includes('<svg') }));
@@ -118,7 +124,6 @@ function nextSaturday(minDays) {
   }
   check('CSS: אין filter על סמלי מותג', !/navigation-link[^{]*img[^{]*\{[^}]*filter/.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('אין טענת "מרכז גאוגרפי" או זמני הגעה', !/מרכז גאוגרפי|מרכז גיאוגרפי|דקות נסיעה|דקות מהמחסן|ק״מ|ק"מ/.test(visibleText(index)));
-  check('ההמחשה מוצהרת כסכמטית', /המחשה סכמטית/.test(index));
   check('H1 במיקוד חתונות', /<h1[^>]*>[\s\S]*הגברה לחתונות, חופות[\s\S]*ואירועים בבני ברק[\s\S]*<\/h1>/.test(index));
   check('title ו-og:title במיקוד חתונות', /<title>[^<]*חתונות[^<]*<\/title>/.test(index) && /og:title" content="[^"]*חתונות/.test(index));
   const ld = JSON.parse(index.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
@@ -141,8 +146,8 @@ function nextSaturday(minDays) {
     const p = await c.newPage();
     const errs = [], ext = [], csp = [];
     p.on('pageerror', e => errs.push(e.message));
-    p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-    p.on('request', r => { const u = r.url(); if (!u.startsWith(ORIGIN) && !u.startsWith('data:')) ext.push(u); });
+    p.on('console', m => { if (m.type() === 'error' && (!m.location().url || m.location().url.startsWith(ORIGIN))) errs.push(m.text()); });
+    p.on('request', r => { const u = r.url(); if (r.frame() === p.mainFrame() && !u.startsWith(ORIGIN) && !u.startsWith('data:')) ext.push(u); });
     await p.exposeFunction('__cspViolation', d => csp.push(d));
     await p.addInitScript(() => document.addEventListener('securitypolicyviolation', e => window.__cspViolation(e.violatedDirective + ' ' + e.blockedURI)));
     const res = await p.goto(url, { waitUntil: 'networkidle' });
@@ -160,29 +165,23 @@ function nextSaturday(minDays) {
     const m = await p.evaluate(() => {
       const vis = e => { const r = e.getBoundingClientRect(); return e.offsetParent && r.width > 0 && r.height > 0 && !e.closest('[hidden]') && !e.closest('details:not([open]) > :not(summary)') && !e.closest('noscript'); };
       const small = [...document.querySelectorAll('a,button,select,input:not([type=checkbox]),summary,.check span')].filter(e => vis(e) && e.getBoundingClientRect().height < 44 && !e.classList.contains('skip-link')).map(e => (e.textContent || e.id).trim().slice(0, 14) + ':' + Math.round(e.getBoundingClientRect().height));
-      const canvas = document.querySelector('.location-canvas').getBoundingClientRect();
-      const pin = document.querySelector('.location-pin').getBoundingClientRect();
-      const label = document.querySelector('.pin-label').getBoundingClientRect();
-      const inside = r => r.left >= canvas.left && r.right <= canvas.right && r.top >= canvas.top && r.bottom <= canvas.bottom;
-      const tip = { x: (pin.left + pin.right) / 2, y: pin.bottom };
-      const centered = Math.abs(tip.x - (canvas.left + canvas.width / 2)) < 2 && Math.abs(tip.y - (canvas.top + canvas.height / 2)) < 2;
+      const map = document.querySelector('.location-map iframe').getBoundingClientRect();
+      const canvas = map;
       const navs = [...document.querySelectorAll('.navigation-link')].map(a => { const r = a.getBoundingClientRect(); const s = a.querySelector('span').getBoundingClientRect(); const i = a.querySelector('img'); return { icon: !!i && i.complete && i.naturalWidth > 0 && getComputedStyle(i).filter === 'none', h: Math.round(r.height), clipped: s.right > r.right + 1 || s.left < r.left - 1 || a.scrollWidth > a.clientWidth + 1 }; });
       const text = document.querySelector('.location-text').getBoundingClientRect();
       const addr = document.querySelector('.address-card strong'); const addrLines = Math.round(addr.getBoundingClientRect().height / parseFloat(getComputedStyle(addr).lineHeight));
-      return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, small, pinInside: inside(pin) && inside(label), centered, navs, linksBeforeMap: mobileFirst(text, canvas), labelFont: parseFloat(getComputedStyle(document.querySelector('.pin-label strong')).fontSize), addrLines };
+      return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, small, mapOk: map.width >= 260 && map.height >= 260, navs, linksBeforeMap: mobileFirst(text, canvas), addrLines };
       function mobileFirst(t, cv) { return t.bottom <= cv.top + 1 || t.left >= cv.right - 1; }
     });
     check(`${w}: אין גלילה אופקית`, m.ov === 0, m.ov);
     check(`${w}: אזורי מגע ≥ 44px`, m.small.length === 0, m.small);
-    check(`${w}: הפין והתווית בתוך ההמחשה`, m.pinInside, m);
-    check(`${w}: חוד הפין במרכז ההמחשה`, m.centered, m);
+    check(`${w}: מפת Google בגודל קריא (≥ 260px)`, m.mapOk, m);
     check(`${w}: כפתורי Waze ו-Google Maps: סמל רשמי נטען בלי filter, גובה ≥ 48px, בלי חיתוך`, m.navs.length === 2 && m.navs.every(n => n.icon && n.h >= 48 && !n.clipped), m.navs);
-    check(`${w}: כתובת וכפתורי ניווט לפני ההמחשה או לצידה`, m.linksBeforeMap, m);
-    check(`${w}: גופן תווית הפין ≥ 14px`, m.labelFont >= 14, m.labelFont);
+    check(`${w}: כתובת וכפתורי ניווט לפני המפה או לצידה`, m.linksBeforeMap, m);
     check(`${w}: כתובת המחסן בשורה אחת`, m.addrLines === 1, m.addrLines);
     check(`${w}: בלי שגיאות קונסולה`, errs.length === 0, errs);
     check(`${w}: בלי הפרות CSP`, csp.length === 0, csp);
-    check(`${w}: בלי בקשות חיצוניות`, ext.length === 0, ext);
+    check(`${w}: בלי בקשות חיצוניות מהדף (מלבד מסגרת המפה)`, ext.length === 0, ext);
     if (compact) {
       await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(150);
       const top = await p.evaluate(() => ({
@@ -200,12 +199,12 @@ function nextSaturday(minDays) {
   {
     const c = await ctx({ viewport: { width: 390, height: 800 } });
     const p = await c.newPage(); let bytes = 0; const types = {};
-    p.on('response', async r => { try { const b = (await r.body()).length; bytes += b; const t = r.request().resourceType(); types[t] = (types[t] || 0) + b; } catch (e) { /* redirect */ } });
+    p.on('response', async r => { if (!r.url().startsWith(ORIGIN)) return; try { const b = (await r.body()).length; bytes += b; const t = r.request().resourceType(); types[t] = (types[t] || 0) + b; } catch (e) { /* redirect */ } });
     await p.goto(BASE, { waitUntil: 'networkidle' });
     await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); await p.waitForTimeout(400);
-    check('משקל הדף (כולל תמונות שנטענו) ≤ 150KB', bytes <= 150 * 1024, Math.round(bytes / 1024) + 'KB ' + JSON.stringify(types));
-    const dom = await p.evaluate(() => ({ pins: document.querySelectorAll('.location-pin, .pin-mark').length, dialogs: document.querySelectorAll('dialog').length, label: document.querySelector('.pin-label strong').textContent, addr: document.querySelector('.address-card strong').textContent }));
-    check('DOM: פין מחסן אחד, בלי חלונות גלריה, תווית וכתובת נכונות', dom.pins === 2 && dom.dialogs === 0 && dom.label === 'מחסן קליין הפקות' && dom.addr === 'כהנמן 64, בני ברק', dom);
+    check('משקל הדף מהאתר (בלי מפת Google) ≤ 150KB', bytes <= 150 * 1024, Math.round(bytes / 1024) + 'KB ' + JSON.stringify(types));
+    const dom = await p.evaluate(() => ({ maps: document.querySelectorAll('iframe').length, dialogs: document.querySelectorAll('dialog').length, addr: document.querySelector('.address-card strong').textContent }));
+    check('DOM: מפה אחת, בלי חלונות גלריה, כתובת נכונה', dom.maps === 1 && dom.dialogs === 0 && dom.addr === 'כהנמן 64, בני ברק', dom);
     await c.close();
   }
 
@@ -229,11 +228,11 @@ function nextSaturday(minDays) {
       const c = await ctx({ viewport: { width: w, height: 900 }, bypassCSP: true });
       const p = await c.newPage(); await p.goto(BASE, { waitUntil: 'networkidle' });
       const bad = [];
-      for (const el of await p.$$('.hero h1 .h1-part, .hero-lead, .hero-area, .flagship-head .kicker, .flagship-head p:not(.kicker), .pin-label strong, .pin-label span, .location-visual figcaption, .scope-col h3, .scope-note')) {
+      for (const el of await p.$$('.hero h1 .h1-part, .hero-lead, .hero-area, .event-wide-head h3, .event-wide-head p, .event-wide-body h4, .group-title, .location-benefit, .scope-col h3, .scope-note, .footer p')) {
         await el.scrollIntoViewIfNeeded();
         const info = await el.evaluate(e => { const s = getComputedStyle(e); return { color: s.color, fs: parseFloat(s.fontSize), fw: +s.fontWeight, t: e.textContent.trim().slice(0, 14) }; });
         const bb = await el.boundingBox();
-        const tag = await p.addStyleTag({ content: '*, *::before, *::after { color: transparent !important; text-shadow: none !important; } .hero h1::before, .kicker::before { visibility: hidden !important; }' });
+        const tag = await p.addStyleTag({ content: '*, *::before, *::after { color: transparent !important; text-shadow: none !important; } .hero h1::before, .group-title::before, .group-title::after { visibility: hidden !important; }' });
         const buf = await p.screenshot({ clip: { x: bb.x + 2, y: bb.y + 2, width: Math.max(1, bb.width - 4), height: Math.max(1, bb.height - 4) } });
         await tag.evaluate(n => n.remove());
         const px = await p.evaluate(async b64 => { const img = new Image(); img.src = 'data:image/png;base64,' + b64; await img.decode(); const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height; const x = cv.getContext('2d'); x.drawImage(img, 0, 0); return Array.from(x.getImageData(0, 0, cv.width, cv.height).data); }, buf.toString('base64'));
@@ -331,8 +330,8 @@ function nextSaturday(minDays) {
   {
     const c = await browser.newContext({ viewport: { width: 390, height: 800 }, javaScriptEnabled: false });
     const p = await c.newPage(); await p.goto(BASE);
-    const r = await p.evaluate(() => ({ nav: !!document.querySelector('#siteNav a[href="#faq"]').offsetParent, bar: getComputedStyle(document.querySelector('.action-bar')).visibility, direct: [...document.querySelectorAll('.hero-direct')].filter(a => a.offsetParent && a.getBoundingClientRect().height >= 44).length, maps: [...document.querySelectorAll('.navigation-link')].filter(a => a.offsetParent).map(a => a.dataset.app), pin: !!document.querySelector('.location-pin').offsetParent, addr: document.querySelector('.address-card strong').textContent, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
-    check('בלי JS: ניווט, שתי דרכי קשר ישירות, פס חיוג, המחסן עם Waze ו-Google Maps, כתובת, בלי גלילה אופקית', r.nav && r.direct === 2 && r.bar === 'visible' && r.maps.join() === 'waze,google-maps' && r.pin && r.addr === 'כהנמן 64, בני ברק' && r.ov === 0, r);
+    const r = await p.evaluate(() => ({ nav: !!document.querySelector('#siteNav a[href="#faq"]').offsetParent, bar: getComputedStyle(document.querySelector('.action-bar')).visibility, direct: [...document.querySelectorAll('.hero-direct')].filter(a => a.offsetParent && a.getBoundingClientRect().height >= 44).length, maps: [...document.querySelectorAll('.navigation-link')].filter(a => a.offsetParent).map(a => a.dataset.app), pin: !!document.querySelector('.location-map iframe').offsetParent, addr: document.querySelector('.address-card strong').textContent, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+    check('בלי JS: ניווט, שתי דרכי קשר ישירות, פס חיוג, המחסן עם מפה, Waze ו-Google Maps, כתובת, בלי גלילה אופקית', r.nav && r.direct === 2 && r.bar === 'visible' && r.maps.join() === 'waze,google-maps' && r.pin && r.addr === 'כהנמן 64, בני ברק' && r.ov === 0, r);
     await c.close();
     const c2 = await ctx({ viewport: { width: 390, height: 800 } });
     const o = await open(c2, BASE + 'beit-shemesh/');
