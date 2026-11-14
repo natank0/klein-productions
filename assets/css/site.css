@@ -85,7 +85,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .h1-part { display: block; }
 .hero h1 { margin: 0; font-size: clamp(2rem, 4.8vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
 .hero h1::before { content: ""; display: block; width: 64px; height: 2px; margin: 0 auto 26px; background: var(--gold); }
-.hero-lead { max-width: 40em; margin-top: 20px; color: var(--ink-soft); font-size: 1.14rem; line-height: 1.7; }
+.hero-lead { max-width: 46ch; margin-top: 20px; color: var(--ink-soft); font-size: 1.14rem; line-height: 1.7; text-wrap: balance; }
 .hero-area { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 6px 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--gold-ink); font-size: 1rem; font-weight: 700; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
 .hero-actions .btn { padding-inline: 20px; }
@@ -98,7 +98,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .section-head { max-width: 720px; margin: 0 auto 40px; text-align: center; }
 .section-head .section-title::after { content: ""; display: block; width: 48px; height: 2px; margin: 18px auto 0; background: var(--gold); }
 .section-title { margin: 0; font-size: clamp(1.75rem, 3.2vw, 2.35rem); font-weight: 800; letter-spacing: -0.01em; }
-.section-lead { max-width: 60ch; margin: 14px auto 0; color: var(--ink-soft); font-size: 1.08rem; }
+.section-lead { max-width: 52ch; margin: 14px auto 0; color: var(--ink-soft); font-size: 1.08rem; text-wrap: balance; }
 
 /* סוגי אירועים: חתונות ברוחב מלא, וארבעה סוגים ברשת סימטרית 2×2 */
 .event-wide { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow); }
@@ -169,17 +169,6 @@ main [tabindex="-1"]:focus { outline: none; }
 .location-map { overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--line); border-radius: var(--radius); background: var(--sand); box-shadow: var(--shadow); }
 .location-map iframe { display: block; width: 100%; height: 100%; border: 0; }
 
-/* איך מזמינים */
-.section-compact { padding: 56px 0; }
-.section-compact .section-title { margin-bottom: 28px; text-align: center; }
-.section-compact .section-title::after { content: ""; display: block; width: 48px; height: 2px; margin: 18px auto 0; background: var(--gold); }
-.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; counter-reset: step; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
-.steps li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; padding: 24px; counter-increment: step; }
-.steps li + li { border-right: 1px solid var(--line); }
-.steps li::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid #d2b277; border-radius: 50%; color: var(--ink); background: var(--gold-soft); font-weight: 800; }
-.steps strong { font-size: 1.08rem; }
-.steps span { color: var(--ink-soft); font-size: 0.97rem; }
-
 /* שאלות */
 .faq { display: grid; gap: 10px; max-width: 820px; margin-inline: auto; }
 .faq details { border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
@@ -232,20 +221,20 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .form-submit { width: 100%; margin-top: 24px; min-height: 52px; padding-inline: 14px; font-size: 1.05rem; text-wrap: balance; }
 .form-status { margin-top: 12px; color: var(--ink-soft); font-size: 0.95rem; text-align: center; }
 .form-status.is-error { color: var(--danger); font-weight: 700; }
-.noscript-note { margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: var(--paper-warm); }
+.noscript-note { margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: var(--sand); }
 .form-options { margin-block: 14px 0; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; }
 .form-options summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; font-weight: 700; cursor: pointer; list-style: none; }
-.form-options summary::-webkit-details-marker, .form-help summary::-webkit-details-marker { display: none; }
+.form-options summary::-webkit-details-marker { display: none; }
 .form-options summary::after { content: "+"; color: var(--gold-ink); font-size: 1.4rem; line-height: 1; }
 .form-options[open] summary::after { content: "−"; }
 .form-options[open] summary { margin-bottom: 6px; }
 .form-options[open] { padding-bottom: 12px; }
 .form-options textarea { margin-top: 10px; }
-.form-help { margin-top: 6px; text-align: center; }
-.form-help summary { display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; color: var(--ink-soft); font-size: 0.95rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; list-style: none; }
-.form-help[open] { padding: 4px 12px 14px; border: 1px solid var(--line); border-radius: 10px; }
-.form-help .btn { margin: 6px 4px 0; border: 1.5px solid var(--control); }
-.form-help textarea { margin-top: 12px; text-align: right; }
+/* חלופה גלויה לוואטסאפ: למי שגולש ממחשב ומחזיק טלפון כשר */
+.form-alt { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); text-align: center; }
+.form-alt-title { color: var(--ink-soft); font-size: 0.95rem; font-weight: 700; }
+.form-alt-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
+.form-alt textarea { margin-top: 12px; text-align: right; }
 #eventContext { color: var(--gold-ink); font-weight: 700; }
 .no-js .order-form > :not(noscript) { display: none; }
 
@@ -335,9 +324,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .hero-lead { font-size: 1.02rem; }
   .hero-area { font-size: 1rem; }
   .group-title { margin-top: 44px; }
-  .steps li { padding: 12px 16px; }
-  .scope, .steps, .form-grid { grid-template-columns: 1fr; }
-  .steps li + li { border-right: 0; border-top: 1px solid var(--line); }
+  .scope, .form-grid { grid-template-columns: 1fr; }
   .field.full { grid-column: auto; }
   .order-form { padding: 22px 16px; }
   .entry { padding: 20px 16px; }
