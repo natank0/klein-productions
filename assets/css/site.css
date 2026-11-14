@@ -53,8 +53,9 @@ main [tabindex="-1"]:focus { outline: none; }
 
 /* כפתורים: ראשי בזהב שמפניה, משני במסגרת שזיף, וואטסאפ בירוק */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 10px 22px; border: 1.5px solid transparent; border-radius: 12px; font-size: 1.02rem; font-weight: 700; line-height: 1.2; text-decoration: none; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease; }
-.btn-primary, .btn-dark { color: var(--ink); background: var(--gold-soft); border-color: #d2b277; }
-.btn-primary:hover, .btn-dark:hover { background: var(--gold-soft-hover); }
+/* מסגרת הזהב בניגודיות ≥ 3:1 מול השמנת, כדי שהכפתור לא "יצוף" על הרקע */
+.btn-primary { color: var(--ink); background: var(--gold-soft); border-color: #a9834b; }
+.btn-primary:hover { background: var(--gold-soft-hover); }
 .btn-wa { color: #fff; background: var(--wa); }
 .btn-wa:hover { background: var(--wa-hover); }
 .btn-line { color: var(--plum); border-color: var(--plum); background: var(--card); }
@@ -120,6 +121,9 @@ main [tabindex="-1"]:focus { outline: none; }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
 .tag { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 14px; border: 1px solid #cbb8d8; border-radius: 999px; background: var(--plum-tint); color: var(--ink); font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: background-color 150ms ease, border-color 150ms ease; }
 .tag:hover { border-color: var(--plum); background: #ece2f3; }
+/* התגיות הן קישורים לטופס: חץ קטן מסמן שהן לחיצות (השם הנגיש בא מ-aria-label) */
+.tag::after { content: "←"; margin-inline-start: 6px; color: var(--plum); font-weight: 700; transition: transform 150ms ease; }
+.tag:hover::after { transform: translateX(-2px); }
 .entry-body h4 { margin: 0 0 10px; font-size: 1rem; color: var(--plum); }
 .checklist { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .checklist li { display: flex; gap: 10px; align-items: flex-start; }
@@ -160,7 +164,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .address-card > .icon { width: 28px; height: 28px; color: var(--plum); }
 .address-card strong { display: block; font-size: clamp(1.4rem, 2.6vw, 1.75rem); font-weight: 800; line-height: 1.3; }
 .address-card span span { display: block; color: var(--ink-soft); font-size: 0.95rem; }
-.nav-apps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 440px; margin: 20px 0 0; padding: 0; list-style: none; }
+.nav-apps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
 .navigation-link { display: flex; align-items: center; justify-content: flex-start; gap: 10px; min-height: 52px; padding: 8px 14px; border: 1px solid var(--control); border-radius: 12px; color: var(--ink); background: var(--card); font-weight: 700; line-height: 1.25; text-decoration: none; transition: border-color 150ms ease, box-shadow 150ms ease; }
 .navigation-link:hover { border-color: var(--plum); box-shadow: inset 0 0 0 1px var(--plum); }
 .navigation-link bdi { white-space: nowrap; }
@@ -231,6 +235,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .form-options[open] { padding-bottom: 12px; }
 .form-options textarea { margin-top: 10px; }
 /* חלופה גלויה לוואטסאפ: למי שגולש ממחשב ומחזיק טלפון כשר */
+.form-privacy { margin-top: 10px; color: var(--ink-soft); font-size: 0.9rem; text-align: center; }
 .form-alt { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); text-align: center; }
 .form-alt-title { color: var(--ink-soft); font-size: 0.95rem; font-weight: 700; }
 .form-alt-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }

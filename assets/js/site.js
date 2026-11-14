@@ -32,6 +32,10 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && nav.classList.contains('is-open')) { setMenu(false); toggle.focus(); }
     });
+    /* לחיצה מחוץ לתפריט הפתוח סוגרת אותו */
+    document.addEventListener('click', function (e) {
+      if (nav.classList.contains('is-open') && !nav.contains(e.target) && !toggle.contains(e.target)) setMenu(false);
+    });
   }
 
   /* פס החיוג במובייל: מוסתר כשכפתורי הפתיחה על המסך, וכשהמקלדת פתוחה */
@@ -87,6 +91,7 @@
       eventType.value = value;
       setError('eventType', '');
       suggestNeeds();
+      syncEventOther();
       showContext('נבחר: ' + value + (group ? ' (' + group.label + ')' : '') + '. אפשר לשנות בכל רגע.');
     });
   });
@@ -119,6 +124,16 @@
   }
   eventType.addEventListener('change', suggestNeeds);
 
+  /* סוג אירוע "אחר" פותח שדה לתיאור האירוע, כדי שההודעה לא תגיע עם "אחר" בלבד */
+  var eventOtherField = document.getElementById('eventOtherField');
+  function syncEventOther() {
+    var other = eventType.value === 'אחר';
+    eventOtherField.hidden = !other;
+    form.elements.eventOther.required = other;
+    if (!other) setError('eventOther', '');
+  }
+  eventType.addEventListener('change', syncEventOther);
+
   /* עיר "אחר" פותחת שדה לשם העיר */
   var city = form.elements.city;
   var cityOtherField = document.getElementById('cityOtherField');
@@ -135,7 +150,8 @@
     eventType: 'נא לבחור סוג אירוע.',
     date: 'בחרו תאריך או סמנו שהתאריך עדיין לא סגור.',
     datePast: 'התאריך שנבחר כבר עבר.',
-    cityOther: 'נא לכתוב את שם העיר.'
+    cityOther: 'נא לכתוב את שם העיר.',
+    eventOther: 'נא לכתוב איזה אירוע.'
   };
 
   function field(name) { return form.elements[name]; }
@@ -148,7 +164,7 @@
     }
     if (err) err.textContent = msg || '';
   }
-  ['name', 'phone', 'eventType', 'date', 'cityOther'].forEach(function (n) {
+  ['name', 'phone', 'eventType', 'eventOther', 'date', 'cityOther'].forEach(function (n) {
     var el = field(n);
     if (!el) return;
     el.addEventListener('input', function () { setError(n, ''); });
@@ -186,6 +202,7 @@
   dateEl.addEventListener('change', syncDateHint);
   syncDate();
   syncCity();
+  syncEventOther();
   suggestNeeds();
 
   function formatDate(iso) {
@@ -203,6 +220,7 @@
     var normalized = phone.replace(/[\s()-]/g, '');
     if (!/^(?:0[1-9]\d{7,8}|\+972[1-9]\d{7,8})$/.test(normalized)) errors.phone = messages.phone;
     if (!val('eventType')) errors.eventType = messages.eventType;
+    else if (val('eventType') === 'אחר' && !val('eventOther')) errors.eventOther = messages.eventOther;
     if (!dateUnknown.checked) {
       if (!val('date')) errors.date = messages.date;
       else if (val('date') < todayISO()) errors.date = messages.datePast;
@@ -216,7 +234,7 @@
     var lines = ['שלום, אשמח להצעת מחיר להגברה.', ''];
     lines.push('שם: ' + val('name'));
     lines.push('טלפון: ' + val('phone'));
-    lines.push('סוג האירוע: ' + val('eventType'));
+    lines.push('סוג האירוע: ' + (val('eventType') === 'אחר' ? val('eventOther') : val('eventType')));
     lines.push('תאריך: ' + (dateUnknown.checked ? 'טרם נקבע' : formatDate(val('date'))));
     if (val('time')) lines.push('שעת התחלה: ' + val('time'));
     if (val('city')) lines.push('עיר: ' + (val('city') === 'אחר' ? val('cityOther') : val('city')));
@@ -231,7 +249,7 @@
 
   function checkForm() {
     var errors = validate();
-    var order = ['name', 'phone', 'eventType', 'date', 'cityOther'];
+    var order = ['name', 'phone', 'eventType', 'eventOther', 'date', 'cityOther'];
     var first = null;
     order.forEach(function (n) {
       setError(n, errors[n] || '');
