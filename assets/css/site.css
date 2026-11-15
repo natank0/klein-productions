@@ -18,9 +18,12 @@
   --ink-soft: #4b5466;      /* טקסט משני (≥ 6.7:1 על כל המשטחים) */
   --signal: #2a37b0;        /* אולטרמרין – כל מה שלוחצים עליו, ורק הוא */
   --signal-hover: #1f2a8c;
-  --signal-tint: #eef0fa;   /* רקע ריחוף ומקטע הפנייה */
+  --signal-tint: #eef0fa;   /* אזורי פעולה: בקשת הצעת מחיר וסיום העמוד; וגם ריחוף */
   --signal-line: #b8bfe6;   /* מסגרת לתגיות קישור */
-  --surface: #f3f5f9;       /* אפור קריר למקטעים מתחלפים */
+  --surface: #f3f5f9;       /* אפור קריר: מסגרת העמוד – פתיחה, מה כולל השירות, פוטר */
+  --wave: #dfe3ec;          /* צורת הגל על האפור – עיטור בלבד, לא מידע */
+  --wave-signal: #d6dbf3;   /* צורת הגל על אזור הפעולה */
+  --line-signal: #dce0f4;   /* קו גבול לאזורי הפעולה */
   --card: #ffffff;
   --line: #dce1e9;
   --control: #78829a;       /* גבול שדות – ניגודיות ≥ 3:1 */
@@ -87,7 +90,12 @@ main [tabindex="-1"]:focus { outline: none; }
 .menu-toggle .icon { width: 22px; height: 22px; }
 
 /* מסך פתיחה – ממורכז ובהיר, בלי הדרגות צבע. סמל הפתיחה: מד עוצמה (שורת פסים מתגברת), כמו בקונסולת סאונד */
-.hero { padding: clamp(52px, 8vw, 104px) 0 clamp(52px, 7vw, 92px); text-align: center; background: var(--surface); border-bottom: 1px solid var(--line); }
+/* רקעים: שלושה תפקידים בלבד, וכל מקטע מקבל רקע לפי תפקידו, לא לפי סירוגין.
+   לבן – תוכן לקריאה (סוגי אירועים, המחסן, שאלות). אפור קריר – מסגרת (פתיחה, מה כולל השירות, פוטר).
+   כחול בהיר – אזור פעולה (בקשת הצעת מחיר, סיום). כל מעבר בין רקעים מסומן בקו דק אחד.
+   עיטור יחיד: צורת גל של הקלטה (פסים ברוחב המד שמעל הכותרת), סימטרית, נמוכה במרכז כדי לא לגעת בטקסט;
+   יושבת בתחתית הפתיחה ובראש הסיום, כך שהעמוד נפתח ונסגר באותו סימן. */
+.hero { position: relative; isolation: isolate; overflow: hidden; padding: clamp(52px, 8vw, 104px) 0 clamp(84px, 10vw, 132px); text-align: center; background: var(--surface); border-bottom: 1px solid var(--line); }
 .hero-inner { display: flex; flex-direction: column; align-items: center; }
 .h1-part { display: block; }
 .hero h1 { margin: 0; font-size: clamp(2rem, 4.8vw, 3.5rem); font-weight: 600; letter-spacing: -0.005em; line-height: 1.18; }
@@ -106,8 +114,23 @@ main [tabindex="-1"]:focus { outline: none; }
 
 /* מקטעים */
 .section { padding: 84px 0; }
-.section-tint { background: var(--surface); }
-.section-signal { background: var(--signal-tint); }
+.section-tint { background: var(--surface); border-block: 1px solid var(--line); }
+.section-signal { background: var(--signal-tint); border-block: 1px solid var(--line-signal); }
+
+.wave-edge::after { content: none; }
+@supports ((mask-composite: intersect) or (-webkit-mask-composite: source-in)) {
+  .wave-edge::after {
+    content: ""; position: absolute; inset-inline: 0; bottom: 0; z-index: -1; height: clamp(64px, 8vw, 112px); pointer-events: none;
+    background: var(--wave);
+    -webkit-mask-image: repeating-linear-gradient(to left, #000 0 3px, transparent 3px 8px), url("../img/wave-envelope.svg");
+    mask-image: repeating-linear-gradient(to left, #000 0 3px, transparent 3px 8px), url("../img/wave-envelope.svg");
+    -webkit-mask-size: auto, 100% 100%; mask-size: auto, 100% 100%;
+    -webkit-mask-repeat: repeat, no-repeat; mask-repeat: repeat, no-repeat;
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+  }
+  .closing.wave-edge::after { top: 0; bottom: auto; height: clamp(48px, 6vw, 84px); background: var(--wave-signal); transform: scaleY(-1); }
+}
+.closing { position: relative; isolation: isolate; overflow: hidden; padding-top: clamp(96px, 11vw, 132px); }
 .section-head { max-width: 720px; margin: 0 auto 40px; text-align: center; }
 .section-title { margin: 0; font-size: clamp(1.75rem, 3.2vw, 2.35rem); font-weight: 600; letter-spacing: 0; }
 .section-lead { max-width: 52ch; margin: 14px auto 0; color: var(--ink-soft); font-size: 1.08rem; text-wrap: balance; }
@@ -402,6 +425,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 
 /* מצב ניגודיות גבוהה ב-Windows (פיקרינג): מסגרת שקופה הופכת לגלויה, כך שכפתורים מלאים וכרטיסים לא נעלמים */
 @media (forced-colors: active) {
+  .wave-edge::after { display: none; }
   .btn, .tag, .check span, .entry, .event-wide, .scope-col { border: 1px solid CanvasText; }
   .check input:checked + span { outline: 2px solid Highlight; }
   .hero h1::before { display: none; }
@@ -414,6 +438,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   body { font-size: 11pt; line-height: 1.5; color: #000; background: #fff; }
   .site-nav, .menu-toggle, .header-quote, .skip-link, .action-bar, .location-map, .nav-apps, .order-form, .contact-list, .closing, .hero-actions, .entry-cta, .event-wide-head .btn, .tag::after, .gear-wrap summary::after, .faq summary::after { display: none !important; }
   .site-header { position: static; border: 0; }
+  .wave-edge::after { display: none; }
   .header-call { display: inline-flex !important; border: 0; color: #000; }
   .section, .hero { padding: 18px 0; background: none !important; border: 0; }
   .section-head { margin-bottom: 14px; }
