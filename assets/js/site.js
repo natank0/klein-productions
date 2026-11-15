@@ -11,6 +11,17 @@
 
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
+  /* הדפסה: פותחים את השאלות הנפוצות ואת רשימת הציוד, ומחזירים למצב הקודם בסיום */
+  var printOpened = [];
+  window.addEventListener('beforeprint', function () {
+    printOpened = Array.prototype.filter.call(document.querySelectorAll('.faq details, .gear-wrap'), function (d) { return !d.open; });
+    printOpened.forEach(function (d) { d.open = true; });
+  });
+  window.addEventListener('afterprint', function () {
+    printOpened.forEach(function (d) { d.open = false; });
+    printOpened = [];
+  });
+
   /* תפריט מובייל */
   var toggle = document.getElementById('menuToggle');
   var nav = document.getElementById('siteNav');
@@ -254,13 +265,15 @@
   function checkForm() {
     var errors = validate();
     var order = ['name', 'phone', 'eventType', 'eventOther', 'date', 'cityOther'];
-    var first = null;
+    var labels = { name: 'שם', phone: 'טלפון', eventType: 'סוג האירוע', eventOther: 'תיאור האירוע', date: 'תאריך', cityOther: 'שם העיר' };
+    var first = null, missing = [];
     order.forEach(function (n) {
       setError(n, errors[n] || '');
-      if (errors[n] && !first) first = field(n);
+      if (errors[n]) { missing.push(labels[n]); if (!first) first = field(n); }
     });
     if (first) {
-      status.textContent = 'יש לתקן את השדות המסומנים.';
+      /* מה קרה ואיך מתקנים (פודמג'רסקי): וואטסאפ לא נפתח, אלה השדות, והסמן כבר בראשון שבהם */
+      status.textContent = 'וואטסאפ עדיין לא נפתח. חסר או לא תקין: ' + missing.join(', ') + '. הסמן הועבר לשדה הראשון.';
       status.classList.add('is-error');
       var fold = first.closest('details');
       if (fold) fold.open = true;
