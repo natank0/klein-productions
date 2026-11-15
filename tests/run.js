@@ -126,6 +126,14 @@ function nextSaturday(minDays) {
   check('סגירה אחרי השאלות: טופס, חיוג ווואטסאפ', (() => { const i = index.indexOf('id="closing-title"'); const blk = index.slice(i, index.indexOf('</section>', i)); return i > index.indexOf('id="faq"') && blk.includes('href="#order"') && blk.includes('href="tel:0527675138"') && blk.includes('https://wa.me/972527675138'); })());
   check('בפרק המחסן: משפט שמבהיר שהציוד מגיע אל מקום השמחה', /class="location-benefit">[^<]*מקום השמחה/.test(index));
   check('אין משטחים כהים ב-CSS (רקע של שזיף כהה או פחם)', !/#160f1f|#221a2d|#33273f|#22201d|plum-950|plum-900/i.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
+  { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8');
+    const hexes = [...css.matchAll(/#([0-9a-f]{6})\b/gi)].map(m => m[1]);
+    /* גוון חם-צהבהב (זהב, חול, שמנת, צהוב): גוון 20°–65° עם רוויה מורגשת */
+    const warm = hexes.filter(h => { const [r, g, b] = [0, 2, 4].map(k => parseInt(h.slice(k, k + 2), 16) / 255); const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; if (d < 0.04) return false; let hue = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; hue = (hue * 60 + 360) % 360; return hue >= 20 && hue <= 65; });
+    check('פלטה בלי זהב, צהוב, חול או שמנת', warm.length === 0 && !/--(gold|sand|paper|cream)/i.test(css), warm);
+    check('צבע הפעולה שמור ללחיצים: כותרות לא בצבע הקישורים', !/(h2|h3|h4|\.group-title|\.section-title)[^{]*\{[^}]*color: var\(--signal\)/.test(css));
+    check('יש גיליון הדפסה ומצב ניגודיות גבוהה', /@media print/.test(css) && /@media \(forced-colors: active\)/.test(css));
+  }
   check('ארבעת סוגי האירועים הנוספים כרשימה, לכל אחד קישור הצעת מחיר ייחודי', (() => { const labels = [...index.matchAll(/class="btn btn-line entry-cta"[^>]*>[\s\S]*?<\/svg>([^<]+)<\/a>/g)].map(m => m[1]); return /<ul class="entries">/.test(index) && labels.length === 4 && new Set(labels).size === 4; })());
   const WAZE_URL = 'https://waze.com/ul?q=%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;navigate=yes';
   const GMAPS_URL = 'https://www.google.com/maps/search/?api=1&amp;query=%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7';
