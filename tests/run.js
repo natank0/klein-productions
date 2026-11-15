@@ -133,7 +133,20 @@ function nextSaturday(minDays) {
     check('פלטה בלי זהב, צהוב, חול או שמנת', warm.length === 0 && !/--(gold|sand|paper|cream)/i.test(css), warm);
     check('צבע הפעולה שמור ללחיצים: כותרות לא בצבע הקישורים', !/(h2|h3|h4|\.group-title|\.section-title)[^{]*\{[^}]*color: var\(--signal\)/.test(css));
     check('יש גיליון הדפסה ומצב ניגודיות גבוהה', /@media print/.test(css) && /@media \(forced-colors: active\)/.test(css));
-    check('רקעים לפי תפקיד: גל בפתיחה ובסיום, מוסתר בהדפסה ובניגודיות גבוהה', /class="hero wave-edge"/.test(index) && /closing wave-edge"/.test(index) && fs.existsSync(path.join(ROOT, 'assets/img/wave-envelope.svg')) && /@media print[\s\S]*\.wave-edge::after \{ display: none; \}/.test(css) && /forced-colors: active\) \{\s*\.wave-edge::after \{ display: none; \}/.test(css));
+    check('רקעים לפי תפקיד: גל בפתיחה ובסיום, מוסתר בהדפסה ובניגודיות גבוהה', /class="hero wave-edge"/.test(index) && /closing wave-edge"/.test(index) && [480, 1024, 1600].every(w => fs.existsSync(path.join(ROOT, `assets/img/wave-meter-${w}.svg`))) && /@media print[\s\S]*\.wave-edge::after \{ display: none; \}/.test(css) && /forced-colors: active\) \{\s*\.wave-edge::after \{ display: none; \}/.test(css));
+    check('כפתורי הפתיחה ממורכזים גם בטאבלט', /max-width: 860px\)[\s\S]*?\.hero-actions \{[^}]*margin-inline: auto/.test(css));
+    { const results = [480, 1024, 1600].map(W => {
+        const svg = fs.readFileSync(path.join(ROOT, `assets/img/wave-meter-${W}.svg`), 'utf8');
+        const bars = [...svg.matchAll(/<rect x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"\/>/g)].map(m => m.slice(1).map(Number));
+        const byX = new Map(bars.map(b => [b[0], b[3]])), c = W / 2 - 1;
+        const exact = bars.length > 0 && bars.every(([x, y, w, h]) => w === 2 && (x - c) % 8 === 0 && h % 2 === 0 && y + h === 96 && x >= 0 && x + w <= W);
+        const mirrored = bars.every(([x, , , h]) => byX.get(2 * c - x) === h);
+        const shaped = byX.get(c) <= 16 && Math.max(...bars.map(b => b[3])) >= 64;
+        return exact && mirrored && shaped;
+      });
+      check('גל הרקע מדויק בשלושת הרוחבים: פסים 2px בפסיעה 8px, ראש שטוח, גבהים זוגיים, מראה סימטרית, נמוך במרכז וגבוה בקצוות', results.every(Boolean), results);
+      check('הגל עולה מקו בסיס בשני המקטעים, ואין קו כפול בין הסיום לפוטר', !/scaleY\(-1\)/.test(css) && /\.closing \{[^}]*border-bottom: 0/.test(css) && /padding-bottom: calc\(var\(--wave-h\) \+/.test(css));
+    }
   }
   check('ארבעת סוגי האירועים הנוספים כרשימה, לכל אחד קישור הצעת מחיר ייחודי', (() => { const labels = [...index.matchAll(/class="btn btn-line entry-cta"[^>]*>[\s\S]*?<\/svg>([^<]+)<\/a>/g)].map(m => m[1]); return /<ul class="entries">/.test(index) && labels.length === 4 && new Set(labels).size === 4; })());
   const WAZE_URL = 'https://waze.com/ul?q=%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;navigate=yes';
