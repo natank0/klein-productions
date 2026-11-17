@@ -112,6 +112,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .hero h1 { max-width: 13em; margin: 0; color: var(--ink); font-size: var(--fs-h1); font-weight: 600; letter-spacing: -0.01em; line-height: 1.12; }
 .hero-lead { max-width: 52ch; text-wrap: pretty; margin-top: var(--s-4); color: var(--ink-soft); font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.2rem); line-height: 1.75; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-5); }
+.hero-actions.is-nav-obscured { visibility: hidden !important; transition: none !important; }
 /* שלוש העובדות: ותק, ציוד ומיקום. רשימה עם קו פתיחה בגרפיט וקווי הפרדה, לא שלוש קוביות */
 .hero-proof { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
 .hero-proof li { display: flex; flex-direction: column; gap: 2px; padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }

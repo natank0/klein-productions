@@ -30,6 +30,12 @@
     nav.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
     document.body.classList.toggle('nav-open', open);
+    var heroActions = document.querySelector('.hero-actions');
+    var obscureHero = open && window.matchMedia('(max-width: 860px)').matches;
+    if (heroActions) {
+      heroActions.classList.toggle('is-nav-obscured', obscureHero);
+      heroActions.inert = obscureHero;
+    }
   }
   if (toggle && nav) {
     toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
