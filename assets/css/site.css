@@ -1,6 +1,6 @@
 /* קליין הפקות – גיליון סגנונות משותף
-   שפה עיצובית "קונסולה": פתיחה וסיום בגרפיט כהה כמו פאנל של ציוד סאונד, תוכן על לבן ואפור ניטרלי,
-   טקסט גרפיט, וצבע פעולה גרפיט מלא. בלי כחול, זהב, צהוב, חול או שמנת. ירוק רק לוואטסאפ.
+   שפה עיצובית בהירה וחדה: לבן ואפור ניטרלי, טקסט גרפיט, וצבע פעולה גרפיט מלא.
+   בלי רקעים כהים, ובלי כחול, זהב, צהוב, חול או שמנת. ירוק רק לוואטסאפ.
    כלל הצבע (קרוג): צבע הפעולה שמור רק למה שאפשר ללחוץ עליו. כותרות, אייקונים ותוויות – בגרפיט.
    סימטריה עדינה: כותרות מקטעים ממורכזות, רשתות בעמודות שוות, טקסט רץ מיושר לימין. ראו README. */
 
@@ -14,8 +14,8 @@
 
 :root {
   color-scheme: light;
-  /* פלטת "קונסולה" ניטרלית: גרפיט כמו ציוד סאונד מקצועי, לבן לתוכן, אפור ניטרלי למסגרת.
-     בלי כחול (עודכן 17.11.2026: "הכחול לא נעים לעין"), בלי זהב, צהוב, חול או שמנת. ירוק רק לוואטסאפ. */
+  /* פלטה בהירה וחדה: רקעים לבנים ואפור ניטרלי, טקסט וכפתורים בגרפיט. בלי רקעים כהים
+     (17.11.2026: "תחליף את הרקע השחור"), בלי כחול, זהב, צהוב, חול או שמנת. ירוק רק לוואטסאפ. */
   --ink: #17191d;           /* גרפיט – טקסט וכותרות */
   --ink-soft: #50555e;      /* טקסט משני (≥ 7:1 על לבן) */
   --signal: #1d2025;        /* צבע הפעולה: גרפיט מלא – כפתורים, קישורים ותגיות */
@@ -27,12 +27,7 @@
   --card: #ffffff;
   --line: #e1e3e7;
   --control: #7b808a;       /* גבול שדות – ניגודיות ≥ 3:1 */
-  --console: #16181c;       /* גרפיט כהה – פתיחה וסיום, כמו פאנל של קונסולה */
-  --console-deep: #0f1013;  /* פוטר */
-  --console-raise: #272a30; /* גל ועיטור על הגרפיט */
-  --console-line: #33363d;  /* קווים על הגרפיט */
-  --on-console: #ffffff;
-  --on-console-soft: #b9bdc6; /* טקסט משני על הגרפיט (≥ 9:1) */
+  --wave-tone: #e6e8ec;    /* צורת הגל – עיטור בלבד, לא מידע */
   --wa: #1f7a4f;            /* ירוק וואטסאפ – מוסכמה מוכרת */
   --wa-hover: #1a6a44;
   --danger: #b3261e;
@@ -104,25 +99,19 @@ main [tabindex="-1"]:focus { outline: none; }
    הגל תמיד עולה מקו בסיס: מקו התחתון של הפתיחה ומקו התחתון של הסיום, כך שהעמוד נפתח ונסגר באותו סימן.
    המרווח התחתון של שני המקטעים = גובה הגל + מרווח קבוע, כדי שהגל לעולם לא ייגע בטקסט.
    שלושה קבצים לפי רוחב המסך (480/1024/1600), מוצגים ברוחבם הטבעי וממורכזים: הפסים לא נמתחים. */
-.hero { --wave-h: 96px; position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 8vw, 104px) 0 calc(var(--wave-h) + 36px); text-align: center; color: var(--on-console); background: var(--console); }
+.hero { --wave-h: 96px; position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 8vw, 104px) 0 calc(var(--wave-h) + 36px); text-align: center; color: var(--ink); background: var(--card); border-bottom: 1px solid var(--line); }
 .hero-inner { display: flex; flex-direction: column; align-items: center; }
 .h1-part { display: block; }
-.hero h1 { margin: 0; color: var(--on-console); font-size: clamp(2.1rem, 5vw, 3.6rem); font-weight: 600; letter-spacing: -0.005em; line-height: 1.16; }
-.hero-lead { max-width: 60ch; margin: 20px auto 0; color: var(--on-console-soft); font-size: 1.14rem; line-height: 1.7; text-wrap: balance; }
+.hero h1 { margin: 0; color: var(--ink); font-size: clamp(2.1rem, 5vw, 3.6rem); font-weight: 600; letter-spacing: -0.005em; line-height: 1.16; }
+.hero-lead { max-width: 60ch; margin: 20px auto 0; color: var(--ink-soft); font-size: 1.14rem; line-height: 1.7; text-wrap: balance; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
 .hero-actions .btn { padding-inline: 20px; }
-/* כפתורים על הגרפיט: ראשי לבן עם טקסט כהה, משני במסגרת לבנה */
-.hero .btn-primary, .closing .btn-primary { color: var(--console); background: var(--on-console); }
-.hero .btn-primary:hover, .closing .btn-primary:hover { background: #e4e6ea; }
-.hero .btn-line, .closing .btn-line { color: var(--on-console); border-color: var(--on-console); background: transparent; }
-.hero .btn-line:hover, .closing .btn-line:hover { box-shadow: inset 0 0 0 1px var(--on-console); background: var(--console-raise); }
-.hero :focus-visible, .closing :focus-visible, .footer :focus-visible { outline-color: var(--on-console); }
 /* שלוש העובדות החזקות: ותק, ציוד ומיקום. פס אחד עם קווי הפרדה, כמו שורת נתונים בפאנל */
-.hero-proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; max-width: 940px; margin: 44px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--console-line); }
+.hero-proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; max-width: 940px; margin: 44px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .hero-proof li { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 24px 18px 0; }
-.hero-proof li + li { border-inline-start: 1px solid var(--console-line); }
-.hero-proof strong { color: var(--on-console); font-size: clamp(1.35rem, 2.3vw, 1.7rem); font-weight: 600; line-height: 1.25; }
-.hero-proof span { color: var(--on-console-soft); font-size: 0.98rem; line-height: 1.5; text-wrap: balance; }
+.hero-proof li + li { border-inline-start: 1px solid var(--line); }
+.hero-proof strong { color: var(--ink); font-size: clamp(1.35rem, 2.3vw, 1.7rem); font-weight: 600; line-height: 1.25; }
+.hero-proof span { color: var(--ink-soft); font-size: 0.98rem; line-height: 1.5; text-wrap: balance; }
 .proof-brands { letter-spacing: 0.04em; }
 /* כתובת המחסן היא קישור לפרק המחסן: קו תחתון מתחת לכתובת */
 .hero-area { display: flex; flex-direction: column; align-items: center; gap: 4px; color: inherit; text-decoration: none; }
@@ -138,7 +127,7 @@ main [tabindex="-1"]:focus { outline: none; }
 @supports ((mask-image: none) or (-webkit-mask-image: none)) {
   .wave-edge::after {
     content: ""; position: absolute; inset-inline: 0; bottom: 0; z-index: -1; height: var(--wave-h); pointer-events: none;
-    background: var(--console-raise);
+    background: var(--wave-tone);
     /* גודל המסכה ברוחב קבוע (1600px), ממורכזת: הפסים נשארים 2px בכל מסך ולא נמתחים; רק הגובה משתנה */
     -webkit-mask: url("../img/wave-meter-1600.svg") center bottom / 1600px var(--wave-h) no-repeat;
     mask: url("../img/wave-meter-1600.svg") center bottom / 1600px var(--wave-h) no-repeat;
@@ -152,9 +141,7 @@ main [tabindex="-1"]:focus { outline: none; }
   }
 }
 /* הסיום: הגל עולה מהקו שמפריד בינו לבין הפוטר. הקו הזה שייך לפוטר, ולכן אין לסיום קו תחתון משלו (בלי קו כפול) */
-.closing { --wave-h: 64px; position: relative; isolation: isolate; overflow: hidden; padding-bottom: calc(var(--wave-h) + 56px); color: var(--on-console); background: var(--console); border-top: 0; border-bottom: 0; }
-.closing .section-title { color: var(--on-console); }
-.closing .section-lead { color: var(--on-console-soft); }
+.closing { --wave-h: 64px; position: relative; isolation: isolate; overflow: hidden; padding-bottom: calc(var(--wave-h) + 56px); color: var(--ink); background: var(--surface); border-top: 1px solid var(--line); border-bottom: 0; }
 .section-head { max-width: 720px; margin: 0 auto 40px; text-align: center; }
 .section-title { margin: 0; font-size: clamp(1.75rem, 3.2vw, 2.35rem); font-weight: 600; letter-spacing: 0; }
 .section-lead { max-width: 52ch; margin: 14px auto 0; color: var(--ink-soft); font-size: 1.08rem; text-wrap: balance; }
@@ -322,18 +309,17 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .closing-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
 
 /* פוטר – אפור קריר, שלוש עמודות שוות */
-.footer { padding: 56px 0 32px; color: var(--on-console); background: var(--console-deep); border-top: 1px solid var(--console-line); text-align: center; }
+.footer { padding: 56px 0 32px; color: var(--ink); background: var(--surface); border-top: 1px solid var(--line); text-align: center; }
 .footer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
 .footer-name { margin: 0 0 6px; font-size: 1.3rem; font-weight: 600; }
-.footer .footer-name { color: var(--on-console); }
 .footer address { margin-bottom: 4px; font-style: normal; font-weight: 600; }
-.footer h2 { margin: 0 0 10px; color: var(--on-console); font-size: 1rem; }
-.footer p, .footer li { color: var(--on-console-soft); }
-.footer a { color: var(--on-console); }
+.footer h2 { margin: 0 0 10px; color: var(--ink); font-size: 1rem; }
+.footer p, .footer li { color: var(--ink-soft); }
+.footer .footer-name, .footer a { color: var(--ink); }
 .footer ul { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .footer a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
 .footer a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
-.footer-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--console-line); color: var(--on-console-soft); font-size: 0.88rem; }
+.footer-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.88rem; }
 
 /* פס חיוג ווואטסאפ – מובייל בלבד */
 .action-bar { display: none; }
@@ -413,7 +399,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .closing-actions { display: grid; grid-template-columns: 1fr; width: 100%; max-width: 420px; }
   .hero-proof { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin-top: 30px; }
   .hero-proof li { padding: 14px 0; }
-  .hero-proof li + li { border-inline-start: 0; border-top: 1px solid var(--console-line); }
+  .hero-proof li + li { border-inline-start: 0; border-top: 1px solid var(--line); }
   .hero-proof strong { font-size: 1.3rem; }
   .wedding-spec { grid-template-columns: minmax(0, 1fr); }
   .brand-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
