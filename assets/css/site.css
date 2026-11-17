@@ -87,6 +87,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .bsd { position: absolute; top: 3px; right: 0; color: var(--ink-soft); font-size: 0.75rem; line-height: 1; }
 .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; padding-block: 8px; flex: 0 0 auto; }
 .brand img { width: 44px; height: 44px; border-radius: 8px; }
+.brand .brand-symbol { display: block; width: 44px; height: 44px; object-fit: contain; border-radius: 0; flex: 0 0 auto; }
 .brand-name { font-size: 1.2rem; font-weight: 600; line-height: 1.15; }
 .brand-name small { display: block; color: var(--ink-soft); font-size: 0.78rem; font-weight: 400; }
 .site-nav { margin-inline-start: auto; }
@@ -169,7 +170,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .entries { margin: 0; padding: 0; list-style: none; }
 .entries > li { border-bottom: 1px solid var(--line); }
 .entry { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 5fr) 13.5rem; gap: var(--s-3) var(--s-5); align-items: start; padding: var(--s-4) 0; }
-.entry-head h3 { margin: 0; font-size: var(--fs-h3); font-weight: 600; }
+.entry-head h4 { margin: 0; font-size: var(--fs-h3); font-weight: 600; }
 .entry-head p { max-width: 46ch; margin-top: 6px; color: var(--ink-soft); }
 .tags { display: flex; flex-wrap: wrap; gap: var(--s-1); margin: 0; padding: 4px 0 0; list-style: none; }
 .tag { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 12px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--card); color: var(--ink); font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: background-color 150ms ease, border-color 150ms ease; }
@@ -210,6 +211,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .location { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-6); align-items: start; }
 .location-text .section-title { margin-bottom: var(--s-4); }
 .location-benefit { max-width: 46ch; margin-top: var(--s-3); color: var(--ink-soft); }
+.map-fallback { max-width: 48ch; margin-top: var(--s-2); color: var(--ink-soft); font-size: 0.91rem; }
 .address-card { display: flex; align-items: center; gap: 14px; padding: var(--s-3) 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); font-style: normal; }
 .address-card > .icon { width: 28px; height: 28px; color: var(--ink); }
 .address-card strong { display: block; font-size: clamp(1.4rem, 2.6vw, 1.75rem); font-weight: 600; line-height: 1.3; }
@@ -274,6 +276,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .date-row .check { flex: 0 0 auto; }
 .field-hint { color: var(--ink-soft); font-size: 0.92rem; font-weight: 600; }
 .field-hint[hidden] { display: none; }
+.city-hint { color: var(--ink-soft); font-size: 0.88rem; line-height: 1.5; }
 .field-error { min-height: 1.3em; color: var(--danger); font-size: 0.9rem; font-weight: 600; }
 [aria-invalid="true"] { border-color: var(--danger) !important; }
 /* פרטי רשות: disclosure אחד וסגור. הכפתור לוואטסאפ מגיע מיד אחריו */
@@ -367,6 +370,8 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .header-inner { gap: var(--s-2); }
   .site-nav { position: absolute; top: 100%; right: 0; left: 0; max-height: calc(100dvh - var(--header-h) - var(--bar-h)); overflow-y: auto; padding: 10px max(20px, env(safe-area-inset-right, 0px)) 18px; background: var(--card); border-bottom: 1px solid var(--line); box-shadow: 0 12px 24px rgb(0 0 0 / 8%); }
   .js .site-nav:not(.is-open) { display: none; }
+  /* תפריט פתוח: כפתורי הפתיחה שמתחתיו אינם מציצים ואינם מקבלים מיקוד */
+  .js body.nav-open .hero-actions { visibility: hidden; }
   .nav-links { flex-direction: column; align-items: stretch; gap: 4px; }
   .nav-links a { min-height: 50px; padding: 0 12px; font-size: 1.08rem; }
   .nav-links .nav-quote { margin: 8px 0 0; justify-content: center; }
