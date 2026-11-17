@@ -29,6 +29,13 @@
     if (!toggle || !nav) return;
     nav.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('nav-open', open);
+    var heroActions = document.querySelector('.hero-actions');
+    var obscureHero = open && window.matchMedia('(max-width: 860px)').matches;
+    if (heroActions) {
+      heroActions.classList.toggle('is-nav-obscured', obscureHero);
+      heroActions.inert = obscureHero;
+    }
   }
   if (toggle && nav) {
     toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
@@ -94,6 +101,7 @@
       if (selected && prev && prev !== group) showContext('הבחירה הקודמת נשמרה: ' + selected + ' (' + prev.label + '). אפשר לבחור מ' + group.label + ' או מכל סוגי האירועים.');
       else if (selected) showContext('נבחר: ' + selected + ' (' + group.label + ').');
       else showContext('קטגוריה: ' + group.label + '. אפשר לבחור מכל סוגי האירועים.');
+      requestAnimationFrame(function () { eventType.focus({ preventScroll: true }); });
     });
   });
   document.querySelectorAll('a[data-event]').forEach(function (link) {
@@ -106,6 +114,7 @@
       suggestNeeds();
       syncEventOther();
       showContext('נבחר: ' + value + (group ? ' (' + group.label + ')' : '') + '. אפשר לשנות בכל רגע.');
+      requestAnimationFrame(function () { eventType.focus({ preventScroll: true }); });
     });
   });
 
@@ -273,7 +282,7 @@
     });
     if (first) {
       /* מה קרה ואיך מתקנים (פודמג'רסקי): וואטסאפ לא נפתח, אלה השדות, והסמן כבר בראשון שבהם */
-      status.textContent = 'וואטסאפ עדיין לא נפתח. חסר או לא תקין: ' + missing.join(', ') + '. הסמן הועבר לשדה הראשון.';
+      status.textContent = 'כדי לפתוח הודעה בוואטסאפ, יש להשלים או לתקן: ' + missing.join(', ') + '.';
       status.classList.add('is-error');
       var fold = first.closest('details');
       if (fold) fold.open = true;

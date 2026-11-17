@@ -58,6 +58,10 @@ function nextSaturday(minDays) {
 
   /* ---------- 1. סטטי: תקינות HTML וכללי תוכן ---------- */
   section('HTML ותוכן');
+  check('מותג: סמל SVG תואם ונגיש בשני הדפים', fs.existsSync(path.join(ROOT, 'assets/img/klein-mark.svg')) && pages.every(x => x.html.includes('klein-mark.svg')));
+  check('אין התחייבות לא מאומתת לחשבונית למוסד', !index.includes('חשבונית למוסד'));
+  check('מחוץ לבני ברק: מוצגת הבהרת אזור שירות', index.includes('id="cityHint"') && index.includes('נבדוק אפשרות הגעה'));
+  check('אירועים נוספים מוגדרים ככותרת סמנטית', /<h3 class="group-title" id="more-events">אירועים נוספים<\/h3>/.test(index));
   const hv = new HtmlValidate(new FileSystemConfigLoader());
   for (const { f } of pages) {
     const r = await hv.validateFile(path.join(ROOT, f));
@@ -114,7 +118,7 @@ function nextSaturday(minDays) {
   check('main מקבל מיקוד מקישור הדילוג (tabindex=-1)', /<main id="main" tabindex="-1">/.test(index));
   check('אין מחלקת btn-dark מטעה (הכפתור זהב)', !/btn-dark/.test(index + pages[1].html + fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('וואטסאפ נכתב בעברית בטקסט הגלוי', !/>[^<]*WhatsApp[^<]*</.test(index.replace(/<title>[\s\S]*?<\/title>/, '')));
-  check('משפט פרטיות ליד כפתור השליחה, בלי טענה שההודעה נשלחה', /class="form-privacy">הפרטים אינם נשמרים באתר\. ההודעה נשלחת רק לאחר אישור בוואטסאפ\.</.test(index));
+  check('משפט פרטיות ליד כפתור השליחה, בלי טענה שההודעה נשלחה', /class="form-privacy">הפרטים אינם נשמרים באתר\. ההודעה תישלח רק אם תלחצו על שליחה בוואטסאפ\.</.test(index));
   check('חתונות: ארבעה תחומים בלי ציר שלבים ממוספר (חופה, עזרת נשים, דרשות וברכות, רחבת השמחה)', (() => { const m = index.match(/<dl class="wedding-spec">([\s\S]*?)<\/dl>/); const st = m ? [...m[1].matchAll(/<dt>([^<]+)<\/dt>/g)].map(x => x[1]) : []; return st.join('|') === 'חופה|עזרת נשים|דרשות וברכות|רחבת השמחה' && !index.includes('wedding-flow'); })());
   check('פתיחה: שתי פעולות בלבד, טופס הצעת מחיר וחיוג עם המספר גלוי (וואטסאפ ישיר רק בפס, בטופס ובפוטר)', (() => { const m = index.match(/<div class="hero-actions">([\s\S]*?)<\/div>/); const b = m ? [...m[1].matchAll(/<a [^>]*href="([^"]+)"/g)].map(x => x[1]) : []; return b.length === 2 && b[0] === '#order' && b[1] === 'tel:0527675138' && m[1].includes('052-7675138'); })());
   check('כותרת: הקישור שמחוץ לתפריט מוביל לטופס, בלי כפילות של "חתונות"', index.includes('class="btn btn-primary btn-sm header-quote" href="#order"') && !index.includes('header-events'));
@@ -301,6 +305,7 @@ function nextSaturday(minDays) {
     const { p } = await open(c);
     await p.click('#menuToggle');
     const opened = await p.evaluate(() => document.getElementById('siteNav').classList.contains('is-open'));
+    check('תפריט נייד: כפתורי הפתיחה מוסתרים בזמן שהתפריט פתוח', await p.evaluate(() => getComputedStyle(document.querySelector('.hero-actions')).visibility === 'hidden'));
     await p.mouse.click(200, 700);
     const closed = await p.evaluate(() => !document.getElementById('siteNav').classList.contains('is-open') && document.getElementById('menuToggle').getAttribute('aria-expanded') === 'false');
     check('תפריט המובייל נסגר בלחיצה מחוץ לו', opened && closed, { opened, closed });
