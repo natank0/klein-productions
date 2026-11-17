@@ -68,7 +68,7 @@ function nextSaturday(minDays) {
   for (const { f, html } of pages) {
     check(`${f}: אין משאבים חיצוניים (סקריפט, גופן, תמונה); iframe רק של מפת Google`, !/<script[^>]+src="https?:|<link[^>]+rel="stylesheet"[^>]+href="https?:|<img[^>]+src="https?:|<video[^>]+src="https?:|@import/i.test(html) && [...html.matchAll(/<iframe[^>]*>/g)].every(m => /src="https:\/\/www\.google\.com\/maps\?q=/.test(m[0])));
     const text = visibleText(html);
-    const banned = ['סניף', 'המובילים', 'המוביל ב', 'שנות ותק', '₪', 'ש"ח', 'ש״ח', 'זמין בחג', 'פתוח בחג', 'בית שמש', 'נחמן'];
+    const banned = ['סניף', 'המובילים', 'המוביל ב', 'שנות ותק', '₪', 'ש"ח', 'ש״ח', 'זמין בחג', 'פתוח בחג', 'בית שמש', 'נחמן', 'זמינות מיידית', 'מענה מהיר', 'מענה מיידי', '24/7', 'גיבוי', 'במלאי', '15 שנה של', 'כלול בכל הזמנה', 'איש סאונד צמוד'];
     const hits = banned.filter(w => text.includes(w));
     check(`${f}: אין טענות ונוסחים שלא אושרו`, hits.length === 0, hits);
     const streets = ['שלמה המלך', 'מלצר', 'רוזנהיים', 'בן יעקב', 'מחזיקי הדת', 'ז׳בוטינסקי', "ז'בוטינסקי", 'אהרונוביץ', 'עזרא 22'];
@@ -114,19 +114,19 @@ function nextSaturday(minDays) {
   check('main מקבל מיקוד מקישור הדילוג (tabindex=-1)', /<main id="main" tabindex="-1">/.test(index));
   check('אין מחלקת btn-dark מטעה (הכפתור זהב)', !/btn-dark/.test(index + pages[1].html + fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('וואטסאפ נכתב בעברית בטקסט הגלוי', !/>[^<]*WhatsApp[^<]*</.test(index.replace(/<title>[\s\S]*?<\/title>/, '')));
-  check('משפט פרטיות ליד כפתור השליחה', /class="form-privacy">הפרטים לא נשמרים באתר/.test(index));
+  check('משפט פרטיות ליד כפתור השליחה, בלי טענה שההודעה נשלחה', /class="form-privacy">הפרטים אינם נשמרים באתר\. ההודעה נשלחת רק לאחר אישור בוואטסאפ\.</.test(index));
   check('חתונות: ארבעה תחומים בלי ציר שלבים ממוספר (חופה, עזרת נשים, דרשות וברכות, רחבת השמחה)', (() => { const m = index.match(/<dl class="wedding-spec">([\s\S]*?)<\/dl>/); const st = m ? [...m[1].matchAll(/<dt>([^<]+)<\/dt>/g)].map(x => x[1]) : []; return st.join('|') === 'חופה|עזרת נשים|דרשות וברכות|רחבת השמחה' && !index.includes('wedding-flow'); })());
   check('פתיחה: שתי פעולות בלבד, טופס הצעת מחיר וחיוג עם המספר גלוי (וואטסאפ ישיר רק בפס, בטופס ובפוטר)', (() => { const m = index.match(/<div class="hero-actions">([\s\S]*?)<\/div>/); const b = m ? [...m[1].matchAll(/<a [^>]*href="([^"]+)"/g)].map(x => x[1]) : []; return b.length === 2 && b[0] === '#order' && b[1] === 'tel:0527675138' && m[1].includes('052-7675138'); })());
   check('כותרת: הקישור שמחוץ לתפריט מוביל לטופס, בלי כפילות של "חתונות"', index.includes('class="btn btn-primary btn-sm header-quote" href="#order"') && !index.includes('header-events'));
-  check('הציוד גלוי ולא מקופל: שורת יצרנים ורשימת ציוד פתוחה, לפני מה שכלול בהזמנה', (() => { const strip = (index.match(/<ul class="brand-strip"[\s\S]*?<\/ul>/) || [''])[0]; return ['RCF', 'QSC', 'Midas', 'Shure'].every(b => strip.includes('>' + b + '<')) && /<div class="gear-panel" id="equipment"><h3>מפרט הציוד<\/h3><dl class="gear">/.test(index) && !/<details[^>]*id="equipment"/.test(index) && index.indexOf('id="equipment"') < index.indexOf('class="scope"'); })());
-  check('המחסן: הכותרת מבהירה שזו נקודת יציאה לאולמות ואיסוף בהשכרה', /class="address-card">[\s\S]*?נקודת היציאה לאולמות/.test(index));
-  check('שירות: איש סאונד לאורך האירוע כתוספת בתיאום', /תוספות בתיאום[\s\S]*?איש סאונד לאורך האירוע/.test(index));
+  check('הציוד גלוי ולא מקופל: קטלוג לפי שימוש עם כל היצרנים כטקסט, ארבע קבוצות ראשיות ושלוש נוספות, לפני מה שכלול בשירות', (() => { const cat = (index.match(/<div class="catalog" id="equipment">[\s\S]*?<div class="scope">/) || [''])[0]; const main = (cat.match(/<dl class="gear gear-main">([\s\S]*?)<\/dl>/) || ['', ''])[1]; const more = (cat.match(/<dl class="gear gear-more">([\s\S]*?)<\/dl>/) || ['', ''])[1]; const dts = x => [...x.matchAll(/<dt>([^<]+)<\/dt>/g)].map(m => m[1]); return dts(main).join('|') === 'רמקולים וסאבוופרים|מיקסרים|מיקרופונים|מוניטורים וחיבורים' && dts(more).join('|') === 'סטנדים|הקלטה והקרנה|תאורת במה' && ['RCF', 'QSC', 'Midas', 'Mackie', 'Yamaha', 'Behringer', 'Shure'].every(b => cat.includes('<bdi lang="en">' + b + '</bdi>')) && !/<details[^>]*id="equipment"/.test(index) && !/<img[^>]*(rcf|qsc|midas|shure|yamaha|mackie|behringer)/i.test(index); })());
+  check('המחסן: הכתובת מוצגת כנקודת היציאה של הציוד', /class="address-card">[\s\S]*?<strong>כהנמן 64, בני ברק<\/strong><span>נקודת היציאה של הציוד/.test(index));
+  check('שירות בשלוש קבוצות: הקמה, התאמות לפי האירוע, ושירותים נוספים בתיאום (איש סאונד שם, לא כלול)', (() => { const m = (index.match(/<div class="scope-cols">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>\s*<\/section>/) || ['', ''])[1]; const h = [...m.matchAll(/<h4>([^<]+)<\/h4>/g)].map(x => x[1]); return h.join('|') === 'הגברה עם הקמה|התאמות לפי האירוע|שירותים נוספים בתיאום' && /שירותים נוספים בתיאום<\/h4>[\s\S]*?איש סאונד לאורך האירוע/.test(m) && !/הגברה עם הקמה<\/h4>[^]*?איש סאונד[^]*?התאמות לפי/.test(m); })());
   check('גופן: מקומי בלבד (woff2 מהאתר), שאר ה-url ב-CSS הם SVG מקומי, CSP עם font-src self, ורישיון OFL לצד הקבצים', (() => { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8'); const urls = [...css.matchAll(/url\("([^"]+)"\)/g)].map(m => m[1]); const fonts = urls.filter(u => /\.woff2$/.test(u)); const others = urls.filter(u => !/\.woff2$/.test(u)); return fonts.length >= 4 && fonts.every(u => /^\.\.\/fonts\/[\w-]+\.woff2$/.test(u) && fs.existsSync(path.join(ROOT, 'assets/css', u))) && others.every(u => /^\.\.\/img\/[\w-]+\.svg$/.test(u) && fs.existsSync(path.join(ROOT, 'assets/css', u))) && !/@font-face[^}]*\.svg/.test(css) && /font-display: swap/.test(css) && pages.every(({ html }) => /font-src 'self'/.test(html)) && fs.existsSync(path.join(ROOT, 'assets/fonts/OFL.txt')); })());
-  check('פתיחה: שלוש עובדות חזקות – ותק, ציוד ומיקום (כתובת המחסן כקישור לפרק המחסן)', (() => { const m = (index.match(/<ul class="hero-proof">[\s\S]*?<\/ul>/) || [''])[0]; return m.split('<li>').length - 1 === 3 && m.includes('<strong>15 שנות ניסיון</strong>') && /RCF[\s\S]*QSC[\s\S]*Midas[\s\S]*Shure/.test(m) && /<a class="hero-area" href="#areas"><strong>במרכז בני ברק<\/strong><span>המחסן בכהנמן 64[^<]*<\/span>/.test(m) && !/תקלה/.test(m) && !index.includes('hero-facts'); })());
+  check('פתיחה: שלוש עובדות – ותק, ציוד ומחסן (כתובת המחסן כקישור לפרק המחסן)', (() => { const m = (index.match(/<ul class="hero-proof">[\s\S]*?<\/ul>/) || [''])[0]; return m.split('<li>').length - 1 === 3 && m.includes('<strong>15 שנות ניסיון</strong>') && /RCF[\s\S]*QSC[\s\S]*Midas[\s\S]*Shure/.test(m) && /<a class="hero-area" href="#areas"><strong>מחסן בכהנמן 64, בני ברק<\/strong>/.test(m) && !/תקלה/.test(m) && !index.includes('hero-facts'); })());
   /* ותק: מספר אחד בלבד, 15, לפי הנחיית המשתמש (17.11.2026). כל מספר שנים אחר נכשל */
   check('ותק: רק "15 שנות ניסיון" (אושר), בלי מספר שנים אחר', (() => { const txt = index.replace(/<script(?! type="application\/ld\+json")[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '); const yrs = [...txt.matchAll(/(\d+)\s*(?:שנה|שנים|שנות)/g)].map(m => m[1]); return yrs.length >= 1 && yrs.every(y => y === '15'); })());
   check('סגירה אחרי השאלות: טופס, חיוג ווואטסאפ', (() => { const i = index.indexOf('id="closing-title"'); const blk = index.slice(i, index.indexOf('</section>', i)); return i > index.indexOf('id="faq"') && blk.includes('href="#order"') && blk.includes('href="tel:0527675138"') && blk.includes('https://wa.me/972527675138'); })());
-  check('בפרק המחסן: משפט שמבהיר שהציוד מגיע אל מקום השמחה', /class="location-benefit">[^<]*מקום השמחה/.test(index));
+  check('בפרק המחסן: משפט שמבהיר שהציוד מובא למקום האירוע בתיאום, בלי רשימת ערים', /class="location-benefit">[^<]*מובא למקום האירוע בהתאם לתיאום/.test(index) && !/class="location-benefit">[^<]*(פתח תקווה|רמת גן|אלעד)/.test(index));
   /* 17.11.2026: "תחליף את הרקע השחור" – אין רקעים כהים. כל רקע ב-CSS בהיר (בהירות יחסית ≥ 0.8), חוץ מכפתורים ותגיות */
   check('אין רקעים כהים: הפתיחה, הסיום והפוטר בהירים, ואין גוון כחול מובהק', (() => { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8'); const hx = [...css.matchAll(/#([0-9a-f]{6})\b/gi)].map(m => m[1]); const noBlue = !hx.some(h => { const [r, g, b] = [0, 2, 4].map(k => parseInt(h.slice(k, k + 2), 16)); return b - Math.max(r, g) > 24; }); return noBlue && /\.hero \{[^}]*background: var\(--card\)/.test(css) && /\.closing \{[^}]*background: var\(--surface\)/.test(css) && /\.footer \{[^}]*background: var\(--surface\)/.test(css) && !/--console|--night/.test(css); })());
   { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8');
@@ -137,7 +137,9 @@ function nextSaturday(minDays) {
     check('צבע הפעולה שמור ללחיצים: כותרות לא בצבע הקישורים', !/(h2|h3|h4|\.group-title|\.section-title)[^{]*\{[^}]*color: var\(--signal\)/.test(css));
     check('יש גיליון הדפסה ומצב ניגודיות גבוהה', /@media print/.test(css) && /@media \(forced-colors: active\)/.test(css));
     check('רקעים לפי תפקיד: גל בפתיחה ובסיום, מוסתר בהדפסה ובניגודיות גבוהה', /class="hero wave-edge"/.test(index) && /closing wave-edge"/.test(index) && [480, 1024, 1600].every(w => fs.existsSync(path.join(ROOT, `assets/img/wave-meter-${w}.svg`))) && /@media print[\s\S]*\.wave-edge::after \{ display: none; \}/.test(css) && /forced-colors: active\) \{\s*\.wave-edge::after \{ display: none; \}/.test(css));
-    check('כפתורי הפתיחה ממורכזים גם בטאבלט', /max-width: 860px\)[\s\S]*?\.hero-actions \{[^}]*margin-inline: auto/.test(css));
+    check('במובייל ובטאבלט כפתורי הפתיחה בעמודה אחת ברוחב מלא', /max-width: 860px\)[\s\S]*?\.hero-actions \{[^}]*grid-template-columns: minmax\(0, 1fr\)/.test(css));
+    check('פלטה ניטרלית: האפורים בלי גוון (R=G=B), ובלי מבטא בורדו שלא נבחר', ['surface', 'line', 'line-strong', 'control', 'ink-soft', 'signal-tint', 'wave-tone'].every(n => { const m = css.match(new RegExp('--' + n + ': #([0-9a-f]{6})')); return m && m[1].slice(0, 2) === m[1].slice(2, 4) && m[1].slice(2, 4) === m[1].slice(4, 6); }) && !/#7b263b/i.test(css));
+    check('מערכת מרווחים אחת: 8, 12, 16, 24, 32, 48, 72, 96', /--s-1: 8px; --s-2: 12px; --s-3: 16px; --s-4: 24px; --s-5: 32px; --s-6: 48px; --s-7: 72px; --s-8: 96px;/.test(css));
     { const results = [480, 1024, 1600].map(W => {
         const svg = fs.readFileSync(path.join(ROOT, `assets/img/wave-meter-${W}.svg`), 'utf8');
         const bars = [...svg.matchAll(/<rect x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"\/>/g)].map(m => m.slice(1).map(Number));
@@ -151,7 +153,7 @@ function nextSaturday(minDays) {
       check('הגל עולה מקו בסיס בשני המקטעים, ואין קו כפול בין הסיום לפוטר', !/scaleY\(-1\)/.test(css) && /\.closing \{[^}]*border-bottom: 0/.test(css) && /padding-bottom: calc\(var\(--wave-h\) \+/.test(css));
     }
   }
-  check('ארבעת סוגי האירועים הנוספים כרשימה, לכל אחד קישור הצעת מחיר ייחודי', (() => { const labels = [...index.matchAll(/class="btn btn-line entry-cta"[^>]*>[\s\S]*?<\/svg>([^<]+)<\/a>/g)].map(m => m[1]); return /<ul class="entries">/.test(index) && labels.length === 4 && new Set(labels).size === 4; })());
+  check('ארבעת סוגי האירועים הנוספים כרשימה, לכל אחד קישור הצעת מחיר ייחודי (קישור טקסט, לא כפתור רביעי באותו משקל)', (() => { const labels = [...index.matchAll(/class="link-cta entry-cta" href="#order" data-event-group="(\w+)">([^<]+)<\/a>/g)].map(m => m[1] + ':' + m[2]); return /<ul class="entries">/.test(index) && labels.length === 4 && new Set(labels).size === 4 && labels.map(l => l.split(':')[0]).join() === 'family,shul,institutions,holidays' && !/התאמות נפוצות/.test(index); })());
   const WAZE_URL = 'https://waze.com/ul?q=%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7&amp;navigate=yes';
   const GMAPS_URL = 'https://www.google.com/maps/search/?api=1&amp;query=%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7';
   const navLinks = [...index.matchAll(/<a class="navigation-link" data-app="([a-z-]+)" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map(m => ({ app: m[1], href: m[2], text: m[3].replace(/<img[^>]*>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(), svg: m[3].includes('<svg') }));
@@ -165,11 +167,17 @@ function nextSaturday(minDays) {
   }
   check('CSS: אין filter על סמלי מותג', !/navigation-link[^{]*img[^{]*\{[^}]*filter/.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('אין טענת "מרכז גאוגרפי" או זמני הגעה', !/מרכז גאוגרפי|מרכז גיאוגרפי|דקות נסיעה|דקות מהמחסן|ק״מ|ק"מ/.test(visibleText(index)));
-  check('H1 במיקוד חתונות', /<h1[^>]*>[\s\S]*הגברה לחתונות, חופות[\s\S]*ואירועים בבני ברק[\s\S]*<\/h1>/.test(index));
+  check('H1 קצר ומדויק: "הגברה לחתונות ולאירועים בבני ברק"', /<h1 id="hero-title">הגברה לחתונות ולאירועים בבני ברק<\/h1>/.test(index));
+  check('ניווט: ארבעה קישורים ופעולה אחת, וכל עוגן קיים בדף', (() => { const nav = (index.match(/<ul class="nav-links">([\s\S]*?)<\/ul>/) || ['', ''])[1]; const hrefs = [...nav.matchAll(/href="#([\w-]+)"/g)].map(m => m[1]); return hrefs.length === 5 && hrefs[4] === 'order' && hrefs.every(h => index.includes('id="' + h + '"')) && ['weddings', 'more-events', 'equipment'].every(h => index.includes('id="' + h + '"')); })());
+  check('חתונות: לפני שאר הקטגוריות, עם קישור ייעודי ל"חתונה וחופה" והערת איש סאונד בתיאום', index.indexOf('id="weddings"') < index.indexOf('id="family"') && /<a class="btn btn-primary" href="#order" data-event="חתונה וחופה">/.test(index) && /class="wedding-note">אפשר לתאם איש סאונד לאורך האירוע\.</.test(index));
+  check('שאלות נפוצות: השאלות המעשיות ראשונות', (() => { const q = [...index.matchAll(/<summary>([^<]+)<\/summary>/g)].map(m => m[1]).filter(t => !/לא חובה/.test(t)); return q.slice(0, 4).join('|') === 'מה משפיע על המחיר?|מה כולל שירות הגברה עם הקמה?|מה מתאמים לחופה ולעזרת הנשים?|מה צריך להעביר מהקלידן או מהזמר?'; })());
   check('title ו-og:title במיקוד חתונות', /<title>[^<]*חתונות[^<]*<\/title>/.test(index) && /og:title" content="[^"]*חתונות/.test(index));
   const ld = JSON.parse(index.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   check('JSON-LD: כתובת המחסן', ld.address && ld.address.streetAddress === 'כהנמן 64' && ld.address.addressLocality === 'בני ברק', ld.address);
   check('JSON-LD: טלפון', ld.telephone === '+972-52-767-5138', ld.telephone);
+  check('JSON-LD: בלי קואורדינטות שלא אומתו, שעות פתיחה, דירוגים או ביקורות', !('geo' in ld) && !('openingHours' in ld) && !('openingHoursSpecification' in ld) && !('aggregateRating' in ld) && !('review' in ld), Object.keys(ld));
+  check('JSON-LD: אזור שירות רק בני ברק עד אישור', ld.areaServed === 'בני ברק', ld.areaServed);
+  check('description: עובדות מאושרות בלבד', /<meta name="description" content="קליין הפקות: הגברה לחתונות, חופות, שמחות משפחתיות ואירועי בתי מדרש ומוסדות\. ציוד RCF, QSC, Midas ו-Shure\. מחסן בכהנמן 64, בני ברק\. לפרטים: 052-7675138\.">/.test(index));
   const sitemap = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
   check('sitemap: כתובת אחת, הדף הראשי', (sitemap.match(/<loc>/g) || []).length === 1 && sitemap.includes('<loc>https://natank0.github.io/klein-productions/</loc>'));
   const robots = fs.readFileSync(path.join(ROOT, 'robots.txt'), 'utf8');
@@ -269,7 +277,7 @@ function nextSaturday(minDays) {
       const c = await ctx({ viewport: { width: w, height: 900 }, bypassCSP: true });
       const p = await c.newPage(); await p.goto(BASE, { waitUntil: 'networkidle' });
       const bad = [];
-      for (const el of await p.$$('.hero h1 .h1-part, .hero-lead, .hero-proof strong, .hero-proof span, .footer-name, .footer a, .event-wide-head h3, .event-wide-head p, .event-wide-body h4, .group-title, .location-benefit, .scope-col h3, .scope-note, .footer p')) {
+      for (const el of await p.$$('.hero h1, .hero-lead, .hero-proof strong, .hero-proof span, .footer-name, .footer a, .event-wide-head h3, .event-wide-head p, .event-wide-body h4, .group-title, .location-benefit, .scope-col h4, .scope-note, .gear-brands, .footer p')) {
         await el.scrollIntoViewIfNeeded();
         const info = await el.evaluate(e => { const s = getComputedStyle(e); return { color: s.color, fs: parseFloat(s.fontSize), fw: +s.fontWeight, t: e.textContent.trim().slice(0, 14) }; });
         const bb = await el.boundingBox();
@@ -333,17 +341,20 @@ function nextSaturday(minDays) {
     await p.fill('#date', sat.iso);
     const echo = await p.evaluate(() => { const h = document.getElementById('dateHint'); return { shown: !h.hidden, text: h.textContent }; });
     check('מתחת לתאריך מוצג התאריך כפי שיופיע בהודעה (יום בשבוע ו-DD/MM/YYYY)', echo.shown && echo.text === 'בהודעה יופיע: יום שבת, ' + sat.shown, echo);
-    const accessVisible = await p.evaluate(() => [...document.querySelectorAll('input[name="access"]')].every(i => !!i.parentNode.offsetParent && !i.closest('details')));
-    check('גישה למקום גלויה בלי לפתוח אקורדיון', accessVisible);
+    const fold = await p.evaluate(() => { const d = document.getElementById('formMore'); const inside = ['venue', 'time', 'notes'].every(id => d.contains(document.getElementById(id))) && [...document.querySelectorAll('input[name="access"], input[name="needs"]')].every(i => d.contains(i)); const outside = ['name', 'phone', 'eventType', 'date', 'dateUnknown', 'city'].every(id => !d.contains(document.getElementById(id))); const next = d.nextElementSibling; const visibleBefore = [...document.querySelectorAll('#orderForm input, #orderForm select, #orderForm textarea')].filter(e => e.offsetParent && !e.closest('details') && !e.closest('.form-alt')).length; return { closed: !d.open, inside, outside, submitNext: !!next && next.classList.contains('form-submit'), visibleBefore, one: document.querySelectorAll('#orderForm details').length === 1 }; });
+    check('טופס קצר: שם, טלפון, סוג אירוע, תאריך ועיר גלויים; כל פרטי הרשות ב-disclosure אחד וסגור, וכפתור וואטסאפ מיד אחריו', fold.closed && fold.inside && fold.outside && fold.submitNext && fold.one && fold.visibleBefore <= 6, fold);
+    await p.click('.form-options summary');
     await p.click('.check:has(input[name="access"][value="יש מעלית"])'); await p.click('.check:has(input[name="access"][value="אירוע בחוץ"])');
-    await p.click('.form-options summary'); await p.fill('#notes', 'א'.repeat(450));
+    await p.fill('#venue', 'אולם בדיקה'); await p.fill('#time', '19:30'); await p.click('.check:has(input[name="needs"][value="הקלטה"])');
+    await p.fill('#notes', 'א'.repeat(450));
+    await p.click('.form-options summary');
     urls.length = 0; await p.click('.form-submit');
     const msg = decodeURIComponent((urls[0] || '').split('text=')[1] || '');
     check('ההודעה נבנית ונשלחת למספר העסק בלבד', (urls[0] || '').startsWith('https://wa.me/' + WA + '?text='), urls[0]);
     check('יום שבת מוצג במילים בהודעה', msg.includes('תאריך: יום שבת, ' + sat.shown), (msg.match(/תאריך: .*/) || [''])[0]);
     check('הערות נחתכות ב-400 תווים', ((msg.match(/הערות: (א+)/) || ['', ''])[1].length) === 400);
     check('סוג האירוע בהודעה', msg.includes('סוג האירוע: פדיון הבן'));
-    check('גישה למקום: תגיות גלויות בלי אקורדיון, והבחירה נכנסת להודעה', msg.includes('גישה למקום: יש מעלית, אירוע בחוץ'), (msg.match(/גישה למקום: .*/) || [''])[0]);
+    check('פרטי רשות שהוזנו נכנסים להודעה גם כשה-disclosure סגור (גישה, אולם, שעה, ציוד, הערות)', (await p.evaluate(() => !document.getElementById('formMore').open)) && msg.includes('גישה למקום: יש מעלית, אירוע בחוץ') && msg.includes('אולם / כתובת: אולם בדיקה') && msg.includes('שעת התחלה: 19:30') && msg.includes('צריך: הקלטה'), msg.split(/\r?\n/).slice(2));
     const alt = await p.evaluate(() => { const box = document.querySelector('.form-alt'); const vis = e => !!e && !!e.offsetParent && !e.closest('details:not([open])'); return { box: vis(box), tel: vis(box && box.querySelector('a[href="tel:0527675138"]')), copy: vis(document.getElementById('copyInquiry')) }; });
     check('בלי וואטסאפ: חיוג והעתקת הפנייה גלויים מתחת לכפתור השליחה, בלי לפתוח אקורדיון', alt.box && alt.tel && alt.copy, alt);
     await p.click('#copyInquiry'); await p.waitForTimeout(100);
@@ -360,6 +371,7 @@ function nextSaturday(minDays) {
     urls.length = 0; await p.click('.form-submit');
     const msg2 = decodeURIComponent((urls[0] || '').split('text=')[1] || '');
     check('עיר "אחר": שם העיר נכנס להודעה', msg2.includes('עיר: קריית ספר') && !msg2.includes('עיר: אחר'), (msg2.match(/עיר: .*/) || [''])[0]);
+    check('"תאריך טרם נקבע": בלי כוכבית חובה, והודעה עם "תאריך: טרם נקבע"', await (async () => { await p.check('#dateUnknown'); urls.length = 0; await p.click('.form-submit'); const m = decodeURIComponent((urls[0] || '').split('text=')[1] || ''); const star = await p.evaluate(() => getComputedStyle(document.getElementById('dateReq')).display); await p.uncheck('#dateUnknown'); await p.fill('#date', sat.iso); return m.includes('תאריך: טרם נקבע') && star === 'none'; })());
     check('הודעת הסטטוס מבהירה שההודעה לא נשלחה', (await p.textContent('#formStatus')).startsWith('ההודעה מוכנה בוואטסאפ. בדקו ולחצו שם על שליחה.'));
     /* סוג אירוע "אחר": שדה חובה לתיאור, והתיאור נכנס להודעה */
     await p.selectOption('#eventType', 'אחר');
@@ -375,10 +387,15 @@ function nextSaturday(minDays) {
     const wed = await p.evaluate(() => ({ v: document.getElementById('eventType').value, first: document.getElementById('eventType').children[1].label, sugg: [...document.querySelectorAll('.check.is-suggested input')].map(i => i.value), checked: [...document.querySelectorAll('input[name="needs"]:checked')].length, hint: !document.getElementById('needsHint').hidden }));
     const eoHidden = await p.evaluate(() => document.getElementById('eventOtherField').hidden);
     check('בחירה מכפתור החתונות מסתירה את שדה "אחר"', eoHidden);
-    check('חתונות: הכפתור בוחר "חתונה וחופה", מקדם את הקבוצה ומציע צרכים בלי לסמן', wed.v === 'חתונה וחופה' && wed.first === 'חתונות וחופות' && wed.sugg.includes('רמקול לחופה') && wed.checked === 0 && wed.hint, wed);
-    await p.evaluate(() => { document.querySelector('.form-options').open = false; });
-    const sr = await p.evaluate(() => { const sugg = [...document.querySelectorAll('.check.is-suggested input')]; const plain = [...document.querySelectorAll('.check:not(.is-suggested) input[name="needs"]')]; const d = document.getElementById('needsSuggested'); return { visible: sugg.length > 0 && sugg.every(i => !!i.parentNode.offsetParent && !i.closest('details')), city: !document.getElementById('city').closest('details') && !!document.getElementById('city').offsetParent, described: sugg.every(i => i.getAttribute('aria-describedby') === 'needsSuggested'), plain: plain.every(i => !i.hasAttribute('aria-describedby')), text: d.textContent }; });
-    check('צרכים ועיר גלויים בלי לפתוח אקורדיון; כל צורך מוצע מתואר לקורא מסך', sr.visible && sr.city && sr.described && sr.plain && sr.text === 'נפוץ בחתונות וחופות', sr);
+    check('חתונות: הכפתור בוחר "חתונה וחופה", מקדם את הקבוצה ומציע צרכים בלי לסמן', wed.v === 'חתונה וחופה' && wed.first === 'חתונות וחופות' && wed.sugg.includes('רמקול לחופה') && wed.checked === 1 && wed.hint, wed);
+    await p.evaluate(() => { document.querySelector('.form-options').open = true; });
+    const sr = await p.evaluate(() => { const sugg = [...document.querySelectorAll('.check.is-suggested input')]; const plain = [...document.querySelectorAll('.check:not(.is-suggested) input[name="needs"]')]; const d = document.getElementById('needsSuggested'); return { visible: sugg.length > 0 && sugg.every(i => !!i.parentNode.offsetParent), unchecked: sugg.every(i => !i.checked || i.value === 'הקלטה'), city: !document.getElementById('city').closest('details') && !!document.getElementById('city').offsetParent, described: sugg.every(i => i.getAttribute('aria-describedby') === 'needsSuggested'), plain: plain.every(i => !i.hasAttribute('aria-describedby')), text: d.textContent }; });
+    check('עיר גלויה מחוץ לפרטי הרשות; צרכים מוצעים מסומנים חזותית בלבד ומתוארים לקורא מסך', sr.visible && sr.unchecked && sr.city && sr.described && sr.plain && sr.text === 'נפוץ בחתונות וחופות', sr);
+    /* תפריט מובייל: ESC סוגר ומחזיר את המיקוד לכפתור */
+    await p.evaluate(() => window.scrollTo(0, 0));
+    await p.click('#menuToggle'); await p.keyboard.press('Escape');
+    const esc = await p.evaluate(() => ({ open: document.getElementById('siteNav').classList.contains('is-open'), exp: document.getElementById('menuToggle').getAttribute('aria-expanded'), focus: document.activeElement.id }));
+    check('תפריט המובייל: ESC סוגר, aria-expanded מתעדכן והמיקוד חוזר לכפתור', !esc.open && esc.exp === 'false' && esc.focus === 'menuToggle', esc);
     await c.close();
   }
 
