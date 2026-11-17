@@ -1,6 +1,6 @@
 /* קליין הפקות – גיליון סגנונות משותף
-   שפה עיצובית "קונסולה": לבן נקי, אפור קריר כמו פאנל של ציוד סאונד, טקסט גרפיט, וצבע פעולה אחד – אולטרמרין.
-   בלי זהב, צהוב, חול או שמנת, ובלי משטחים כהים.
+   שפה עיצובית "קונסולה": פתיחה וסיום בכחול לילה עמוק כמו פאנל של קונסולת סאונד, תוכן על לבן ואפור קריר,
+   טקסט גרפיט, וצבע פעולה אחד – אולטרמרין. בלי זהב, צהוב, חול או שמנת.
    כלל הצבע (קרוג): צבע הפעולה שמור רק למה שאפשר ללחוץ עליו. כותרות, אייקונים ותוויות – בגרפיט.
    סימטריה עדינה: כותרות מקטעים ממורכזות, רשתות בעמודות שוות, טקסט רץ מיושר לימין. ראו README. */
 
@@ -17,12 +17,16 @@
   --ink: #141a26;           /* גרפיט – טקסט וכותרות */
   --ink-soft: #4b5466;      /* טקסט משני (≥ 6.7:1 על כל המשטחים) */
   --signal: #2a37b0;        /* אולטרמרין – כל מה שלוחצים עליו, ורק הוא */
+  --night: #0e1a3a;         /* כחול לילה – פתיחה וסיום (מסגרת העמוד) */
+  --night-deep: #0a1430;    /* פוטר */
+  --night-raise: #1b2a57;   /* גל ועיטור על כחול הלילה */
+  --night-line: #2c3a66;    /* קווים על כחול הלילה */
+  --on-night: #ffffff;
+  --on-night-soft: #c6cde2; /* טקסט משני על כחול הלילה (≥ 10:1) */
   --signal-hover: #1f2a8c;
   --signal-tint: #eef0fa;   /* אזורי פעולה: בקשת הצעת מחיר וסיום העמוד; וגם ריחוף */
   --signal-line: #b8bfe6;   /* מסגרת לתגיות קישור */
   --surface: #f3f5f9;       /* אפור קריר: מסגרת העמוד – פתיחה, מה כולל השירות, פוטר */
-  --wave: #dfe3ec;          /* צורת הגל על האפור – עיטור בלבד, לא מידע */
-  --wave-signal: #d6dbf3;   /* צורת הגל על אזור הפעולה */
   --line-signal: #dce0f4;   /* קו גבול לאזורי הפעולה */
   --card: #ffffff;
   --line: #dce1e9;
@@ -98,22 +102,30 @@ main [tabindex="-1"]:focus { outline: none; }
    הגל תמיד עולה מקו בסיס: מקו התחתון של הפתיחה ומקו התחתון של הסיום, כך שהעמוד נפתח ונסגר באותו סימן.
    המרווח התחתון של שני המקטעים = גובה הגל + מרווח קבוע, כדי שהגל לעולם לא ייגע בטקסט.
    שלושה קבצים לפי רוחב המסך (480/1024/1600), מוצגים ברוחבם הטבעי וממורכזים: הפסים לא נמתחים. */
-.hero { --wave-h: 96px; position: relative; isolation: isolate; overflow: hidden; padding: clamp(52px, 8vw, 104px) 0 calc(var(--wave-h) + 40px); text-align: center; background: var(--surface); border-bottom: 1px solid var(--line); }
+.hero { --wave-h: 96px; position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 8vw, 104px) 0 calc(var(--wave-h) + 36px); text-align: center; color: var(--on-night); background: var(--night); }
 .hero-inner { display: flex; flex-direction: column; align-items: center; }
 .h1-part { display: block; }
-.hero h1 { margin: 0; font-size: clamp(2rem, 4.8vw, 3.5rem); font-weight: 600; letter-spacing: -0.005em; line-height: 1.18; }
-.hero h1::before { content: ""; display: block; width: 88px; height: 16px; margin: 0 auto 26px; background: repeating-linear-gradient(to left, var(--ink) 0 3px, transparent 3px 8px); clip-path: polygon(100% 100%, 100% 50%, 0 0, 0 100%); }
-.hero-lead { max-width: 60ch; margin-top: 20px; color: var(--ink-soft); font-size: 1.14rem; line-height: 1.7; text-wrap: balance; }
-/* כתובת המחסן היא קישור לפרק המחסן: חוסכת גלילה, ונראית כקישור ולא כתגית (צבע הפעולה וקו תחתון) */
-.hero-area-wrap { margin-top: 18px; }
-.hero-area { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--signal); font-size: 1rem; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
-.hero-area:hover { color: var(--signal-hover); text-decoration-thickness: 2px; }
+.hero h1 { margin: 0; color: var(--on-night); font-size: clamp(2.1rem, 5vw, 3.6rem); font-weight: 600; letter-spacing: -0.005em; line-height: 1.16; }
+.hero-lead { max-width: 60ch; margin: 20px auto 0; color: var(--on-night-soft); font-size: 1.14rem; line-height: 1.7; text-wrap: balance; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
 .hero-actions .btn { padding-inline: 20px; }
-/* מה כלול בהזמנה עם הקמה: שלוש עובדות קצרות מתחת לכפתורים */
-.hero-facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; margin: 22px 0 0; padding: 0; list-style: none; color: var(--ink-soft); font-size: 0.97rem; font-weight: 600; }
-.hero-facts li { display: inline-flex; align-items: center; gap: 6px; }
-.hero-facts .icon { width: 1.05em; height: 1.05em; color: var(--ink); }
+/* כפתורים על כחול הלילה: ראשי לבן עם טקסט כהה, משני במסגרת לבנה */
+.hero .btn-primary, .closing .btn-primary { color: var(--night); background: var(--on-night); }
+.hero .btn-primary:hover, .closing .btn-primary:hover { background: #e3e8f6; }
+.hero .btn-line, .closing .btn-line { color: var(--on-night); border-color: var(--on-night); background: transparent; }
+.hero .btn-line:hover, .closing .btn-line:hover { box-shadow: inset 0 0 0 1px var(--on-night); background: var(--night-raise); }
+.hero :focus-visible, .closing :focus-visible, .footer :focus-visible { outline-color: var(--on-night); }
+/* שלוש העובדות החזקות: ותק, ציוד ומיקום. פס אחד עם קווי הפרדה, כמו שורת נתונים בפאנל */
+.hero-proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; max-width: 940px; margin: 44px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--night-line); }
+.hero-proof li { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 24px 18px 0; }
+.hero-proof li + li { border-inline-start: 1px solid var(--night-line); }
+.hero-proof strong { color: var(--on-night); font-size: clamp(1.35rem, 2.3vw, 1.7rem); font-weight: 600; line-height: 1.25; }
+.hero-proof span { color: var(--on-night-soft); font-size: 0.98rem; line-height: 1.5; text-wrap: balance; }
+.proof-brands { letter-spacing: 0.04em; }
+/* כתובת המחסן היא קישור לפרק המחסן: קו תחתון מתחת לכתובת */
+.hero-area { display: flex; flex-direction: column; align-items: center; gap: 4px; color: inherit; text-decoration: none; }
+.hero-area strong { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+.hero-area:hover strong { text-decoration-thickness: 2px; }
 
 /* מקטעים */
 .section { padding: 84px 0; }
@@ -124,7 +136,7 @@ main [tabindex="-1"]:focus { outline: none; }
 @supports ((mask-image: none) or (-webkit-mask-image: none)) {
   .wave-edge::after {
     content: ""; position: absolute; inset-inline: 0; bottom: 0; z-index: -1; height: var(--wave-h); pointer-events: none;
-    background: var(--wave);
+    background: var(--night-raise);
     /* גודל המסכה ברוחב קבוע (1600px), ממורכזת: הפסים נשארים 2px בכל מסך ולא נמתחים; רק הגובה משתנה */
     -webkit-mask: url("../img/wave-meter-1600.svg") center bottom / 1600px var(--wave-h) no-repeat;
     mask: url("../img/wave-meter-1600.svg") center bottom / 1600px var(--wave-h) no-repeat;
@@ -136,10 +148,11 @@ main [tabindex="-1"]:focus { outline: none; }
   @media (max-width: 600px) {
     .wave-edge::after { -webkit-mask-image: url("../img/wave-meter-480.svg"); mask-image: url("../img/wave-meter-480.svg"); -webkit-mask-size: 480px var(--wave-h); mask-size: 480px var(--wave-h); }
   }
-  .closing.wave-edge::after { background: var(--wave-signal); }
 }
 /* הסיום: הגל עולה מהקו שמפריד בינו לבין הפוטר. הקו הזה שייך לפוטר, ולכן אין לסיום קו תחתון משלו (בלי קו כפול) */
-.closing { --wave-h: 64px; position: relative; isolation: isolate; overflow: hidden; padding-bottom: calc(var(--wave-h) + 56px); border-bottom: 0; }
+.closing { --wave-h: 64px; position: relative; isolation: isolate; overflow: hidden; padding-bottom: calc(var(--wave-h) + 56px); color: var(--on-night); background: var(--night); border-top: 0; border-bottom: 0; }
+.closing .section-title { color: var(--on-night); }
+.closing .section-lead { color: var(--on-night-soft); }
 .section-head { max-width: 720px; margin: 0 auto 40px; text-align: center; }
 .section-title { margin: 0; font-size: clamp(1.75rem, 3.2vw, 2.35rem); font-weight: 600; letter-spacing: 0; }
 .section-lead { max-width: 52ch; margin: 14px auto 0; color: var(--ink-soft); font-size: 1.08rem; text-wrap: balance; }
@@ -153,14 +166,12 @@ main [tabindex="-1"]:focus { outline: none; }
 .event-wide-head .btn { margin-top: 6px; }
 .event-wide-body { padding: clamp(26px, 4vw, 44px); }
 .event-wide-body h4 { margin: 0 0 14px; color: var(--ink-soft); font-size: 1rem; }
-/* הסאונד לפי מהלך החתונה: ארבעה שלבים ממוספרים על קו אנכי. המספרים בגרפיט, כי הם לא לחיצים */
-.wedding-flow { margin: 0; padding: 0; list-style: none; counter-reset: stage; }
-.wedding-flow li { position: relative; display: grid; gap: 2px; padding: 0 44px 18px 0; counter-increment: stage; }
-.wedding-flow li:last-child { padding-bottom: 0; }
-.wedding-flow li::before { content: counter(stage); position: absolute; top: 0; right: 0; display: grid; place-items: center; width: 30px; height: 30px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--card); color: var(--ink); font-size: 0.9rem; font-weight: 600; }
-.wedding-flow li:not(:last-child)::after { content: ""; position: absolute; top: 32px; bottom: 2px; right: 14.5px; width: 1px; background: var(--line); }
-.wedding-flow strong { font-size: 1.08rem; line-height: 30px; }
-.wedding-flow span { color: var(--ink-soft); }
+/* מה מתאימים בחתונה: ארבעה תחומים ברשת 2×2, בלי מספור – תוכן מקצועי, לא "שלבים" */
+.wedding-spec { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; margin: 0; }
+.wedding-spec div { padding: 16px 0; border-top: 1px solid var(--line); }
+.wedding-spec dt { font-size: 1.1rem; font-weight: 600; }
+.wedding-spec dd { margin: 4px 0 0; color: var(--ink-soft); }
+.wedding-note { margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line); font-weight: 600; }
 .group-title { margin: 56px 0 22px; text-align: center; color: var(--ink); font-size: 1.2rem; font-weight: 600; }
 .group-title::before, .group-title::after { content: ""; display: inline-block; width: 36px; height: 1px; margin: 0 14px; vertical-align: middle; background: var(--control); }
 .entries { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; }
@@ -200,7 +211,6 @@ main [tabindex="-1"]:focus { outline: none; }
 .scope { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 .scope-col { padding: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
 .scope-col h3 { margin: 0 0 14px; color: var(--ink); font-size: 1.2rem; font-weight: 600; }
-.scope-base { border-top: 3px solid var(--ink); }
 /* השכרה בלי הרכבה: בתחתית עמודת הבסיס, כך ששתי העמודות נסגרות באותו גובה */
 .scope-base { display: flex; flex-direction: column; }
 .scope-note { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.97rem; }
@@ -210,15 +220,13 @@ main [tabindex="-1"]:focus { outline: none; }
 .gear dt { font-weight: 600; }
 .gear dd { margin: 0; color: var(--ink-soft); }
 .gear-note { margin: 4px 0 10px; color: var(--ink-soft); font-size: 0.97rem; }
-.gear-wrap { margin-top: 24px; padding: 0 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
-.gear-wrap summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; font-weight: 600; cursor: pointer; list-style: none; }
-.gear-wrap summary::-webkit-details-marker { display: none; }
-.gear-wrap summary > span { padding-block: 12px; }
-.summary-brands { color: var(--ink-soft); font-weight: 400; }
-.gear-wrap summary::after { content: "+"; color: var(--signal); font-size: 1.5rem; line-height: 1; }
-.gear-wrap[open] summary::after { content: "−"; }
-.gear-wrap[open] { padding-bottom: 8px; }
-.gear-wrap .gear div:last-child, .gear-wrap .gear div:nth-last-child(2) { border-bottom: 0; }
+/* היצרנים: שורת שמות כמו פאנל ציוד, ורשימת הציוד גלויה (לא מקופלת) – הציוד הוא נקודת חוזק */
+.brand-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin: 0 0 22px; padding: 0; list-style: none; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.brand-strip li { display: grid; place-items: center; min-height: 72px; padding: 8px; color: var(--ink); font-size: clamp(1.05rem, 1.8vw, 1.3rem); font-weight: 600; letter-spacing: 0.08em; }
+.brand-strip li + li { border-inline-start: 1px solid var(--line); }
+.gear-panel { margin-bottom: 22px; padding: 6px 28px 10px; border: 1px solid var(--line); border-top: 3px solid var(--ink); border-radius: var(--radius); background: var(--card); }
+.gear-panel h3 { margin: 20px 0 4px; font-size: 1.2rem; font-weight: 600; }
+.gear-panel .gear div:last-child, .gear-panel .gear div:nth-last-child(2) { border-bottom: 0; }
 
 /* המחסן בבני ברק – מפת Google אמיתית לצד הכתובת, בשתי עמודות שוות */
 .location { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 56px); align-items: center; }
@@ -312,16 +320,18 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .closing-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
 
 /* פוטר – אפור קריר, שלוש עמודות שוות */
-.footer { padding: 56px 0 32px; color: var(--ink); background: var(--surface); border-top: 1px solid var(--line); text-align: center; }
+.footer { padding: 56px 0 32px; color: var(--on-night); background: var(--night-deep); border-top: 1px solid var(--night-line); text-align: center; }
 .footer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
 .footer-name { margin: 0 0 6px; font-size: 1.3rem; font-weight: 600; }
+.footer .footer-name { color: var(--on-night); }
 .footer address { margin-bottom: 4px; font-style: normal; font-weight: 600; }
-.footer h2 { margin: 0 0 10px; color: var(--ink); font-size: 1rem; }
-.footer p, .footer li { color: var(--ink-soft); }
+.footer h2 { margin: 0 0 10px; color: var(--on-night); font-size: 1rem; }
+.footer p, .footer li { color: var(--on-night-soft); }
+.footer a { color: var(--on-night); }
 .footer ul { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .footer a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
-.footer a:hover { color: var(--signal-hover); text-decoration-thickness: 2px; }
-.footer-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.88rem; }
+.footer a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.footer-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--night-line); color: var(--on-night-soft); font-size: 0.88rem; }
 
 /* פס חיוג ווואטסאפ – מובייל בלבד */
 .action-bar { display: none; }
@@ -393,14 +403,22 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .section { padding: 56px 0; }
   .hero { --wave-h: 48px; padding: 30px 0 calc(var(--wave-h) + 28px); }
   .closing { --wave-h: 40px; padding-bottom: calc(var(--wave-h) + 40px); }
-  .hero h1::before { margin-bottom: 18px; }
   .hero-actions { margin-top: 20px; }
   .hero-lead { font-size: 1.02rem; }
   .group-title { margin-top: 44px; }
   .scope, .form-grid, .gallery { grid-template-columns: 1fr; }
   .event-wide-media { aspect-ratio: 16 / 9; }
   .closing-actions { display: grid; grid-template-columns: 1fr; width: 100%; max-width: 420px; }
-  .hero-facts { margin-top: 16px; font-size: 0.92rem; gap: 6px 16px; }
+  .hero-proof { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin-top: 30px; }
+  .hero-proof li { padding: 14px 0; }
+  .hero-proof li + li { border-inline-start: 0; border-top: 1px solid var(--night-line); }
+  .hero-proof strong { font-size: 1.3rem; }
+  .wedding-spec { grid-template-columns: minmax(0, 1fr); }
+  .brand-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .brand-strip li { min-height: 60px; }
+  .brand-strip li:nth-child(4) { border-inline-start: 0; }
+  .brand-strip li:nth-child(n+4) { border-top: 1px solid var(--line); }
+  .gear-panel { padding: 4px 16px 8px; }
   .field.full { grid-column: auto; }
   .order-form { padding: 22px 16px; }
   .entry { gap: 12px; padding: 20px 16px; }
@@ -438,7 +456,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .wave-edge::after { display: none; }
   .btn, .tag, .check span, .entry, .event-wide, .scope-col { border: 1px solid CanvasText; }
   .check input:checked + span { outline: 2px solid Highlight; }
-  .hero h1::before { display: none; }
+  .hero-proof li, .brand-strip, .gear-panel { border-color: CanvasText; }
 }
 
 /* הדפסה (קרוג: "נוחות קטנה" שמחזירה אמון): מי שמדפיס בשביל בעל השמחה או הגבאי מקבל דף נקי עם פרטי הקשר.
@@ -446,18 +464,19 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 @media print {
   @page { margin: 14mm; }
   body { font-size: 11pt; line-height: 1.5; color: #000; background: #fff; }
-  .site-nav, .menu-toggle, .header-quote, .skip-link, .action-bar, .location-map, .nav-apps, .order-form, .contact-list, .closing, .hero-actions, .entry-cta, .event-wide-head .btn, .tag::after, .gear-wrap summary::after, .faq summary::after { display: none !important; }
+  .site-nav, .menu-toggle, .header-quote, .skip-link, .action-bar, .location-map, .nav-apps, .order-form, .contact-list, .closing, .hero-actions, .entry-cta, .event-wide-head .btn, .tag::after, .faq summary::after { display: none !important; }
   .site-header { position: static; border: 0; }
   .wave-edge::after { display: none; }
   .header-call { display: inline-flex !important; border: 0; color: #000; }
   .section, .hero { padding: 18px 0; background: none !important; border: 0; }
   .section-head { margin-bottom: 14px; }
-  .entry, .event-wide, .scope-col, .gear-wrap, .faq details, .address-card { break-inside: avoid; box-shadow: none; }
+  .entry, .event-wide, .scope-col, .gear-panel, .faq details, .address-card { break-inside: avoid; box-shadow: none; }
   .entries, .scope { gap: 10px; }
   .tag { min-height: 0; padding: 2px 8px; color: #000; }
   .faq details p { padding-bottom: 8px; }
   .order-intro::after { content: "טלפון ווואטסאפ: 052-7675138 · המחסן: כהנמן 64, בני ברק"; display: block; margin-top: 8px; font-weight: 600; }
-  .footer { padding: 14px 0 0; background: none; }
+  .footer { padding: 14px 0 0; color: #000; background: none; }
+  .hero, .hero h1, .hero-proof strong, .hero-proof span, .hero-lead, .footer a, .footer p, .footer li, .footer h2 { color: #000 !important; }
   a { text-decoration: none; }
 }
 

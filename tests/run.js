@@ -115,17 +115,19 @@ function nextSaturday(minDays) {
   check('אין מחלקת btn-dark מטעה (הכפתור זהב)', !/btn-dark/.test(index + pages[1].html + fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('וואטסאפ נכתב בעברית בטקסט הגלוי', !/>[^<]*WhatsApp[^<]*</.test(index.replace(/<title>[\s\S]*?<\/title>/, '')));
   check('משפט פרטיות ליד כפתור השליחה', /class="form-privacy">הפרטים לא נשמרים באתר/.test(index));
-  check('חתונות: ארבעה שלבים לפי מהלך החתונה (קבלת פנים, חופה, סעודה, רחבת השמחה)', (() => { const m = index.match(/<ol class="wedding-flow">([\s\S]*?)<\/ol>/); const st = m ? [...m[1].matchAll(/<strong>([^<]+)<\/strong>/g)].map(x => x[1]) : []; return st.join('|') === 'קבלת פנים|חופה|סעודה|רחבת השמחה'; })());
+  check('חתונות: ארבעה תחומים בלי ציר שלבים ממוספר (חופה, עזרת נשים, דרשות וברכות, רחבת השמחה)', (() => { const m = index.match(/<dl class="wedding-spec">([\s\S]*?)<\/dl>/); const st = m ? [...m[1].matchAll(/<dt>([^<]+)<\/dt>/g)].map(x => x[1]) : []; return st.join('|') === 'חופה|עזרת נשים|דרשות וברכות|רחבת השמחה' && !index.includes('wedding-flow'); })());
   check('פתיחה: שתי פעולות בלבד, טופס הצעת מחיר וחיוג עם המספר גלוי (וואטסאפ ישיר רק בפס, בטופס ובפוטר)', (() => { const m = index.match(/<div class="hero-actions">([\s\S]*?)<\/div>/); const b = m ? [...m[1].matchAll(/<a [^>]*href="([^"]+)"/g)].map(x => x[1]) : []; return b.length === 2 && b[0] === '#order' && b[1] === 'tel:0527675138' && m[1].includes('052-7675138'); })());
   check('כותרת: הקישור שמחוץ לתפריט מוביל לטופס, בלי כפילות של "חתונות"', index.includes('class="btn btn-primary btn-sm header-quote" href="#order"') && !index.includes('header-events'));
-  check('הציוד: שמות המותגים גלויים כבר בכותרת המקופלת', /<summary>[\s\S]*?הציוד שאנחנו עובדים איתו[\s\S]*?RCF[\s\S]*?Midas[\s\S]*?Shure[\s\S]*?<\/summary>/.test(index));
+  check('הציוד גלוי ולא מקופל: שורת יצרנים ורשימת ציוד פתוחה, לפני מה שכלול בהזמנה', (() => { const strip = (index.match(/<ul class="brand-strip"[\s\S]*?<\/ul>/) || [''])[0]; return ['RCF', 'QSC', 'Midas', 'Shure'].every(b => strip.includes('>' + b + '<')) && /<div class="gear-panel" id="equipment"><h3>הציוד שאנחנו עובדים איתו<\/h3><dl class="gear">/.test(index) && !/<details[^>]*id="equipment"/.test(index) && index.indexOf('id="equipment"') < index.indexOf('class="scope"'); })());
   check('המחסן: הכותרת מבהירה שזו נקודת יציאה לאולמות ואיסוף בהשכרה', /class="address-card">[\s\S]*?נקודת היציאה לאולמות/.test(index));
   check('שירות: איש סאונד לאורך האירוע כתוספת בתיאום', /תוספות בתיאום[\s\S]*?איש סאונד לאורך האירוע/.test(index));
   check('גופן: מקומי בלבד (woff2 מהאתר), שאר ה-url ב-CSS הם SVG מקומי, CSP עם font-src self, ורישיון OFL לצד הקבצים', (() => { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8'); const urls = [...css.matchAll(/url\("([^"]+)"\)/g)].map(m => m[1]); const fonts = urls.filter(u => /\.woff2$/.test(u)); const others = urls.filter(u => !/\.woff2$/.test(u)); return fonts.length >= 4 && fonts.every(u => /^\.\.\/fonts\/[\w-]+\.woff2$/.test(u) && fs.existsSync(path.join(ROOT, 'assets/css', u))) && others.every(u => /^\.\.\/img\/[\w-]+\.svg$/.test(u) && fs.existsSync(path.join(ROOT, 'assets/css', u))) && !/@font-face[^}]*\.svg/.test(css) && /font-display: swap/.test(css) && pages.every(({ html }) => /font-src 'self'/.test(html)) && fs.existsSync(path.join(ROOT, 'assets/fonts/OFL.txt')); })());
-  check('פתיחה: שלוש עובדות על מה שכלול בהקמה', (index.match(/<ul class="hero-facts"[\s\S]*?<\/ul>/) || [''])[0].split('<li>').length - 1 === 3);
+  check('פתיחה: שלוש עובדות חזקות – ותק, ציוד ומיקום (כתובת המחסן כקישור לפרק המחסן)', (() => { const m = (index.match(/<ul class="hero-proof">[\s\S]*?<\/ul>/) || [''])[0]; return m.split('<li>').length - 1 === 3 && m.includes('<strong>15 שנה</strong>') && /RCF[\s\S]*QSC[\s\S]*Midas[\s\S]*Shure/.test(m) && /<a class="hero-area" href="#areas"><strong>כהנמן 64, בני ברק<\/strong>/.test(m) && !index.includes('hero-facts'); })());
+  /* ותק: נוסח אחד בלבד, "15 שנה", לפי הנחיית המשתמש (17.11.2026). כל מספר שנים אחר נכשל */
+  check('ותק: רק "15 שנה" (אושר), בלי מספר שנים אחר', (() => { const txt = index.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '); const yrs = [...txt.matchAll(/(\d+)\s*(?:שנה|שנים)/g)].map(m => m[1]); return yrs.length >= 1 && yrs.every(y => y === '15'); })());
   check('סגירה אחרי השאלות: טופס, חיוג ווואטסאפ', (() => { const i = index.indexOf('id="closing-title"'); const blk = index.slice(i, index.indexOf('</section>', i)); return i > index.indexOf('id="faq"') && blk.includes('href="#order"') && blk.includes('href="tel:0527675138"') && blk.includes('https://wa.me/972527675138'); })());
   check('בפרק המחסן: משפט שמבהיר שהציוד מגיע אל מקום השמחה', /class="location-benefit">[^<]*מקום השמחה/.test(index));
-  check('אין משטחים כהים ב-CSS (רקע של שזיף כהה או פחם)', !/#160f1f|#221a2d|#33273f|#22201d|plum-950|plum-900/i.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
+  check('משטח כהה רק בכחול לילה (פתיחה, סיום, פוטר), בלי שזיף או פחם', !/#160f1f|#221a2d|#33273f|#22201d|plum-950|plum-900/i.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')) && /\.hero \{[^}]*background: var\(--night\)/.test(fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8');
     const hexes = [...css.matchAll(/#([0-9a-f]{6})\b/gi)].map(m => m[1]);
     /* גוון חם-צהבהב (זהב, חול, שמנת, צהוב): גוון 20°–65° עם רוויה מורגשת */
@@ -266,7 +268,7 @@ function nextSaturday(minDays) {
       const c = await ctx({ viewport: { width: w, height: 900 }, bypassCSP: true });
       const p = await c.newPage(); await p.goto(BASE, { waitUntil: 'networkidle' });
       const bad = [];
-      for (const el of await p.$$('.hero h1 .h1-part, .hero-lead, .hero-area, .hero-facts span, .event-wide-head h3, .event-wide-head p, .event-wide-body h4, .group-title, .location-benefit, .scope-col h3, .scope-note, .footer p')) {
+      for (const el of await p.$$('.hero h1 .h1-part, .hero-lead, .hero-proof strong, .hero-proof span, .footer-name, .footer a, .event-wide-head h3, .event-wide-head p, .event-wide-body h4, .group-title, .location-benefit, .scope-col h3, .scope-note, .footer p')) {
         await el.scrollIntoViewIfNeeded();
         const info = await el.evaluate(e => { const s = getComputedStyle(e); return { color: s.color, fs: parseFloat(s.fontSize), fw: +s.fontWeight, t: e.textContent.trim().slice(0, 14) }; });
         const bb = await el.boundingBox();

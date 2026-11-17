@@ -14,7 +14,7 @@
   /* הדפסה: פותחים את השאלות הנפוצות ואת רשימת הציוד, ומחזירים למצב הקודם בסיום */
   var printOpened = [];
   window.addEventListener('beforeprint', function () {
-    printOpened = Array.prototype.filter.call(document.querySelectorAll('.faq details, .gear-wrap'), function (d) { return !d.open; });
+    printOpened = Array.prototype.filter.call(document.querySelectorAll('.faq details'), function (d) { return !d.open; });
     printOpened.forEach(function (d) { d.open = true; });
   });
   window.addEventListener('afterprint', function () {
