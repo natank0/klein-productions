@@ -436,6 +436,18 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .brand-name small { font-size: 0.72rem; }
 }
 
+/* מסך נמוך: טלפון לרוחב, או הגדלה ל-200%–400% (‏1280×720 ב-400% = ‏320×180).
+   הכותרת הדביקה ופס החיוג הקבוע תפסו יחד 146px, כמעט חצי מהגובה, והסתירו את התוכן ואת השדה שבמיקוד (WCAG 1.4.10, 2.4.11).
+   כאן הכותרת חוזרת לזרימת הדף והפס מוסתר. החיוג והטופס נשארים בפתיחה, בטופס, בסיום ובפוטר. */
+@media (max-height: 500px) {
+  .site-header { position: relative; }
+  html { scroll-padding-top: 12px; scroll-padding-bottom: 12px; }
+  [id] { scroll-margin-top: 12px; }
+  .site-nav { max-height: none; }
+  .action-bar { display: none; }
+  .footer { padding-bottom: var(--s-5); }
+}
+
 @media (max-width: 380px) {
   .address-card { gap: 10px; }
   .address-card > .icon { width: 24px; height: 24px; }

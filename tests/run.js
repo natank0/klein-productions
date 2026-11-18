@@ -309,6 +309,19 @@ function nextSaturday(minDays) {
     check('תפריט המובייל נסגר בלחיצה מחוץ לו', opened && closed, { opened, closed });
     await c.close();
   }
+  /* מסך נמוך (הגדלה ל-200%–400%, טלפון לרוחב): אלמנטים קבועים לא תופסים את הגובה. WCAG 1.4.10, 2.4.11 */
+  for (const [w, h, mobile] of [[640, 360, false], [320, 256, false], [844, 390, true], [390, 800, true]]) {
+    const c = await ctx({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile });
+    const { p } = await open(c);
+    await p.evaluate(() => window.scrollTo(0, 1600)); await p.waitForTimeout(300);
+    const r = await p.evaluate(() => {
+      const pinned = [...document.querySelectorAll('.site-header, .action-bar')].filter(e => { const s = getComputedStyle(e); if (s.display === 'none' || s.visibility === 'hidden') return false; const b = e.getBoundingClientRect(); return (s.position === 'fixed' || s.position === 'sticky') && b.bottom > 0 && b.top < innerHeight; });
+      return { px: pinned.reduce((n, e) => n + e.getBoundingClientRect().height, 0), which: pinned.map(e => e.className), ov: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+    });
+    const tall = h >= 600;
+    check(`${w}×${h}: ${tall ? 'כותרת דביקה נשמרת במסך גבוה' : 'במסך נמוך כותרת ופס קבועים לא תופסים יותר מ-25% מהגובה'}, בלי גלילה אופקית`, r.ov === 0 && (tall ? r.which.some(c => c.includes('site-header')) : r.px <= h * 0.25), r);
+    await c.close();
+  }
 
   /* ---------- 4. טופס ההזמנה ---------- */
   section('טופס');
