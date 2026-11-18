@@ -114,7 +114,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .hero-lead { max-width: 52ch; text-wrap: pretty; margin-top: var(--s-4); color: var(--ink-soft); font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.2rem); line-height: 1.75; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-5); }
 .hero-actions.is-nav-obscured { visibility: hidden !important; transition: none !important; }
-/* שלוש העובדות: ותק, ציוד ומיקום. רשימה עם קו פתיחה בגרפיט וקווי הפרדה, לא שלוש קוביות */
+/* שלוש העובדות: ותק, ציוד ומיקום. רשימה עם קו פתיחה במבטא וקווי הפרדה, לא שלוש קוביות */
 .hero-proof { margin: 0; padding: 0; list-style: none; border-top: 3px solid var(--accent); }
 .hero-proof li { display: flex; flex-direction: column; gap: 2px; padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
 .hero-proof strong { color: var(--ink); font-size: 1.2rem; font-weight: 600; line-height: 1.35; }
@@ -155,7 +155,7 @@ main [tabindex="-1"]:focus { outline: none; }
 .closing .section-title::after { margin-inline: auto; }
 .section-lead { max-width: 56ch; margin-top: var(--s-2); color: var(--ink-soft); font-size: 1.0625rem; }
 
-/* חתונות וחופות: קו פתיחה בגרפיט, שתי עמודות פתוחות בלי מסגרת */
+/* חתונות וחופות: קו פתיחה בצבע הפעולה, שתי עמודות פתוחות בלי מסגרת */
 .event-wide { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-4) var(--s-6); padding-top: var(--s-5); border-top: 3px solid var(--signal); }
 .event-wide-head { display: flex; flex-direction: column; align-items: flex-start; }
 .event-wide-head h3 { margin: 0; font-size: clamp(1.75rem, 1.3rem + 1.2vw, 2.375rem); font-weight: 600; }
@@ -197,6 +197,8 @@ main [tabindex="-1"]:focus { outline: none; }
 .gear-main { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-5); }
 .gear-main > div { padding-top: var(--s-3); border-top: 3px solid var(--signal); }
 .gear-main .gear-brands { margin-top: var(--s-2); color: var(--ink); font-size: 0.95rem; font-weight: 600; letter-spacing: 0.03em; }
+/* יצרנים כרשימה עם רווח קבוע (Cluster, Every Layout): כששורה נשברת לא נשארת נקודה מפרידה תלויה בסופה */
+.brand-list { display: flex; flex-wrap: wrap; gap: 2px var(--s-3); margin: 0; padding: 0; list-style: none; }
 .gear-more { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-3) var(--s-5); margin-top: var(--s-5); }
 .gear-more > div { padding-top: var(--s-2); border-top: 1px solid var(--line-strong); }
 .gear-more dt { font-size: 1rem; }
@@ -317,7 +319,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .closing-alt { margin-top: var(--s-2); color: var(--ink-soft); }
 .closing-alt a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); font-weight: 600; text-underline-offset: 5px; }
 
-/* פוטר – אפור ניטרלי, שלוש עמודות */
+/* פוטר – רקע כחול עמוק (מקומיט הצבע של 17.11; ההכרעה מול "רקעים בהירים בלבד" פתוחה, ראו README), שלוש עמודות */
 .footer { padding: var(--s-6) 0 var(--s-5); color: #ffffff; background: var(--ink); border-top: 4px solid var(--accent); }
 .footer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); }
 .footer-name { margin: 0 0 6px; font-size: 1.3rem; font-weight: 600; }
@@ -436,6 +438,18 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .brand-name small { font-size: 0.72rem; }
 }
 
+/* מסך נמוך: טלפון לרוחב, או הגדלה ל-200%–400% (‏1280×720 ב-400% = ‏320×180).
+   הכותרת הדביקה ופס החיוג הקבוע תפסו יחד 146px, כמעט חצי מהגובה, והסתירו את התוכן ואת השדה שבמיקוד (WCAG 1.4.10, 2.4.11).
+   כאן הכותרת חוזרת לזרימת הדף והפס מוסתר. החיוג והטופס נשארים בפתיחה, בטופס, בסיום ובפוטר. */
+@media (max-height: 500px) {
+  .site-header { position: relative; }
+  html { scroll-padding-top: 12px; scroll-padding-bottom: 12px; }
+  [id] { scroll-margin-top: 12px; }
+  .site-nav { max-height: none; }
+  .action-bar { display: none; }
+  .footer { padding-bottom: var(--s-5); }
+}
+
 @media (max-width: 380px) {
   .address-card { gap: 10px; }
   .address-card > .icon { width: 24px; height: 24px; }
@@ -467,7 +481,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 @media print {
   @page { margin: 14mm; }
   body { font-size: 11pt; line-height: 1.5; color: #000; background: #fff; }
-  .site-nav, .menu-toggle, .header-quote, .skip-link, .action-bar, .location-map, .nav-apps, .order-form, .contact-list, .closing, .hero-actions, .entry-cta, .event-wide-head .btn, .tag::after, .faq summary::after { display: none !important; }
+  .site-nav, .menu-toggle, .header-quote, .skip-link, .action-bar, .location-map, .nav-apps, .map-fallback, .order-form, .contact-list, .closing, .hero-actions, .entry-cta, .event-wide-head .btn, .tag::after, .faq summary::after { display: none !important; }
   .site-header { position: static; border: 0; }
   .wave-edge::after { display: none; }
   .header-call { display: inline-flex !important; color: #000; }

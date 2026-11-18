@@ -116,19 +116,20 @@ function nextSaturday(minDays) {
   check('הטופס לפני השאלות הנפוצות, ובלי פרק "איך מזמינים" שחוזר על המובן', index.indexOf('id="order"') > 0 && index.indexOf('id="order"') < index.indexOf('id="faq"') && !index.includes('id="how"'));
   check('כתובת אחת בכל הקישורים: המפה, Waze, Google Maps ו-JSON-LD מחפשים "הרב כהנמן 64, בני ברק"', (() => { const qs = [...index.matchAll(/(?:maps\?q|ul\?q|query)=([^&"]+)/g)].map(m => m[1]); return qs.length >= 5 && qs.every(q => q === '%D7%94%D7%A8%D7%91%20%D7%9B%D7%94%D7%A0%D7%9E%D7%9F%2064%2C%20%D7%91%D7%A0%D7%99%20%D7%91%D7%A8%D7%A7'); })());
   check('main מקבל מיקוד מקישור הדילוג (tabindex=-1)', /<main id="main" tabindex="-1">/.test(index));
-  check('אין מחלקת btn-dark מטעה (הכפתור זהב)', !/btn-dark/.test(index + pages[1].html + fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
+  check('אין מחלקת btn-dark (שם שאינו מתאר את צבע הכפתור)', !/btn-dark/.test(index + pages[1].html + fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8')));
   check('וואטסאפ נכתב בעברית בטקסט הגלוי', !/>[^<]*WhatsApp[^<]*</.test(index.replace(/<title>[\s\S]*?<\/title>/, '')));
   check('משפט פרטיות ליד כפתור השליחה, בלי טענה שההודעה נשלחה', /class="form-privacy">הפרטים אינם נשמרים באתר\. ההודעה תישלח רק אם תלחצו על שליחה בוואטסאפ\.</.test(index));
   check('חתונות: ארבעה תחומים בלי ציר שלבים ממוספר (חופה, עזרת נשים, דרשות וברכות, רחבת השמחה)', (() => { const m = index.match(/<dl class="wedding-spec">([\s\S]*?)<\/dl>/); const st = m ? [...m[1].matchAll(/<dt>([^<]+)<\/dt>/g)].map(x => x[1]) : []; return st.join('|') === 'חופה|עזרת נשים|דרשות וברכות|רחבת השמחה' && !index.includes('wedding-flow'); })());
   check('פתיחה: שתי פעולות בלבד, טופס הצעת מחיר וחיוג עם המספר גלוי (וואטסאפ ישיר רק בפס, בטופס ובפוטר)', (() => { const m = index.match(/<div class="hero-actions">([\s\S]*?)<\/div>/); const b = m ? [...m[1].matchAll(/<a [^>]*href="([^"]+)"/g)].map(x => x[1]) : []; return b.length === 2 && b[0] === '#order' && b[1] === 'tel:0527675138' && m[1].includes('052-7675138'); })());
   check('כותרת: הקישור שמחוץ לתפריט מוביל לטופס, בלי כפילות של "חתונות"', index.includes('class="btn btn-primary btn-sm header-quote" href="#order"') && !index.includes('header-events'));
   check('הציוד גלוי ולא מקופל: קטלוג לפי שימוש עם כל היצרנים כטקסט, ארבע קבוצות ראשיות ושלוש נוספות, לפני מה שכלול בשירות', (() => { const cat = (index.match(/<div class="catalog" id="equipment">[\s\S]*?<div class="scope">/) || [''])[0]; const main = (cat.match(/<dl class="gear gear-main">([\s\S]*?)<\/dl>/) || ['', ''])[1]; const more = (cat.match(/<dl class="gear gear-more">([\s\S]*?)<\/dl>/) || ['', ''])[1]; const dts = x => [...x.matchAll(/<dt>([^<]+)<\/dt>/g)].map(m => m[1]); return dts(main).join('|') === 'רמקולים וסאבוופרים|מיקסרים|מיקרופונים|מוניטורים וחיבורים' && dts(more).join('|') === 'סטנדים|הקלטה והקרנה|תאורת במה' && ['RCF', 'QSC', 'Midas', 'Mackie', 'Yamaha', 'Behringer', 'Shure'].every(b => cat.includes('<bdi lang="en">' + b + '</bdi>')) && !/<details[^>]*id="equipment"/.test(index) && !/<img[^>]*(rcf|qsc|midas|shure|yamaha|mackie|behringer)/i.test(index); })());
+  check('קטלוג: היצרנים בכל קבוצה כרשימה, בלי נקודות מפרידות שנשארות תלויות בשבירת שורה', (() => { const dds = [...index.matchAll(/<dd class="gear-brands">([\s\S]*?)<\/dd>/g)].map(m => m[1]); return dds.length === 3 && dds.every(d => /^<ul class="brand-list">(<li><bdi lang="en">[\w-]+<\/bdi><\/li>)+<\/ul>$/.test(d)); })());
   check('המחסן: הכתובת מוצגת כנקודת היציאה של הציוד', /class="address-card">[\s\S]*?<strong>כהנמן 64, בני ברק<\/strong><span>נקודת היציאה של הציוד/.test(index));
   check('שירות בשלוש קבוצות: הקמה, התאמות לפי האירוע, ושירותים נוספים בתיאום (איש סאונד שם, לא כלול)', (() => { const m = (index.match(/<div class="scope-cols">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>\s*<\/section>/) || ['', ''])[1]; const h = [...m.matchAll(/<h4>([^<]+)<\/h4>/g)].map(x => x[1]); return h.join('|') === 'הגברה עם הקמה|התאמות לפי האירוע|שירותים נוספים בתיאום' && /שירותים נוספים בתיאום<\/h4>[\s\S]*?איש סאונד לאורך האירוע/.test(m) && !/הגברה עם הקמה<\/h4>[^]*?איש סאונד[^]*?התאמות לפי/.test(m); })());
   check('גופן: מקומי בלבד (woff2 מהאתר), שאר ה-url ב-CSS הם SVG מקומי, CSP עם font-src self, ורישיון OFL לצד הקבצים', (() => { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8'); const urls = [...css.matchAll(/url\("([^"]+)"\)/g)].map(m => m[1]); const fonts = urls.filter(u => /\.woff2$/.test(u)); const others = urls.filter(u => !/\.woff2$/.test(u)); return fonts.length >= 4 && fonts.every(u => /^\.\.\/fonts\/[\w-]+\.woff2$/.test(u) && fs.existsSync(path.join(ROOT, 'assets/css', u))) && others.every(u => /^\.\.\/img\/[\w-]+\.svg$/.test(u) && fs.existsSync(path.join(ROOT, 'assets/css', u))) && !/@font-face[^}]*\.svg/.test(css) && /font-display: swap/.test(css) && pages.every(({ html }) => /font-src 'self'/.test(html)) && fs.existsSync(path.join(ROOT, 'assets/fonts/OFL.txt')); })());
   check('פתיחה: שלוש עובדות – ותק, ציוד ומחסן (כתובת המחסן כקישור לפרק המחסן)', (() => { const m = (index.match(/<ul class="hero-proof">[\s\S]*?<\/ul>/) || [''])[0]; return m.split('<li>').length - 1 === 3 && m.includes('<strong>15 שנות ניסיון</strong>') && /RCF[\s\S]*QSC[\s\S]*Midas[\s\S]*Shure/.test(m) && /<a class="hero-area" href="#areas"><strong>מחסן בכהנמן 64, בני ברק<\/strong>/.test(m) && !/תקלה/.test(m) && !index.includes('hero-facts'); })());
-  /* ותק: מספר אחד בלבד, 15, לפי הנחיית המשתמש (17.11.2026). כל מספר שנים אחר נכשל */
-  check('ותק: רק "15 שנות ניסיון" (אושר), בלי מספר שנים אחר', (() => { const txt = index.replace(/<script(?! type="application\/ld\+json")[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '); const yrs = [...txt.matchAll(/(\d+)\s*(?:שנה|שנים|שנות)/g)].map(m => m[1]); return yrs.length >= 1 && yrs.every(y => y === '15'); })());
+  /* ותק: נוסח אחד בלבד, "15 שנות ניסיון", כפי שמופיע היום. הנתון ממתין לאישור בעל העסק (README); כל מספר שנים אחר נכשל */
+  check('ותק: רק "15 שנות ניסיון" (הנוסח הקיים, ממתין לאישור), בלי מספר שנים אחר', (() => { const txt = index.replace(/<script(?! type="application\/ld\+json")[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '); const yrs = [...txt.matchAll(/(\d+)\s*(?:שנה|שנים|שנות)/g)].map(m => m[1]); return yrs.length >= 1 && yrs.every(y => y === '15'); })());
   check('סגירה אחרי השאלות: טופס, חיוג ווואטסאפ', (() => { const i = index.indexOf('id="closing-title"'); const blk = index.slice(i, index.indexOf('</section>', i)); return i > index.indexOf('id="faq"') && blk.includes('href="#order"') && blk.includes('href="tel:0527675138"') && blk.includes('https://wa.me/972527675138'); })());
   check('בפרק המחסן: משפט שמבהיר שהציוד מובא למקום האירוע בתיאום, בלי רשימת ערים', /class="location-benefit">[^<]*מובא למקום האירוע בהתאם לתיאום/.test(index) && !/class="location-benefit">[^<]*(פתח תקווה|רמת גן|אלעד)/.test(index));
   /* 17.11.2026: רקע הפתיחה נשאר בהיר; הפוטר הכחול יוצר עוגן ברור ואינו משתלט על התוכן הראשי. */
@@ -138,6 +139,7 @@ function nextSaturday(minDays) {
     check('מבטא אמבר מוגדר פעם אחת ומשמש במינון מדוד', /--accent: #b66a0a/.test(css) && /--accent-tint: #fff4df/.test(css) && (css.match(/var\(--accent\)/g) || []).length <= 6);
     check('צבע הפעולה שמור ללחיצים: כותרות לא בצבע הקישורים', !/(h2|h3|h4|\.group-title|\.section-title)[^{]*\{[^}]*color: var\(--signal\)/.test(css));
     check('יש גיליון הדפסה ומצב ניגודיות גבוהה', /@media print/.test(css) && /@media \(forced-colors: active\)/.test(css));
+    check('בהדפסה: אין הפניה לקישורי ניווט ולמפה שאינם מודפסים', /@media print[\s\S]*\.nav-apps, \.map-fallback,/.test(css));
     check('רקעים לפי תפקיד: גל בפתיחה ובסיום, מוסתר בהדפסה ובניגודיות גבוהה', /class="hero wave-edge"/.test(index) && /closing wave-edge"/.test(index) && [480, 1024, 1600].every(w => fs.existsSync(path.join(ROOT, `assets/img/wave-meter-${w}.svg`))) && /@media print[\s\S]*\.wave-edge::after \{ display: none; \}/.test(css) && /forced-colors: active\) \{\s*\.wave-edge::after \{ display: none; \}/.test(css));
     check('במובייל ובטאבלט כפתורי הפתיחה בעמודה אחת ברוחב מלא', /max-width: 860px\)[\s\S]*?\.hero-actions \{[^}]*grid-template-columns: minmax\(0, 1fr\)/.test(css));
     check('פלטת מותג: כחול עמוק, כחול פעולה, משטח תכלת ואמבר', ['ink', 'signal', 'signal-hover', 'signal-tint', 'surface', 'accent', 'accent-tint'].every(n => new RegExp('--' + n + ': #[0-9a-f]{6}').test(css)) && !/#7b263b/i.test(css));
@@ -307,6 +309,19 @@ function nextSaturday(minDays) {
     await p.mouse.click(200, 700);
     const closed = await p.evaluate(() => !document.getElementById('siteNav').classList.contains('is-open') && document.getElementById('menuToggle').getAttribute('aria-expanded') === 'false');
     check('תפריט המובייל נסגר בלחיצה מחוץ לו', opened && closed, { opened, closed });
+    await c.close();
+  }
+  /* מסך נמוך (הגדלה ל-200%–400%, טלפון לרוחב): אלמנטים קבועים לא תופסים את הגובה. WCAG 1.4.10, 2.4.11 */
+  for (const [w, h, mobile] of [[640, 360, false], [320, 256, false], [844, 390, true], [390, 800, true]]) {
+    const c = await ctx({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile });
+    const { p } = await open(c);
+    await p.evaluate(() => window.scrollTo(0, 1600)); await p.waitForTimeout(300);
+    const r = await p.evaluate(() => {
+      const pinned = [...document.querySelectorAll('.site-header, .action-bar')].filter(e => { const s = getComputedStyle(e); if (s.display === 'none' || s.visibility === 'hidden') return false; const b = e.getBoundingClientRect(); return (s.position === 'fixed' || s.position === 'sticky') && b.bottom > 0 && b.top < innerHeight; });
+      return { px: pinned.reduce((n, e) => n + e.getBoundingClientRect().height, 0), which: pinned.map(e => e.className), ov: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+    });
+    const tall = h >= 600;
+    check(`${w}×${h}: ${tall ? 'כותרת דביקה נשמרת במסך גבוה' : 'במסך נמוך כותרת ופס קבועים לא תופסים יותר מ-25% מהגובה'}, בלי גלילה אופקית`, r.ov === 0 && (tall ? r.which.some(c => c.includes('site-header')) : r.px <= h * 0.25), r);
     await c.close();
   }
 
