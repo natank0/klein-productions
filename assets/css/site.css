@@ -197,6 +197,8 @@ main [tabindex="-1"]:focus { outline: none; }
 .gear-main { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-5); }
 .gear-main > div { padding-top: var(--s-3); border-top: 3px solid var(--signal); }
 .gear-main .gear-brands { margin-top: var(--s-2); color: var(--ink); font-size: 0.95rem; font-weight: 600; letter-spacing: 0.03em; }
+/* יצרנים כרשימה עם רווח קבוע (Cluster, Every Layout): כששורה נשברת לא נשארת נקודה מפרידה תלויה בסופה */
+.brand-list { display: flex; flex-wrap: wrap; gap: 2px var(--s-3); margin: 0; padding: 0; list-style: none; }
 .gear-more { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-3) var(--s-5); margin-top: var(--s-5); }
 .gear-more > div { padding-top: var(--s-2); border-top: 1px solid var(--line-strong); }
 .gear-more dt { font-size: 1rem; }
