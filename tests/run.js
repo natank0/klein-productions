@@ -139,6 +139,7 @@ function nextSaturday(minDays) {
     check('מבטא אמבר מוגדר פעם אחת ומשמש במינון מדוד', /--accent: #b66a0a/.test(css) && /--accent-tint: #fff4df/.test(css) && (css.match(/var\(--accent\)/g) || []).length <= 6);
     check('צבע הפעולה שמור ללחיצים: כותרות לא בצבע הקישורים', !/(h2|h3|h4|\.group-title|\.section-title)[^{]*\{[^}]*color: var\(--signal\)/.test(css));
     check('יש גיליון הדפסה ומצב ניגודיות גבוהה', /@media print/.test(css) && /@media \(forced-colors: active\)/.test(css));
+    check('בהדפסה: אין הפניה לקישורי ניווט ולמפה שאינם מודפסים', /@media print[\s\S]*\.nav-apps, \.map-fallback,/.test(css));
     check('רקעים לפי תפקיד: גל בפתיחה ובסיום, מוסתר בהדפסה ובניגודיות גבוהה', /class="hero wave-edge"/.test(index) && /closing wave-edge"/.test(index) && [480, 1024, 1600].every(w => fs.existsSync(path.join(ROOT, `assets/img/wave-meter-${w}.svg`))) && /@media print[\s\S]*\.wave-edge::after \{ display: none; \}/.test(css) && /forced-colors: active\) \{\s*\.wave-edge::after \{ display: none; \}/.test(css));
     check('במובייל ובטאבלט כפתורי הפתיחה בעמודה אחת ברוחב מלא', /max-width: 860px\)[\s\S]*?\.hero-actions \{[^}]*grid-template-columns: minmax\(0, 1fr\)/.test(css));
     check('פלטת מותג: כחול עמוק, כחול פעולה, משטח תכלת ואמבר', ['ink', 'signal', 'signal-hover', 'signal-tint', 'surface', 'accent', 'accent-tint'].every(n => new RegExp('--' + n + ': #[0-9a-f]{6}').test(css)) && !/#7b263b/i.test(css));

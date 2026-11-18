@@ -481,7 +481,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 @media print {
   @page { margin: 14mm; }
   body { font-size: 11pt; line-height: 1.5; color: #000; background: #fff; }
-  .site-nav, .menu-toggle, .header-quote, .skip-link, .action-bar, .location-map, .nav-apps, .order-form, .contact-list, .closing, .hero-actions, .entry-cta, .event-wide-head .btn, .tag::after, .faq summary::after { display: none !important; }
+  .site-nav, .menu-toggle, .header-quote, .skip-link, .action-bar, .location-map, .nav-apps, .map-fallback, .order-form, .contact-list, .closing, .hero-actions, .entry-cta, .event-wide-head .btn, .tag::after, .faq summary::after { display: none !important; }
   .site-header { position: static; border: 0; }
   .wave-edge::after { display: none; }
   .header-call { display: inline-flex !important; color: #000; }
