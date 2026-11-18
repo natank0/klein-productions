@@ -183,6 +183,7 @@ function nextSaturday(minDays) {
   check('JSON-LD: טלפון', ld.telephone === '+972-52-767-5138', ld.telephone);
   check('JSON-LD: בלי קואורדינטות שלא אומתו, שעות פתיחה, דירוגים או ביקורות', !('geo' in ld) && !('openingHours' in ld) && !('openingHoursSpecification' in ld) && !('aggregateRating' in ld) && !('review' in ld), Object.keys(ld));
   check('JSON-LD: אזור שירות רק בני ברק עד אישור', ld.areaServed === 'בני ברק', ld.areaServed);
+  check('תמונת שיתוף: og:image מפנה לקובץ PNG קיים בגודל 1200×630, וגם ה-JSON-LD', (() => { const m = index.match(/<meta property="og:image" content="https:\/\/natank0\.github\.io\/klein-productions\/([^"?]+)(?:\?v=\w+)?">/); if (!m) return false; const f = path.join(ROOT, m[1]); if (!fs.existsSync(f)) return false; const b = fs.readFileSync(f); return b.toString('ascii', 1, 4) === 'PNG' && b.readUInt32BE(16) === 1200 && b.readUInt32BE(20) === 630 && ld.image.endsWith(m[1]); })());
   check('description: עובדות מאושרות בלבד', /<meta name="description" content="קליין הפקות: הגברה לחתונות, חופות, שמחות משפחתיות ואירועי בתי מדרש ומוסדות\. ציוד RCF, QSC, Midas ו-Shure\. מחסן בכהנמן 64, בני ברק\. לפרטים: 052-7675138\.">/.test(index));
   const sitemap = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
   check('sitemap: כתובת אחת, הדף הראשי', (sitemap.match(/<loc>/g) || []).length === 1 && sitemap.includes('<loc>https://natank0.github.io/klein-productions/</loc>'));
