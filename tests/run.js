@@ -132,17 +132,19 @@ function nextSaturday(minDays) {
   check('ותק: רק "15 שנות ניסיון" (הנוסח הקיים, ממתין לאישור), בלי מספר שנים אחר', (() => { const txt = index.replace(/<script(?! type="application\/ld\+json")[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '); const yrs = [...txt.matchAll(/(\d+)\s*(?:שנה|שנים|שנות)/g)].map(m => m[1]); return yrs.length >= 1 && yrs.every(y => y === '15'); })());
   check('סגירה אחרי השאלות: טופס, חיוג ווואטסאפ', (() => { const i = index.indexOf('id="closing-title"'); const blk = index.slice(i, index.indexOf('</section>', i)); return i > index.indexOf('id="faq"') && blk.includes('href="#order"') && blk.includes('href="tel:0527675138"') && blk.includes('https://wa.me/972527675138'); })());
   check('בפרק המחסן: משפט שמבהיר שהציוד מובא למקום האירוע בתיאום, בלי רשימת ערים', /class="location-benefit">[^<]*מובא למקום האירוע בהתאם לתיאום/.test(index) && !/class="location-benefit">[^<]*(פתח תקווה|רמת גן|אלעד)/.test(index));
-  /* 17.11.2026: רקע הפתיחה נשאר בהיר; הפוטר הכחול יוצר עוגן ברור ואינו משתלט על התוכן הראשי. */
-  check('רקעים לפי היררכיה: פתיחה בהירה, סיום בהיר ופוטר כחול עמוק', (() => { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8'); return /\.hero \{[^}]*background: #f7fbfe/.test(css) && /\.closing \{[^}]*background: var\(--surface\)/.test(css) && /\.footer \{[^}]*background: var\(--ink\)/.test(css); })());
+  /* 18.11.2026 (הכרעת הפלטה): רקעים בהירים בלבד. הפתיחה, הסיום והפוטר בהירים, ואף רקע אינו בצבע הטקסט הכהה */
+  check('רקעים בהירים בלבד: פתיחה, סיום ופוטר בהירים, ואין רקע בצבע הטקסט הכהה', (() => { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8'); return /\.hero \{[^}]*background: #f7fbfe/.test(css) && /\.closing \{[^}]*background: var\(--surface\)/.test(css) && /\.footer \{[^}]*background: var\(--card\)/.test(css) && ![...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].some(m => !/::?(before|after)/.test(m[1]) && /background(?:-color)?: var\(--ink(?:-soft)?\)/.test(m[2])); })());
   { const css = fs.readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8');
     const hexes = [...css.matchAll(/#([0-9a-f]{6})\b/gi)].map(m => m[1]);
-    check('מבטא אמבר מוגדר פעם אחת ומשמש במינון מדוד', /--accent: #b66a0a/.test(css) && /--accent-tint: #fff4df/.test(css) && (css.match(/var\(--accent\)/g) || []).length <= 6);
+    /* גוון חם-צהבהב (אמבר, זהב, חול, שמנת, צהוב): גוון 20°–65° עם רוויה מורגשת. נדחה כ"מראה AI גנרי" */
+    const warm = hexes.filter(h => { const [r, g, b] = [0, 2, 4].map(k => parseInt(h.slice(k, k + 2), 16) / 255); const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; if (d < 0.04) return false; let hue = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; hue = (hue * 60 + 360) % 360; return hue >= 20 && hue <= 65; });
+    check('פלטה בלי אמבר, זהב, צהוב, חול או שמנת', warm.length === 0 && !/--(accent|gold|sand|paper|cream|amber)/i.test(css), warm);
     check('צבע הפעולה שמור ללחיצים: כותרות לא בצבע הקישורים', !/(h2|h3|h4|\.group-title|\.section-title)[^{]*\{[^}]*color: var\(--signal\)/.test(css));
     check('יש גיליון הדפסה ומצב ניגודיות גבוהה', /@media print/.test(css) && /@media \(forced-colors: active\)/.test(css));
     check('בהדפסה: אין הפניה לקישורי ניווט ולמפה שאינם מודפסים', /@media print[\s\S]*\.nav-apps, \.map-fallback,/.test(css));
     check('רקעים לפי תפקיד: גל בפתיחה ובסיום, מוסתר בהדפסה ובניגודיות גבוהה', /class="hero wave-edge"/.test(index) && /closing wave-edge"/.test(index) && [480, 1024, 1600].every(w => fs.existsSync(path.join(ROOT, `assets/img/wave-meter-${w}.svg`))) && /@media print[\s\S]*\.wave-edge::after \{ display: none; \}/.test(css) && /forced-colors: active\) \{\s*\.wave-edge::after \{ display: none; \}/.test(css));
     check('במובייל ובטאבלט כפתורי הפתיחה בעמודה אחת ברוחב מלא', /max-width: 860px\)[\s\S]*?\.hero-actions \{[^}]*grid-template-columns: minmax\(0, 1fr\)/.test(css));
-    check('פלטת מותג: כחול עמוק, כחול פעולה, משטח תכלת ואמבר', ['ink', 'signal', 'signal-hover', 'signal-tint', 'surface', 'accent', 'accent-tint'].every(n => new RegExp('--' + n + ': #[0-9a-f]{6}').test(css)) && !/#7b263b/i.test(css));
+    check('פלטת מותג: כחול עמוק, כחול פעולה ומשטח תכלת', ['ink', 'signal', 'signal-hover', 'signal-tint', 'surface'].every(n => new RegExp('--' + n + ': #[0-9a-f]{6}').test(css)) && !/#7b263b/i.test(css));
     check('מערכת מרווחים אחת: 8, 12, 16, 24, 32, 48, 72, 96', /--s-1: 8px; --s-2: 12px; --s-3: 16px; --s-4: 24px; --s-5: 32px; --s-6: 48px; --s-7: 72px; --s-8: 96px;/.test(css));
     { const results = [480, 1024, 1600].map(W => {
         const svg = fs.readFileSync(path.join(ROOT, `assets/img/wave-meter-${W}.svg`), 'utf8');
@@ -181,6 +183,7 @@ function nextSaturday(minDays) {
   check('JSON-LD: טלפון', ld.telephone === '+972-52-767-5138', ld.telephone);
   check('JSON-LD: בלי קואורדינטות שלא אומתו, שעות פתיחה, דירוגים או ביקורות', !('geo' in ld) && !('openingHours' in ld) && !('openingHoursSpecification' in ld) && !('aggregateRating' in ld) && !('review' in ld), Object.keys(ld));
   check('JSON-LD: אזור שירות רק בני ברק עד אישור', ld.areaServed === 'בני ברק', ld.areaServed);
+  check('תמונת שיתוף: og:image מפנה לקובץ PNG קיים בגודל 1200×630, וגם ה-JSON-LD', (() => { const m = index.match(/<meta property="og:image" content="https:\/\/natank0\.github\.io\/klein-productions\/([^"?]+)(?:\?v=\w+)?">/); if (!m) return false; const f = path.join(ROOT, m[1]); if (!fs.existsSync(f)) return false; const b = fs.readFileSync(f); return b.toString('ascii', 1, 4) === 'PNG' && b.readUInt32BE(16) === 1200 && b.readUInt32BE(20) === 630 && ld.image.endsWith(m[1]); })());
   check('description: עובדות מאושרות בלבד', /<meta name="description" content="קליין הפקות: הגברה לחתונות, חופות, שמחות משפחתיות ואירועי בתי מדרש ומוסדות\. ציוד RCF, QSC, Midas ו-Shure\. מחסן בכהנמן 64, בני ברק\. לפרטים: 052-7675138\.">/.test(index));
   const sitemap = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
   check('sitemap: כתובת אחת, הדף הראשי', (sitemap.match(/<loc>/g) || []).length === 1 && sitemap.includes('<loc>https://natank0.github.io/klein-productions/</loc>'));
