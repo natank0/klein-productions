@@ -60,6 +60,7 @@ function nextSaturday(minDays) {
   section('HTML ותוכן');
   check('מותג: סמל SVG תואם ונגיש בשני הדפים', fs.existsSync(path.join(ROOT, 'assets/img/klein-mark.svg')) && pages.every(x => x.html.includes('klein-mark.svg')));
   check('אין התחייבות לא מאומתת לחשבונית למוסד', !index.includes('חשבונית למוסד'));
+  check('אין הצעה להשכרה ללא הרכבה לפני אימות בעל העסק', !/השכר(?:ה|ת) (?:ציוד )?(?:בלי|ללא) הרכבה/.test(index));
   check('מחוץ לבני ברק: מוצגת הבהרת אזור שירות', index.includes('id="cityHint"') && index.includes('נבדוק אפשרות הגעה'));
   check('אירועים נוספים מוגדרים ככותרת סמנטית', /<h3 class="group-title" id="more-events">אירועים נוספים<\/h3>/.test(index));
   const hv = new HtmlValidate(new FileSystemConfigLoader());
